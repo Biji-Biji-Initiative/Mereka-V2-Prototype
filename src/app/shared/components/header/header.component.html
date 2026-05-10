@@ -1,0 +1,106 @@
+<header class="sticky top-0 z-30 bg-white border-b border-neutral-200">
+  <div class="max-w-[1320px] mx-auto h-16 px-6 flex items-center gap-8">
+    <a routerLink="/programs" class="flex items-center gap-2 shrink-0">
+      <span
+        class="inline-flex items-center justify-center w-8 h-8 rounded-md bg-neutral-900 text-white font-bold"
+      >
+        M
+      </span>
+      <span class="font-semibold text-lg tracking-tight">mereka</span>
+    </a>
+
+    <nav class="hidden md:flex items-center gap-7 text-sm text-neutral-700">
+      <a class="hover:text-neutral-900" href="#">Find experts</a>
+      <a class="hover:text-neutral-900" href="#">Find gigs</a>
+      <a class="hover:text-neutral-900" href="#">Upskill</a>
+      <a class="hover:text-neutral-900" href="#">Workspace</a>
+      <a class="hover:text-neutral-900 text-primary-700 font-medium" routerLink="/programs">Programs</a>
+      <a class="hover:text-neutral-900" href="#">Why Mereka</a>
+    </nav>
+
+    <div class="flex-1 max-w-md ml-auto">
+      <label class="relative block">
+        <span
+          class="absolute inset-y-0 left-3 flex items-center text-neutral-400"
+          aria-hidden="true"
+        >
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="11" cy="11" r="8" />
+            <path d="m21 21-4.3-4.3" />
+          </svg>
+        </span>
+        <input
+          type="search"
+          placeholder="What are you looking for?"
+          class="w-full pl-9 pr-4 py-2 rounded-full bg-neutral-100 border border-transparent focus:outline-none focus:bg-white focus:border-neutral-300 text-sm"
+        />
+      </label>
+    </div>
+
+    <div class="flex items-center gap-3 shrink-0">
+      <ng-container *ngIf="isLoading(); else loaded">
+        <div class="w-8 h-8 rounded-full bg-neutral-100 animate-pulse"></div>
+      </ng-container>
+      <ng-template #loaded>
+        <ng-container *ngIf="isLoggedIn(); else guest">
+          <button class="text-neutral-500 hover:text-neutral-900" aria-label="Notifications">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9" />
+              <path d="M10.3 21a1.94 1.94 0 0 0 3.4 0" />
+            </svg>
+          </button>
+          <button class="text-neutral-500 hover:text-neutral-900" aria-label="Inbox">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="3" y="5" width="18" height="14" rx="2" />
+              <path d="m3 7 9 6 9-6" />
+            </svg>
+          </button>
+          <div class="relative group">
+            <button
+              class="w-8 h-8 rounded-full bg-primary-200 text-primary-800 font-semibold text-sm flex items-center justify-center overflow-hidden"
+              [attr.aria-label]="'Signed in as ' + user()?.name"
+            >
+              <img
+                *ngIf="user()?.profilePhoto; else initialsFallback"
+                [src]="user()?.profilePhoto"
+                [alt]="user()?.name"
+                class="w-full h-full object-cover"
+              />
+              <ng-template #initialsFallback>{{ initials() }}</ng-template>
+            </button>
+            <div
+              class="absolute right-0 mt-2 w-52 rounded-lg bg-white border border-neutral-200 shadow-md py-2 invisible group-hover:visible"
+            >
+              <div class="px-4 py-2 border-b border-neutral-100">
+                <div class="text-sm font-medium text-neutral-900">{{ user()?.name }}</div>
+                <div class="text-xs text-neutral-500">{{ user()?.email }}</div>
+              </div>
+              <a [href]="appUrl" class="block px-4 py-2 text-sm hover:bg-neutral-50">My dashboard</a>
+              <button
+                type="button"
+                class="block w-full text-left px-4 py-2 text-sm text-error hover:bg-neutral-50"
+                (click)="signOut()"
+              >
+                Sign out
+              </button>
+            </div>
+          </div>
+        </ng-container>
+        <ng-template #guest>
+          <a
+            [href]="loginUrl()"
+            class="text-sm text-neutral-700 hover:text-neutral-900 px-3 py-1.5"
+          >
+            Log in
+          </a>
+          <a
+            [href]="loginUrl()"
+            class="text-sm font-medium text-white bg-neutral-900 hover:bg-neutral-700 rounded-full px-4 py-2"
+          >
+            Sign up
+          </a>
+        </ng-template>
+      </ng-template>
+    </div>
+  </div>
+</header>

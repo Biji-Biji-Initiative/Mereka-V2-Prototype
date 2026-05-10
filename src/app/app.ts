@@ -1,0 +1,27 @@
+import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/core';
+import { RouterOutlet } from '@angular/router';
+import { CommonModule } from '@angular/common';
+
+import { HeaderComponent } from './shared/components/header/header.component';
+import { AuthService } from './core/services/auth.service';
+
+@Component({
+  selector: 'mereka-root',
+  standalone: true,
+  imports: [CommonModule, RouterOutlet, HeaderComponent],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  template: `
+    <mereka-header />
+    <main class="min-h-[calc(100vh-64px)]">
+      <router-outlet />
+    </main>
+  `,
+})
+export class App implements OnInit {
+  private readonly auth = inject(AuthService);
+
+  ngOnInit(): void {
+    // Hydrate auth state on app boot. AuthService is SSR-safe and idempotent.
+    void this.auth.init();
+  }
+}
