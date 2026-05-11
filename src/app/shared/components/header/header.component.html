@@ -1,29 +1,134 @@
 <header class="sticky top-0 z-30 bg-white border-b border-neutral-200">
-  <div class="max-w-[1320px] mx-auto h-16 px-6 flex items-center gap-6">
+  <div class="max-w-[1320px] mx-auto h-16 px-6 flex items-center gap-7">
     <a routerLink="/" class="flex items-center shrink-0" aria-label="Mereka home">
       <img src="logo-mereka.svg" alt="Mereka" class="h-7 w-auto" />
     </a>
 
-    <nav class="hidden md:flex items-center gap-5 text-sm text-neutral-700">
-      <a routerLink="/programs" routerLinkActive="text-primary-700 font-medium" class="hover:text-neutral-900">Programs</a>
-      <a routerLink="/experiences" routerLinkActive="text-primary-700 font-medium" class="hover:text-neutral-900">Experiences</a>
-      <a routerLink="/experts" routerLinkActive="text-primary-700 font-medium" class="hover:text-neutral-900">Experts</a>
-      <a routerLink="/expertise" routerLinkActive="text-primary-700 font-medium" class="hover:text-neutral-900">Expertise</a>
-      <a routerLink="/gigs" routerLinkActive="text-primary-700 font-medium" class="hover:text-neutral-900">Gigs</a>
-      <a routerLink="/hubs" routerLinkActive="text-primary-700 font-medium" class="hover:text-neutral-900">Hubs</a>
-      <a routerLink="/dashboard" routerLinkActive="text-primary-700 font-medium" class="hover:text-neutral-900">Dashboard</a>
+    <nav class="hidden lg:flex items-center gap-1 text-sm text-neutral-700">
+      <!-- Find experts -->
+      <div class="relative group">
+        <button type="button" class="px-3 py-2 inline-flex items-center gap-1 hover:text-neutral-900">
+          Find experts
+          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+        <div class="absolute left-0 top-full pt-2 invisible opacity-0 translate-y-1 group-hover:visible group-hover:opacity-100 group-hover:translate-y-0 transition duration-150 z-40">
+          <div class="bg-white rounded-lg shadow-lg border border-neutral-200 py-2 w-64">
+            <a routerLink="/experts" class="block px-4 py-2 hover:bg-neutral-50">
+              <div class="font-medium">Browse experts</div>
+              <div class="text-xs text-neutral-500">People — bios, skills, reviews.</div>
+            </a>
+            <a routerLink="/expertise" class="block px-4 py-2 hover:bg-neutral-50">
+              <div class="font-medium">Book expertise sessions</div>
+              <div class="text-xs text-neutral-500">1:1 or group mentoring slots.</div>
+            </a>
+            <a routerLink="/hubs" class="block px-4 py-2 hover:bg-neutral-50">
+              <div class="font-medium">Explore hubs</div>
+              <div class="text-xs text-neutral-500">Communities running programs.</div>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Find gigs -->
+      <div class="relative group">
+        <button type="button" class="px-3 py-2 inline-flex items-center gap-1 hover:text-neutral-900">
+          Find gigs
+          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+        <div class="absolute left-0 top-full pt-2 invisible opacity-0 translate-y-1 group-hover:visible group-hover:opacity-100 group-hover:translate-y-0 transition duration-150 z-40">
+          <div class="bg-white rounded-lg shadow-lg border border-neutral-200 py-2 w-64">
+            <a routerLink="/gigs" class="block px-4 py-2 hover:bg-neutral-50">
+              <div class="font-medium">Browse open gigs</div>
+              <div class="text-xs text-neutral-500">Project-based work across the network.</div>
+            </a>
+            <a routerLink="/gigs/new" class="block px-4 py-2 hover:bg-neutral-50">
+              <div class="font-medium">Post a gig</div>
+              <div class="text-xs text-neutral-500">Hire freelancers in days, not weeks.</div>
+            </a>
+            <a routerLink="/gigs/admin" class="block px-4 py-2 hover:bg-neutral-50">
+              <div class="font-medium">My gigs</div>
+              <div class="text-xs text-neutral-500">Manage applicants &amp; shortlists.</div>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Upskill -->
+      <div class="relative group">
+        <button type="button" class="px-3 py-2 inline-flex items-center gap-1 hover:text-neutral-900">
+          Upskill
+          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+        <div class="absolute left-0 top-full pt-2 invisible opacity-0 translate-y-1 group-hover:visible group-hover:opacity-100 group-hover:translate-y-0 transition duration-150 z-40">
+          <div class="bg-white rounded-lg shadow-lg border border-neutral-200 py-2 w-72">
+            <a routerLink="/programs" class="block px-4 py-2 hover:bg-neutral-50">
+              <div class="font-medium">Programs</div>
+              <div class="text-xs text-neutral-500">Guided multi-month journeys.</div>
+            </a>
+            <a routerLink="/experiences" class="block px-4 py-2 hover:bg-neutral-50">
+              <div class="font-medium">Experiences</div>
+              <div class="text-xs text-neutral-500">Workshops, bootcamps, walks.</div>
+            </a>
+            <a routerLink="/expertise" class="block px-4 py-2 hover:bg-neutral-50">
+              <div class="font-medium">Expertise</div>
+              <div class="text-xs text-neutral-500">1:1 mentoring &amp; clinics.</div>
+            </a>
+            <a routerLink="/new" class="block px-4 py-2 hover:bg-neutral-50">
+              <div class="font-medium">AI Fundamentals <span class="ml-1 text-[10px] uppercase tracking-wider bg-primary-200 text-primary-800 rounded-full px-1.5 py-0.5">New</span></div>
+              <div class="text-xs text-neutral-500">Mereka × Microsoft 4-week programme.</div>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Workspace -->
+      <div class="relative group">
+        <button type="button" class="px-3 py-2 inline-flex items-center gap-1 hover:text-neutral-900">
+          Workspace
+          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+        <div class="absolute left-0 top-full pt-2 invisible opacity-0 translate-y-1 group-hover:visible group-hover:opacity-100 group-hover:translate-y-0 transition duration-150 z-40">
+          <div class="bg-white rounded-lg shadow-lg border border-neutral-200 py-2 w-72">
+            <a routerLink="/dashboard" class="block px-4 py-2 hover:bg-neutral-50">
+              <div class="font-medium">My dashboard</div>
+              <div class="text-xs text-neutral-500">Bookings, courses, favorites, billing.</div>
+            </a>
+            <a routerLink="/hub" class="block px-4 py-2 hover:bg-neutral-50">
+              <div class="font-medium">Hub admin</div>
+              <div class="text-xs text-neutral-500">Analytics, calendar, reviews, settings.</div>
+            </a>
+            <a routerLink="/programs/admin" class="block px-4 py-2 hover:bg-neutral-50">
+              <div class="font-medium">Manage programs</div>
+              <div class="text-xs text-neutral-500">Your active &amp; draft programmes.</div>
+            </a>
+            <a routerLink="/inbox" class="block px-4 py-2 hover:bg-neutral-50">
+              <div class="font-medium">Inbox</div>
+              <div class="text-xs text-neutral-500">Channels, DMs &amp; broadcasts.</div>
+            </a>
+            <div class="border-t border-neutral-100 my-1"></div>
+            <a routerLink="/onboarding/hub" class="block px-4 py-2 hover:bg-neutral-50 text-primary-700">
+              <div class="font-medium">+ Start a hub</div>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Why Mereka -->
+      <a routerLink="/" routerLinkActive="text-primary-700 font-medium" [routerLinkActiveOptions]="{ exact: true }" class="px-3 py-2 hover:text-neutral-900">Why Mereka</a>
     </nav>
 
+    <!-- Search -->
     <div class="flex-1 max-w-md ml-auto">
       <label class="relative block">
         <span class="absolute inset-y-0 left-3 flex items-center text-neutral-400" aria-hidden="true">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8" /><path d="m21 21-4.3-4.3" /></svg>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
         </span>
         <input type="search" placeholder="What are you looking for?"
                class="w-full pl-9 pr-4 py-2 rounded-full bg-neutral-100 border border-transparent focus:outline-none focus:bg-white focus:border-neutral-300 text-sm" />
       </label>
     </div>
 
+    <!-- Right side: cart + notifications + (My Dashboard pill / auth buttons) + avatar -->
     <div class="flex items-center gap-3 shrink-0">
       <a routerLink="/checkout" class="relative text-neutral-500 hover:text-neutral-900" aria-label="Cart">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.7 13.4a2 2 0 0 0 2 1.6h9.7a2 2 0 0 0 2-1.6L23 6H6"/></svg>
@@ -33,35 +138,58 @@
       <ng-container *ngIf="isLoading(); else loaded">
         <div class="w-8 h-8 rounded-full bg-neutral-100 animate-pulse"></div>
       </ng-container>
+
       <ng-template #loaded>
         <ng-container *ngIf="isLoggedIn(); else guest">
-          <a routerLink="/inbox" class="text-neutral-500 hover:text-neutral-900" aria-label="Inbox">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="14" rx="2" /><path d="m3 7 9 6 9-6"/></svg>
+          <button type="button" class="relative text-neutral-500 hover:text-neutral-900" aria-label="Notifications">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>
+            <span class="absolute -top-0.5 -right-0.5 w-2 h-2 rounded-full bg-info"></span>
+          </button>
+          <a routerLink="/inbox" class="relative text-neutral-500 hover:text-neutral-900" aria-label="Inbox">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>
+            <span class="absolute -top-0.5 -right-0.5 w-2 h-2 rounded-full bg-info"></span>
           </a>
+
+          <!-- Pink "My Dashboard" pill — the trademark of the original navbar -->
+          <a routerLink="/dashboard"
+             class="hidden md:inline-flex items-center px-4 py-2 rounded-full text-sm font-semibold text-neutral-900 bg-[#ffb1c8] hover:bg-[#ff97b8] transition">
+            My Dashboard
+          </a>
+
           <div class="relative group">
-            <button class="w-8 h-8 rounded-full bg-primary-200 text-primary-800 font-semibold text-sm flex items-center justify-center overflow-hidden"
+            <button class="w-9 h-9 rounded-full bg-primary-200 text-primary-800 font-semibold text-sm flex items-center justify-center overflow-hidden ring-2 ring-white"
                     [attr.aria-label]="'Signed in as ' + user()?.name">
               <img *ngIf="user()?.profilePhoto; else initialsFallback" [src]="user()?.profilePhoto" [alt]="user()?.name" class="w-full h-full object-cover" />
               <ng-template #initialsFallback>{{ initials() }}</ng-template>
             </button>
-            <div class="absolute right-0 mt-2 w-52 rounded-lg bg-white border border-neutral-200 shadow-md py-2 invisible group-hover:visible">
-              <div class="px-4 py-2 border-b border-neutral-100">
-                <div class="text-sm font-medium text-neutral-900">{{ user()?.name }}</div>
-                <div class="text-xs text-neutral-500">{{ user()?.email }}</div>
+            <div class="absolute right-0 top-full pt-2 invisible opacity-0 translate-y-1 group-hover:visible group-hover:opacity-100 group-hover:translate-y-0 transition duration-150 z-40">
+              <div class="bg-white rounded-lg shadow-lg border border-neutral-200 py-2 w-64">
+                <div class="px-4 py-2 border-b border-neutral-100">
+                  <div class="text-sm font-medium text-neutral-900 truncate">{{ user()?.name }}</div>
+                  <div class="text-xs text-neutral-500 truncate">{{ user()?.email }}</div>
+                </div>
+                <a routerLink="/dashboard" class="block px-4 py-2 text-sm hover:bg-neutral-50">My dashboard</a>
+                <a routerLink="/dashboard/bookings" class="block px-4 py-2 text-sm hover:bg-neutral-50">Bookings</a>
+                <a routerLink="/dashboard/courses" class="block px-4 py-2 text-sm hover:bg-neutral-50">Courses</a>
+                <a routerLink="/dashboard/favorites" class="block px-4 py-2 text-sm hover:bg-neutral-50">Favorites</a>
+                <a routerLink="/dashboard/billing" class="block px-4 py-2 text-sm hover:bg-neutral-50">Billing</a>
+                <a routerLink="/dashboard/settings" class="block px-4 py-2 text-sm hover:bg-neutral-50">Settings</a>
+                <div class="border-t border-neutral-100 my-1"></div>
+                <a routerLink="/programs/admin" class="block px-4 py-2 text-sm hover:bg-neutral-50">Manage programs</a>
+                <a routerLink="/experiences/admin" class="block px-4 py-2 text-sm hover:bg-neutral-50">My experiences</a>
+                <a routerLink="/expertise/admin" class="block px-4 py-2 text-sm hover:bg-neutral-50">My expertise</a>
+                <a routerLink="/gigs/admin" class="block px-4 py-2 text-sm hover:bg-neutral-50">My gigs</a>
+                <a routerLink="/hub" class="block px-4 py-2 text-sm hover:bg-neutral-50">Hub admin</a>
+                <div class="border-t border-neutral-100 my-1"></div>
+                <button type="button" class="block w-full text-left px-4 py-2 text-sm text-error hover:bg-neutral-50" (click)="signOut()">Sign out</button>
               </div>
-              <a routerLink="/dashboard" class="block px-4 py-2 text-sm hover:bg-neutral-50">My dashboard</a>
-              <a routerLink="/experiences/admin" class="block px-4 py-2 text-sm hover:bg-neutral-50">My experiences</a>
-              <a routerLink="/expertise/admin" class="block px-4 py-2 text-sm hover:bg-neutral-50">My expertise</a>
-              <a routerLink="/gigs/admin" class="block px-4 py-2 text-sm hover:bg-neutral-50">My gigs</a>
-              <a routerLink="/programs/admin" class="block px-4 py-2 text-sm hover:bg-neutral-50">My programs</a>
-              <a routerLink="/hub" class="block px-4 py-2 text-sm hover:bg-neutral-50">Hub admin</a>
-              <button type="button" class="block w-full text-left px-4 py-2 text-sm text-error hover:bg-neutral-50" (click)="signOut()">Sign out</button>
             </div>
           </div>
         </ng-container>
+
         <ng-template #guest>
-          <a [href]="loginUrl()" class="text-sm text-neutral-700 hover:text-neutral-900 px-3 py-1.5">Log in</a>
-          <a [href]="loginUrl()" class="text-sm font-medium text-white bg-neutral-900 hover:bg-neutral-700 rounded-full px-4 py-2">Sign up</a>
+          <a routerLink="/auth/login" class="text-sm text-neutral-700 hover:text-neutral-900 px-3 py-1.5">Log in</a>
+          <a routerLink="/auth/signup" class="text-sm font-medium text-white bg-neutral-900 hover:bg-neutral-700 rounded-full px-4 py-2">Sign up</a>
         </ng-template>
       </ng-template>
     </div>
