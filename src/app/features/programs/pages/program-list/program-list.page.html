@@ -5,7 +5,7 @@
   <div class="max-w-[1320px] mx-auto px-6 pt-16 pb-12 text-center">
     <h1 class="text-[#1a1623] tracking-[-0.03em]"
         style="font-family:'Poppins',sans-serif; font-weight:700; font-size:56px; line-height:64px;">
-      Learn Together. <span class="text-neutral-400">Grow Together.</span>
+      Learn Together. <span class="block sm:inline">Grow Together.</span>
     </h1>
     <p class="mt-4 text-[#1a1623] max-w-2xl mx-auto"
        style="font-family:'Poppins',sans-serif; font-size:18px; line-height:28px; letter-spacing:-0.01em;">
@@ -15,7 +15,7 @@
     <!-- Category pills -->
     <div class="mt-8 flex items-center justify-center flex-wrap gap-2">
       <button *ngFor="let c of categories" type="button"
-              class="rounded-full px-4 py-2 text-sm transition"
+              class="rounded-full px-4 h-9 text-sm transition inline-flex items-center"
               [class.bg-neutral-900]="activeCategory() === c"
               [class.text-white]="activeCategory() === c"
               [class.bg-white]="activeCategory() !== c"
@@ -42,8 +42,8 @@
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
       <a *ngFor="let p of popular()"
          [routerLink]="['/programs', p.slug]"
-         class="block bg-white border border-neutral-200 rounded-2xl overflow-hidden hover:shadow-md transition">
-        <div class="aspect-[4/3] bg-neutral-100 overflow-hidden">
+         class="block bg-white rounded-2xl overflow-hidden ring-1 ring-neutral-100 hover:ring-neutral-200 hover:shadow-[0_4px_24px_-8px_rgba(0,0,0,0.08)] transition">
+        <div class="aspect-[16/10] bg-neutral-100 overflow-hidden">
           <img [src]="p.image" [alt]="p.title" class="w-full h-full object-cover" loading="lazy" />
         </div>
         <div class="p-4 flex flex-col gap-2">
@@ -81,7 +81,8 @@
       <label class="text-sm text-neutral-500 inline-flex items-center gap-2" style="font-family:'Lato',sans-serif;">
         Sort by
         <select [ngModel]="sort()" (ngModelChange)="sort.set($event)"
-                class="rounded-full border border-neutral-200 px-3 py-1.5 text-sm bg-white">
+                class="rounded-full px-4 h-9 text-sm text-[#1a1623] focus:outline-none"
+                style="background:linear-gradient(90deg,#ecedf1,#ecedf1),linear-gradient(90deg,#ebd3f6,#ebd3f6); border:none;">
           <option *ngFor="let opt of sortOptions" [ngValue]="opt">{{ opt }}</option>
         </select>
       </label>
@@ -90,8 +91,8 @@
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
       <a *ngFor="let p of filtered()"
          [routerLink]="['/programs', p.slug]"
-         class="block bg-white border border-neutral-200 rounded-2xl overflow-hidden hover:shadow-md transition">
-        <div class="aspect-[4/3] bg-neutral-100 overflow-hidden">
+         class="block bg-white rounded-2xl overflow-hidden ring-1 ring-neutral-100 hover:ring-neutral-200 hover:shadow-[0_4px_24px_-8px_rgba(0,0,0,0.08)] transition">
+        <div class="aspect-[16/10] bg-neutral-100 overflow-hidden">
           <img [src]="p.image" [alt]="p.title" class="w-full h-full object-cover" loading="lazy" />
         </div>
         <div class="p-4 flex flex-col gap-2">
