@@ -42,20 +42,29 @@
           <span class="font-semibold text-sm text-neutral-700">Payoneer</span>
         </div>
       </div>
-      <!-- Right: image collage -->
-      <div class="flex-1 relative hidden lg:block">
-        <div class="grid grid-cols-2 gap-3 max-w-md ml-auto">
-          <div class="rounded-2xl overflow-hidden h-44">
-            <img src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=400&h=300&fit=crop" alt="" class="w-full h-full object-cover" />
+      <!-- Right: photo collage (Figma node 814:29282 — two columns, 2 + 3 portraits) -->
+      <div class="hidden lg:block flex-shrink-0">
+        <div class="flex gap-4">
+          <!-- Left column: 2 photos, offset down -->
+          <div class="flex flex-col gap-4 pt-[88px]">
+            <div class="rounded-2xl overflow-hidden w-[180px] h-[180px]">
+              <img src="https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?w=400&h=400&fit=crop" alt="" class="w-full h-full object-cover" />
+            </div>
+            <div class="rounded-2xl overflow-hidden w-[180px] h-[180px]">
+              <img src="https://images.unsplash.com/photo-1536240478700-b869070f9279?w=400&h=400&fit=crop" alt="" class="w-full h-full object-cover" />
+            </div>
           </div>
-          <div class="rounded-2xl overflow-hidden h-44">
-            <img src="https://images.unsplash.com/photo-1478737270239-2f02b77fc618?w=400&h=300&fit=crop" alt="" class="w-full h-full object-cover" />
-          </div>
-          <div class="rounded-2xl overflow-hidden h-44">
-            <img src="https://images.unsplash.com/photo-1536240478700-b869070f9279?w=400&h=300&fit=crop" alt="" class="w-full h-full object-cover" />
-          </div>
-          <div class="rounded-2xl overflow-hidden h-44">
-            <img src="https://images.unsplash.com/photo-1560250097-0b93528c311a?w=400&h=300&fit=crop" alt="" class="w-full h-full object-cover" />
+          <!-- Right column: 3 photos -->
+          <div class="flex flex-col gap-4">
+            <div class="rounded-2xl overflow-hidden w-[180px] h-[180px]">
+              <img src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=400&h=400&fit=crop" alt="" class="w-full h-full object-cover" />
+            </div>
+            <div class="rounded-2xl overflow-hidden w-[180px] h-[180px]">
+              <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400&h=400&fit=crop" alt="" class="w-full h-full object-cover" />
+            </div>
+            <div class="rounded-2xl overflow-hidden w-[180px] h-[180px]">
+              <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=400&h=400&fit=crop" alt="" class="w-full h-full object-cover" />
+            </div>
           </div>
         </div>
       </div>
@@ -99,7 +108,7 @@
         </h2>
         <div class="mt-8 space-y-5">
           <div *ngFor="let step of talentSteps" class="flex gap-4">
-            <div class="w-8 h-8 rounded-full bg-green-600 text-white flex items-center justify-center text-sm flex-shrink-0">✓</div>
+            <img src="icons/icons8-ok 6.svg" alt="" class="w-6 h-6 mt-1 flex-shrink-0" />
             <div>
               <div class="font-semibold text-neutral-900 text-sm">{{ step.title }}</div>
               <div class="text-neutral-600 text-sm mt-0.5">{{ step.desc }}</div>
@@ -249,39 +258,40 @@
 <!-- ============================================================
      FOR CLIENTS – "Find experts your way!"
      ============================================================ -->
-<section class="py-16 bg-neutral-900 text-white">
-  <div class="max-w-[1320px] mx-auto px-6">
-    <span class="text-sm font-semibold text-purple-400">For Clients</span>
-    <h2 class="mt-2 text-3xl lg:text-4xl font-bold leading-tight">Find experts your way!</h2>
+<section class="py-20 text-white relative overflow-hidden bg-gradient-to-br from-[#3d1d6e] via-[#5b2a8e] to-[#7e3aa6]">
+  <div class="absolute inset-0 opacity-30 pointer-events-none" style="background: radial-gradient(60% 50% at 20% 30%, #b15ce2 0%, transparent 60%), radial-gradient(60% 50% at 85% 80%, #2c1259 0%, transparent 60%);"></div>
+  <div class="max-w-[1320px] mx-auto px-6 relative">
+    <span class="text-xs uppercase tracking-[0.2em] font-semibold text-purple-200/90" style="font-family: 'Poppins', sans-serif;">For Clients</span>
+    <h2 class="mt-3 text-3xl lg:text-4xl font-semibold leading-tight tracking-tight" style="font-family: 'Poppins', sans-serif;">Find experts your way!</h2>
     <p class="mt-3 text-neutral-400 text-base max-w-lg leading-relaxed">
       Work with our network of independent professionals and get work done — from quick turnarounds to big transformations.
     </p>
     <div class="mt-10 grid grid-cols-1 md:grid-cols-3 gap-6">
       <!-- Card 1 -->
-      <div class="bg-neutral-800 rounded-2xl p-6 hover:bg-neutral-700 transition-colors">
+      <div class="bg-white/8 backdrop-blur-md ring-1 ring-white/15 rounded-2xl p-6 hover:bg-white/15 transition-colors">
         <h3 class="font-semibold text-lg">Post a gig and hire for your project</h3>
         <p class="mt-2 text-neutral-400 text-sm">Describe it, review proposals, and hire.</p>
         <div class="mt-4 flex items-center gap-2 text-sm text-purple-400 font-medium">
           <a href="https://v2.mereka.dev/experiences" class="hover:underline">HIRE AN XC</a>
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          <img src="icons/arrow_forward.svg" alt="" class="w-5 h-5 invert" />
         </div>
       </div>
       <!-- Card 2 -->
-      <div class="bg-neutral-800 rounded-2xl p-6 hover:bg-neutral-700 transition-colors">
+      <div class="bg-white/8 backdrop-blur-md ring-1 ring-white/15 rounded-2xl p-6 hover:bg-white/15 transition-colors">
         <h3 class="font-semibold text-lg">Browse and buy Services</h3>
         <p class="mt-2 text-neutral-400 text-sm">Ready-made service packages you can purchase instantly.</p>
         <div class="mt-4 flex items-center gap-2 text-sm text-purple-400 font-medium">
           <a href="https://v2.mereka.dev/experiences" class="hover:underline">Service Listings</a>
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          <img src="icons/arrow_forward.svg" alt="" class="w-5 h-5 invert" />
         </div>
       </div>
       <!-- Card 3 -->
-      <div class="bg-neutral-800 rounded-2xl p-6 hover:bg-neutral-700 transition-colors">
+      <div class="bg-white/8 backdrop-blur-md ring-1 ring-white/15 rounded-2xl p-6 hover:bg-white/15 transition-colors">
         <h3 class="font-semibold text-lg">Get advice from Experts</h3>
         <p class="mt-2 text-neutral-400 text-sm">Book 1-on-1 consultations and mentoring sessions.</p>
         <div class="mt-4 flex items-center gap-2 text-sm text-purple-400 font-medium">
           <a href="https://v2.mereka.dev/expertise" class="hover:underline">Advisory Services</a>
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          <img src="icons/arrow_forward.svg" alt="" class="w-5 h-5 invert" />
         </div>
       </div>
     </div>
