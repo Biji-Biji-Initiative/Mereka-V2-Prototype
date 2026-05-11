@@ -117,56 +117,95 @@
 </section>
 
 <!-- ====================================================================
-     COMMON QUESTIONS — accordion
+     COMMON QUESTIONS — accordion (Figma node 8351-3960, FAQ block)
      ==================================================================== -->
-<section class="bg-white">
-  <div class="max-w-[820px] mx-auto px-6 pb-16">
-    <h2 class="text-center mb-6 text-[#1a1623]"
-        style="font-family:'Poppins',sans-serif; font-weight:700; font-size:28px; line-height:38px; letter-spacing:-0.005em;">
+<section class="bg-[#eef1f7]">
+  <div class="max-w-[1000px] mx-auto px-6 py-16">
+    <h2 class="text-center text-[#1a1623]"
+        style="font-family:'Poppins',sans-serif; font-weight:700; font-size:36px; line-height:44px; letter-spacing:-0.01em;">
       Common Questions
     </h2>
-    <ul class="divide-y divide-neutral-200 border border-neutral-200 rounded-2xl overflow-hidden bg-white">
-      <li *ngFor="let f of faqs; let i = index">
+    <p class="text-center mt-2 text-[#7b7b7b]" style="font-family:'Lato',sans-serif; font-size:18px; line-height:28px;">
+      and the answers, of course.
+      <a href="mailto:hello@mereka.io" class="text-[#1e80ff] font-bold ml-1 hover:underline">Still not sure? Email us</a>
+    </p>
+
+    <ul class="mt-10 flex flex-col gap-3">
+      <li *ngFor="let f of faqs; let i = index"
+          class="bg-[#f5f6f7] rounded-2xl overflow-hidden transition">
         <button type="button" (click)="toggleFaq(i)"
-                class="w-full flex items-center justify-between text-left px-5 py-4 hover:bg-neutral-50 transition"
+                class="w-full flex items-center justify-between text-left px-6 py-4 hover:bg-[#eaecef] transition"
                 style="font-family:'Lato',sans-serif;">
-          <span class="text-[16px] text-[#1a1623]" style="font-weight:700; line-height:24px;">{{ f.q }}</span>
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-               class="text-neutral-500 transition-transform"
+          <span class="text-[17px] text-[#1a1623]" style="font-weight:700; line-height:26px;">{{ f.q }}</span>
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+               class="text-neutral-600 transition-transform shrink-0"
                [class.rotate-180]="openFaq() === i">
             <polyline points="6 9 12 15 18 9"/>
           </svg>
         </button>
-        <div *ngIf="openFaq() === i" class="px-5 pb-5 text-[#7b7b7b]" style="font-family:'Lato',sans-serif; font-size:15px; line-height:24px;">
+        <div *ngIf="openFaq() === i || allOpen()"
+             class="px-6 pb-5 -mt-1 text-[#3b3b3b]"
+             style="font-family:'Lato',sans-serif; font-size:15px; line-height:24px;">
           {{ f.a }}
         </div>
       </li>
     </ul>
+
+    <div class="flex justify-center mt-8">
+      <button type="button" (click)="loadAllFaqs()"
+              class="rounded-full px-6 py-2.5 bg-white border border-[#dcdee3] text-[#1a1623] hover:bg-neutral-50 transition text-[15px]"
+              style="font-family:'Lato',sans-serif; font-weight:600;">
+        {{ allOpen() ? 'Collapse All' : 'Load All' }}
+      </button>
+    </div>
   </div>
 </section>
 
 <!-- ====================================================================
-     CTA BANNER — "Not sure where to begin?"
+     CTA BANNER — "Not sure where to begin?" (Figma — HRD CORP Claimable)
      ==================================================================== -->
-<section class="bg-white">
-  <div class="max-w-[1320px] mx-auto px-6 pb-16">
-    <div class="relative rounded-3xl overflow-hidden text-white"
-         style="background: linear-gradient(110deg, #1a1623 0%, #2b1e44 45%, #3f2a78 75%, #1a1623 100%);">
-      <div class="grid grid-cols-1 lg:grid-cols-[1fr_auto] gap-6 items-center px-8 py-10 lg:px-12 lg:py-12">
-        <div>
-          <h3 style="font-family:'Poppins',sans-serif; font-weight:700; font-size:32px; line-height:40px; letter-spacing:-0.01em;">
+<section class="bg-[#eef1f7]">
+  <div class="max-w-[1320px] mx-auto px-6 pb-20">
+    <div class="relative rounded-[28px] overflow-hidden text-white"
+         style="background: linear-gradient(115deg, #2c2c40 0%, #2f4f74 50%, #1d5470 100%);">
+      <div class="grid grid-cols-1 lg:grid-cols-[1fr_auto] gap-6 items-center px-10 py-14 lg:px-16 lg:py-16">
+        <div class="text-center lg:text-left">
+          <h3 style="font-family:'Poppins',sans-serif; font-weight:700; font-size:44px; line-height:54px; letter-spacing:-0.01em;">
             Not sure where to begin?
           </h3>
-          <p class="mt-2 text-white/80 max-w-md" style="font-family:'Lato',sans-serif; font-size:16px; line-height:24px;">
-            Tell us about you — we'll match you with the right program in 60 seconds.
+          <p class="mt-3 text-white/90 max-w-md mx-auto lg:mx-0"
+             style="font-family:'Lato',sans-serif; font-size:18px; line-height:28px;">
+            Consult our expert team and we'll help you find the right programme.
           </p>
-          <a routerLink="/dashboard"
-             class="inline-flex items-center gap-2 mt-6 bg-white text-[#1a1623] rounded-full px-6 py-3 text-[15px] hover:bg-white/90"
-             style="font-family:'Lato',sans-serif; font-weight:700;">
-            ✦ Find my program
-          </a>
+          <button type="button"
+                  class="inline-flex items-center gap-3 mt-8 bg-[#1a1623] text-white rounded-full pl-2 pr-6 py-2 hover:bg-[#2a2436] transition"
+                  style="font-family:'Lato',sans-serif; font-weight:600;">
+            <span class="inline-block w-10 h-10 rounded-full overflow-hidden bg-white/20 ring-2 ring-white/40">
+              <img src="https://api.dicebear.com/9.x/avataaars/svg?seed=MerekaAdvisor"
+                   alt="" class="w-full h-full object-cover" />
+            </span>
+            <span class="text-[15px]">Get in touch with our team</span>
+          </button>
         </div>
-        <img src="img/programs/cta-banner.jpg" alt="" class="hidden lg:block w-[280px] h-[180px] object-cover rounded-2xl" />
+        <!-- HRD Corp Claimable circular seal -->
+        <div class="flex justify-center lg:justify-end">
+          <div class="relative w-28 h-28 lg:w-32 lg:h-32 rounded-full bg-white shadow-lg flex items-center justify-center">
+            <svg viewBox="0 0 200 200" class="absolute inset-0 w-full h-full">
+              <defs>
+                <path id="hrdCircle" d="M 100, 100 m -78, 0 a 78,78 0 1,1 156,0 a 78,78 0 1,1 -156,0" fill="none" />
+              </defs>
+              <text fill="#1a1623" font-family="Poppins, sans-serif" font-size="14" font-weight="700"
+                    letter-spacing="2">
+                <textPath href="#hrdCircle" startOffset="0">★ HRDCORP CLAIMABLE ★ HRDCORP CLAIMABLE ★ HRDCORP CLAIMABLE</textPath>
+              </text>
+            </svg>
+            <div class="relative text-center leading-tight">
+              <div class="text-[#1e64c8]" style="font-family:'Poppins',sans-serif; font-weight:800; font-size:18px; letter-spacing:-0.02em;">HRD</div>
+              <div class="text-white bg-[#cf2026] rounded-sm px-1.5 mt-0.5 inline-block" style="font-family:'Poppins',sans-serif; font-weight:800; font-size:11px;">CORP</div>
+              <div class="text-[#1e64c8] mt-1" style="font-family:'Poppins',sans-serif; font-weight:800; font-size:14px; letter-spacing:0.1em;">CLAIMABLE</div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>

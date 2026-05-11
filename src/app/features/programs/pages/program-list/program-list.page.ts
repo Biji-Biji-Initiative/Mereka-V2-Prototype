@@ -60,12 +60,26 @@ export class ProgramListPage {
   });
 
   readonly faqs: FaqItem[] = [
-    { q: 'How long does each program take?', a: 'Programs range from 2-week sprints to 16-week cohorts. The duration is shown on each program card and the detail page.' },
-    { q: 'What is the difference between a Program and a Course?', a: 'A Course is one self-paced unit. A Program is a guided journey that bundles courses, live experiences, and 1:1 expertise into a single outcome.' },
-    { q: 'Can I get a scholarship or financial aid?', a: 'Selected programs offer Mereka Scholar slots. Look for the “Scholar-eligible” badge on the program card or apply via your dashboard once enrolled.' },
-    { q: 'How are programs delivered — online or in person?', a: 'Most programs are hybrid: self-paced LMS content + scheduled live sessions on Zoom + optional in-person meetups at participating hubs.' },
-    { q: 'What happens after I complete a program?', a: 'You receive a Mereka-verified certificate, join the program’s alumni community, and unlock follow-on 1:1 expertise sessions with your mentors.' },
+    { q: 'Do I need prior knowledge to join a programme?', a: 'No. Mereka programmes are beginner-friendly by default. Each programme lists a "Recommended for" section on its detail page — if you fall outside that, our team will help you pick the right starting point.' },
+    { q: 'How long will I have access to the materials?', a: 'You keep lifetime access to all course videos, slide decks, recordings of live sessions and your peer cohort channel even after the programme ends.' },
+    { q: 'Is the programme fully remote or in-person?', a: 'Most programmes are hybrid — self-paced LMS content plus scheduled live sessions on Zoom. A handful (e.g. Climate Walks, Image Gen Crash Course) include optional in-person meetups at partner hubs.' },
+    { q: 'Can I learn at my own pace?', a: "Yes. Self-paced lessons are released on day one and you can complete them on your own schedule. Live sessions and mentor 1:1s are timeboxed and shown on your dashboard calendar." },
+    { q: 'How long does each programme take?', a: 'Programmes range from a 2-week sprint to a 16-week cohort. The exact duration is on each programme card and the detail page.' },
+    { q: 'What is the difference between a Programme and a Course?', a: 'A Course is one self-paced unit. A Programme is a guided journey that bundles courses, live experiences and 1:1 expertise into a single outcome and certificate.' },
+    { q: 'Can I get a scholarship or financial aid?', a: 'Selected programmes offer Mereka Scholar slots. Look for the "Scholar-eligible" badge on the programme card or apply via your dashboard after signing up.' },
+    { q: 'Is this programme HRD Corp claimable?', a: 'Most cohort programmes are HRD Corp Claimable for Malaysian employers. The badge appears on the programme card, and our team can prep the documentation on request.' },
+    { q: 'What happens after I complete a programme?', a: 'You receive a Mereka-verified certificate, join the programme alumni community, and unlock follow-on 1:1 expertise sessions with your mentors.' },
   ];
   readonly openFaq = signal<number>(-1);
-  toggleFaq(i: number): void { this.openFaq.update((o) => (o === i ? -1 : i)); }
+  readonly allOpenSig = signal<boolean>(false);
+  allOpen(): boolean { return this.allOpenSig(); }
+  toggleFaq(i: number): void {
+    if (this.allOpenSig()) this.allOpenSig.set(false);
+    this.openFaq.update((o) => (o === i ? -1 : i));
+  }
+  loadAllFaqs(): void {
+    // "Load All" toggles between expanding everything vs collapsing.
+    this.allOpenSig.update((v) => !v);
+    this.openFaq.set(this.allOpenSig() ? -2 : -1); // -2 sentinel ignored; template uses allOpenSig
+  }
 }

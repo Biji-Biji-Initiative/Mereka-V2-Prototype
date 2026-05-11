@@ -9,6 +9,12 @@ img, svg { display: block; max-width: 100%; }
 button { font-family: inherit; cursor: pointer; }
 a { color: inherit; text-decoration: none; }
 
+/* No bullet markers on any UL/OL — Tailwind preflight is disabled site-wide,
+   so browser default list-style would otherwise leak through (see issue with
+   Common Questions and footer columns rendering bulleted). */
+ul, ol { list-style: none; padding-left: 0; margin: 0; }
+li::marker { content: ''; }
+
 :root {
   --mereka-bg: #f9fafb;
   --mereka-card: #ffffff;
