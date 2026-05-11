@@ -1,71 +1,104 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { CommonModule, DatePipe } from '@angular/common';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { switchMap } from 'rxjs';
+import { map, switchMap, of } from 'rxjs';
 import { MarketplaceService } from '../../marketplace/services/marketplace.service';
+
+interface HubProgramme {
+  id: string;
+  slug: string;
+  title: string;
+  description: string;
+  badgeColor: string;
+  duration: string;
+  format: string;
+  location: string;
+  audience: string[];
+  certificates: number;
+}
+
+interface ExploreProgramme {
+  slug: string;
+  city: string;
+  rating: number;
+  title: string;
+  blurb: string;
+  price: string;
+  image: string;
+  featured?: boolean;
+}
+
+type Tab = 'profile' | 'programmes' | 'portfolio' | 'gallery';
 
 @Component({
   selector: 'mereka-hub-detail',
   standalone: true,
   imports: [CommonModule, DatePipe, RouterLink],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  template: `
-    <ng-container *ngIf="hub() as h; else loading">
-      <div class="bg-neutral-50">
-        <div class="aspect-[16/5] bg-neutral-200 max-h-72"><img [src]="h.banner" [alt]="h.name" class="w-full h-full object-cover" /></div>
-        <div class="max-w-[1100px] mx-auto px-6 -mt-12 relative">
-          <div class="bg-white border border-neutral-200 rounded-lg p-6 flex items-start gap-5">
-            <img [src]="h.logo" [alt]="h.name" class="w-20 h-20 rounded-full ring-2 ring-white bg-white object-cover" />
-            <div class="flex-1 min-w-0">
-              <h1 class="text-2xl font-semibold">{{ h.name }}</h1>
-              <p class="text-sm text-neutral-500">{{ h.location.city }}, {{ h.location.country }} · since {{ h.founded | date: 'y' }}</p>
-              <p class="mt-2 text-neutral-700">{{ h.tagline }}</p>
-            </div>
-            <button class="px-4 py-2 rounded-full bg-neutral-900 text-white text-sm shrink-0">Follow hub</button>
-          </div>
-
-          <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mt-6">
-            <div class="bg-white border border-neutral-200 rounded-lg p-4 text-center">
-              <div class="text-2xl font-semibold">{{ h.programCount }}</div>
-              <div class="text-xs text-neutral-500">Programs</div>
-            </div>
-            <div class="bg-white border border-neutral-200 rounded-lg p-4 text-center">
-              <div class="text-2xl font-semibold">{{ h.experienceCount }}</div>
-              <div class="text-xs text-neutral-500">Experiences</div>
-            </div>
-            <div class="bg-white border border-neutral-200 rounded-lg p-4 text-center">
-              <div class="text-2xl font-semibold">{{ h.expertiseCount }}</div>
-              <div class="text-xs text-neutral-500">Expertise</div>
-            </div>
-            <div class="bg-white border border-neutral-200 rounded-lg p-4 text-center">
-              <div class="text-2xl font-semibold">{{ h.memberCount | number }}</div>
-              <div class="text-xs text-neutral-500">Members</div>
-            </div>
-          </div>
-
-          <section class="bg-white border border-neutral-200 rounded-lg p-6 mt-6">
-            <h2 class="font-semibold mb-2">About</h2>
-            <p class="text-neutral-700 leading-relaxed">{{ h.about }}</p>
-          </section>
-
-          <section class="bg-white border border-neutral-200 rounded-lg p-6 mt-6 mb-12">
-            <h2 class="font-semibold mb-3">Browse this hub</h2>
-            <div class="grid grid-cols-2 md:grid-cols-3 gap-3 text-sm">
-              <a [routerLink]="['/programs']" class="px-3 py-2 rounded border border-neutral-200 hover:bg-neutral-50">📚 Programs by {{ h.name }}</a>
-              <a [routerLink]="['/experiences']" class="px-3 py-2 rounded border border-neutral-200 hover:bg-neutral-50">🎟️ Experiences by {{ h.name }}</a>
-              <a [routerLink]="['/expertise']" class="px-3 py-2 rounded border border-neutral-200 hover:bg-neutral-50">🧑‍🏫 Expertise by {{ h.name }}</a>
-              <a [routerLink]="['/gigs']" class="px-3 py-2 rounded border border-neutral-200 hover:bg-neutral-50">💼 Gigs from {{ h.name }}</a>
-            </div>
-          </section>
-        </div>
-      </div>
-    </ng-container>
-    <ng-template #loading><div class="max-w-[1320px] mx-auto px-6 py-24 text-center text-neutral-500">Loading hub…</div></ng-template>
-  `,
+  templateUrl: './hub-detail.page.html',
 })
 export class HubDetailPage {
   private readonly api = inject(MarketplaceService);
   private readonly route = inject(ActivatedRoute);
-  readonly hub = toSignal(this.route.paramMap.pipe(switchMap((p) => this.api.hubBySlug(p.get('slug') ?? ''))), { initialValue: null });
+
+  readonly hub = toSignal(
+    this.route.paramMap.pipe(switchMap((p) => this.api.hubBySlug(p.get('slug') ?? ''))),
+    { initialValue: null },
+  );
+
+  readonly tab = signal<Tab>('programmes');
+  readonly tabs: { id: Tab; label: string }[] = [
+    { id: 'profile', label: 'Profile' },
+    { id: 'programmes', label: 'Programmes' },
+    { id: 'portfolio', label: 'Portfolio' },
+    { id: 'gallery', label: 'Gallery' },
+  ];
+
+  // Programmes this hub offers — driven by the visible Figma row pattern
+  readonly programmes: HubProgramme[] = [
+    {
+      id: 'ai4u', slug: 'ai4u', title: 'AI4U Programme',
+      description: 'AI4U is a FREE program dedicated to equipping 10,000 Malaysians and Indonesians with practical, real-world AI skills to boost employability, entrepreneurship, and digital resilience.',
+      badgeColor: '#0ea5e9',
+      duration: '12 weeks', format: 'Hybrid',
+      location: 'Lot 1C, Level G1 (A4 Entrance) Publika Shopping Gallery, KL',
+      audience: ['Undergraduates', 'Early Career'],
+      certificates: 4,
+    },
+    {
+      id: 'ai-for-my-future', slug: 'ai-for-my-future', title: 'AI for My Future',
+      description: 'AI4U is a FREE program dedicated to equipping 10,000 Malaysians and Indonesians with practical, real-world AI skills to boost employability, entrepreneurship, and digital resilience.',
+      badgeColor: '#0ea5e9',
+      duration: '12 weeks', format: 'Hybrid',
+      location: 'Lot 1C, Level G1 (A4 Entrance) Publika Shopping Gallery, KL',
+      audience: ['Undergraduates', 'Early Career'],
+      certificates: 4,
+    },
+  ];
+
+  readonly explore: ExploreProgramme[] = [
+    {
+      slug: 'ai4u', city: 'Kuala Lumpur, Malaysia', rating: 4.3,
+      title: 'AI4U Programme',
+      blurb: 'Leverage generative AI to develop marketing strategies, attract clients, publish content and convert leads',
+      price: 'RM49.90 / month',
+      image: 'img/programs/card-ai4u.jpg',
+      featured: true,
+    },
+    {
+      slug: 'dynamous-ai-mastery', city: 'Kuala Lumpur, Malaysia', rating: 4.3,
+      title: 'Dynamous AI Mastery',
+      blurb: 'Use AI to increase accuracy of financial projections. Automate data analysis, reporting and financial tracking',
+      price: 'RM749.90 / year',
+      image: 'img/programs/card-product.jpg',
+    },
+    {
+      slug: 'ai-fluency-for-beginners', city: 'Kuala Lumpur, Malaysia', rating: 4.3,
+      title: 'AI Fluency for Beginners',
+      blurb: 'Learn to embed AI in project management workflows. Convert support tickets into tasks and generate weekly reports with AI.',
+      price: 'FREE',
+      image: 'img/programs/card-copilot.jpg',
+    },
+  ];
 }

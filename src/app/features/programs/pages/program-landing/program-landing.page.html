@@ -1,0 +1,250 @@
+<!-- Top thin brand bar -->
+<section class="bg-[#f5f6f7] border-b border-neutral-200">
+  <div class="max-w-[1320px] mx-auto px-6 py-3 flex items-center justify-center gap-10 text-xs text-neutral-500"
+       style="font-family:'Poppins',sans-serif; font-weight:600; letter-spacing:0.06em;">
+    <span class="px-2 py-1 rounded-full bg-white border border-neutral-200 text-[#1a1623]">Marketplace</span>
+    <span *ngFor="let b of partnerBrands" class="hidden md:inline-block">{{ b }}</span>
+  </div>
+</section>
+
+<!-- HERO -->
+<section class="bg-white">
+  <div class="max-w-[1320px] mx-auto px-6 pt-16 pb-12 grid grid-cols-1 lg:grid-cols-[1fr_auto] gap-12 items-center">
+    <div class="text-center lg:text-left max-w-2xl">
+      <p class="text-sm text-neutral-500 mb-2" style="font-family:'Lato',sans-serif;">Welcome to</p>
+      <h1 class="text-[#1a1623]"
+          style="font-family:'Poppins',sans-serif; font-weight:800; font-size:64px; line-height:72px; letter-spacing:-0.03em;">
+        AI4U Program
+      </h1>
+      <p class="mt-4 text-[#3b3b3b] max-w-lg mx-auto lg:mx-0"
+         style="font-family:'Lato',sans-serif; font-size:16px; line-height:24px;">
+        AI4U is a FREE program dedicated to equipping 10,000 Malaysians and Indonesians with practical, real-world AI skills to boost employability, entrepreneurship, and digital resilience.
+      </p>
+      <div class="flex justify-center lg:justify-start gap-3 mt-6">
+        <button class="rounded-full px-5 py-2.5 text-sm bg-white border border-neutral-300 text-[#1a1623] hover:bg-neutral-50"
+                style="font-family:'Lato',sans-serif; font-weight:700;">Learn More</button>
+        <button class="rounded-full px-5 py-2.5 text-sm bg-[#1a1623] text-white hover:bg-[#2a2436]"
+                style="font-family:'Lato',sans-serif; font-weight:700;">Join Program</button>
+      </div>
+    </div>
+
+    <!-- Hero photo cluster -->
+    <div class="hidden lg:flex gap-3">
+      <div class="flex flex-col gap-3 pt-12">
+        <img *ngFor="let p of heroPhotos.slice(0,2)" [src]="p.src" class="w-[180px] h-[180px] object-cover rounded-2xl" alt="" />
+      </div>
+      <div class="flex flex-col gap-3">
+        <img *ngFor="let p of heroPhotos.slice(2,4)" [src]="p.src" class="w-[180px] h-[180px] object-cover rounded-2xl" alt="" />
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROGRAM DETAILS -->
+<section class="bg-white">
+  <div class="max-w-[1320px] mx-auto px-6 pb-12">
+    <h2 class="text-[#1a1623] text-[28px] mb-5"
+        style="font-family:'Poppins',sans-serif; font-weight:700;">Program Details</h2>
+    <dl class="bg-white rounded-xl border border-neutral-200 overflow-hidden max-w-3xl">
+      <div class="grid grid-cols-[200px_1fr] items-center px-5 py-4 border-b border-neutral-100">
+        <dt class="text-[11px] uppercase tracking-widest text-neutral-500" style="font-family:'Poppins',sans-serif; font-weight:600;">Duration</dt>
+        <dd class="text-[#1a1623]" style="font-family:'Lato',sans-serif; font-weight:600;">12 weeks</dd>
+      </div>
+      <div class="grid grid-cols-[200px_1fr] items-center px-5 py-4 border-b border-neutral-100">
+        <dt class="text-[11px] uppercase tracking-widest text-neutral-500" style="font-family:'Poppins',sans-serif; font-weight:600;">Format</dt>
+        <dd class="text-[#1a1623]" style="font-family:'Lato',sans-serif; font-weight:600;">Hybrid</dd>
+      </div>
+      <div class="grid grid-cols-[200px_1fr] items-center px-5 py-4 border-b border-neutral-100">
+        <dt class="text-[11px] uppercase tracking-widest text-neutral-500" style="font-family:'Poppins',sans-serif; font-weight:600;">Location</dt>
+        <dd class="text-[#1a1623]" style="font-family:'Lato',sans-serif; font-weight:600;">Lot 1C, Level G1 (A4 Entrance) Publika Shopping Gallery, KL</dd>
+      </div>
+      <div class="grid grid-cols-[200px_1fr] items-start px-5 py-4 border-b border-neutral-100">
+        <dt class="text-[11px] uppercase tracking-widest text-neutral-500" style="font-family:'Poppins',sans-serif; font-weight:600;">This program is for</dt>
+        <dd class="text-[#1a1623]" style="font-family:'Lato',sans-serif; font-weight:600;">
+          <div>Undergraduates</div><div>Early Career</div>
+        </dd>
+      </div>
+      <div class="grid grid-cols-[200px_1fr] items-center px-5 py-4">
+        <dt class="text-[11px] uppercase tracking-widest text-neutral-500" style="font-family:'Poppins',sans-serif; font-weight:600;">Certificates included</dt>
+        <dd class="text-[#0095ff]" style="font-family:'Lato',sans-serif; font-weight:700;">4</dd>
+      </div>
+    </dl>
+    <button class="mt-5 rounded-full px-6 py-2.5 text-sm bg-[#1a1623] text-white hover:bg-[#2a2436]"
+            style="font-family:'Lato',sans-serif; font-weight:700;">Sign Up</button>
+  </div>
+</section>
+
+<!-- BY THE END outcomes -->
+<section class="bg-white">
+  <div class="max-w-[1100px] mx-auto px-6 pb-14 text-center">
+    <h2 class="text-[#1a1623] text-[34px]"
+        style="font-family:'Poppins',sans-serif; font-weight:700;">By the end of the program, you learn to</h2>
+    <ul class="mt-6 flex flex-wrap justify-center gap-3">
+      <li *ngFor="let o of outcomes"
+          class="inline-flex items-center gap-2 rounded-full bg-white border border-neutral-200 px-4 py-2 text-sm text-[#1a1623]"
+          style="font-family:'Lato',sans-serif; font-weight:600;">
+        <span class="w-5 h-5 rounded-full bg-emerald-500 text-white text-[11px] inline-flex items-center justify-center">✓</span>
+        {{ o }}
+      </li>
+      <li class="inline-flex items-center text-sm text-neutral-500" style="font-family:'Lato',sans-serif;">And more!</li>
+    </ul>
+  </div>
+</section>
+
+<!-- INCLUDES (Course Modules / Experiences / Expertise) -->
+<section class="bg-[#eef5ff]">
+  <div class="max-w-[1320px] mx-auto px-6 py-16">
+    <h2 class="text-center text-[#1a1623] text-[32px] mb-2"
+        style="font-family:'Poppins',sans-serif; font-weight:700;">AI4U Program Includes</h2>
+    <p class="text-center text-[#3b3b3b] max-w-2xl mx-auto mb-10"
+       style="font-family:'Lato',sans-serif;">
+      Learn the essential concepts of artificial intelligence, including its history, various AI types, and the transformative potential of AI across industries. Gain insights into how AI enhances workplace efficiency.
+    </p>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+      <article *ngFor="let inc of includes" class="bg-white rounded-2xl p-6 ring-1 ring-neutral-100">
+        <header class="flex items-center justify-between mb-4">
+          <h3 class="text-[#1a1623]" style="font-family:'Poppins',sans-serif; font-weight:700; font-size:18px;">{{ inc.title }}</h3>
+          <span class="bg-amber-100 text-amber-800 rounded-full px-2 text-xs" style="font-family:'Lato',sans-serif; font-weight:700;">{{ inc.tag }}</span>
+        </header>
+        <ul class="flex flex-col gap-2 text-[13px]" style="font-family:'Lato',sans-serif;">
+          <li *ngFor="let it of inc.items" class="flex items-center gap-2 text-[#1a1623]">
+            <span class="w-4 h-4 rounded-sm bg-neutral-200"></span>
+            {{ it }}
+          </li>
+        </ul>
+      </article>
+    </div>
+    <div class="text-center mt-8">
+      <button class="rounded-full px-6 py-3 bg-[#0095ff] text-white" style="font-family:'Lato',sans-serif; font-weight:700;">Get Started for FREE</button>
+    </div>
+  </div>
+</section>
+
+<!-- ACCESS HANDS-ON -->
+<section class="bg-white">
+  <div class="max-w-[1320px] mx-auto px-6 py-16">
+    <h2 class="text-center text-[#1a1623] text-[32px] mb-2"
+        style="font-family:'Poppins',sans-serif; font-weight:700;">Access Hands-On Learning &amp; Certification</h2>
+    <p class="text-center text-[#3b3b3b] max-w-2xl mx-auto mb-10"
+       style="font-family:'Lato',sans-serif;">
+      Gain real-world skills through expert-led sessions and community support, designed to help you learn, apply, and get certified.
+    </p>
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
+      <article *ngFor="let h of handsOn" class="bg-[#f5f7fb] rounded-2xl p-5">
+        <span class="text-3xl" aria-hidden="true">{{ h.icon }}</span>
+        <h3 class="mt-3 text-[#1a1623]" style="font-family:'Poppins',sans-serif; font-weight:700; font-size:17px;">{{ h.title }}</h3>
+        <p class="mt-1 text-sm text-[#3b3b3b]" style="font-family:'Lato',sans-serif;">{{ h.body }}</p>
+      </article>
+    </div>
+
+    <!-- Google.org callout -->
+    <article class="bg-[#eef5ff] rounded-2xl p-8 mt-8 grid grid-cols-1 md:grid-cols-[1fr_auto] items-center gap-6">
+      <div>
+        <h3 class="text-[#1a1623] text-[24px] flex items-center gap-3" style="font-family:'Poppins',sans-serif; font-weight:700;">
+          Get certified by
+          <span class="inline-flex items-center text-[#4285F4]">G<span class="text-[#EA4335]">o</span><span class="text-[#FBBC05]">o</span><span class="text-[#4285F4]">g</span><span class="text-[#34A853]">l</span><span class="text-[#EA4335]">e</span><span class="text-[#1a1623] ml-1">.org</span></span>
+        </h3>
+        <ul class="mt-3 grid grid-cols-1 md:grid-cols-3 gap-3 text-sm" style="font-family:'Lato',sans-serif;">
+          <li class="flex items-start gap-2"><span class="w-2 h-2 mt-2 rounded-full bg-[#1a1623]"></span> Boost your resume or LinkedIn</li>
+          <li class="flex items-start gap-2"><span class="w-2 h-2 mt-2 rounded-full bg-[#1a1623]"></span> Showcase AI literacy to employers or clients</li>
+          <li class="flex items-start gap-2"><span class="w-2 h-2 mt-2 rounded-full bg-[#1a1623]"></span> Unlock deeper learning pathways</li>
+        </ul>
+        <button class="mt-4 rounded-full px-5 py-2 bg-white text-[#1a1623] border border-neutral-300 text-sm"
+                style="font-family:'Lato',sans-serif; font-weight:700;">Get certified by Google.org</button>
+      </div>
+      <div class="w-32 h-32 rounded-xl bg-white shadow-md flex items-center justify-center text-3xl">🎓</div>
+    </article>
+  </div>
+</section>
+
+<!-- Start your journey -->
+<section class="bg-[#eef5ff]">
+  <div class="max-w-[800px] mx-auto px-6 py-14 text-center">
+    <h2 class="text-[#1a1623] text-[32px]" style="font-family:'Poppins',sans-serif; font-weight:700;">Start your journey today!</h2>
+    <p class="mt-2 text-[#3b3b3b]" style="font-family:'Lato',sans-serif;">Gain practical skills, get certified, and lead the future of work.</p>
+    <button class="mt-6 rounded-full px-6 py-3 bg-[#1a1623] text-white" style="font-family:'Lato',sans-serif; font-weight:700;">Join Program</button>
+  </div>
+</section>
+
+<!-- EXPERTS -->
+<section class="bg-white">
+  <div class="max-w-[1320px] mx-auto px-6 py-16">
+    <h2 class="text-[#1a1623] text-[28px] mb-6" style="font-family:'Poppins',sans-serif; font-weight:700;">Learn From Experts In Their Field</h2>
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
+      <article *ngFor="let e of experts" class="bg-white rounded-2xl overflow-hidden ring-1 ring-neutral-100">
+        <div class="aspect-[4/5] bg-neutral-100 overflow-hidden">
+          <img [src]="e.image" [alt]="e.name" class="w-full h-full object-cover" />
+        </div>
+        <div class="p-4">
+          <h3 class="text-[#1a1623]" style="font-family:'Poppins',sans-serif; font-weight:700; font-size:16px;">{{ e.name }}</h3>
+          <p class="mt-1 text-sm text-[#5b5b66] line-clamp-4" style="font-family:'Lato',sans-serif;">{{ e.role }}</p>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- Pricing -->
+<section class="bg-white">
+  <div class="max-w-[1100px] mx-auto px-6 pb-16">
+    <h2 class="text-[#1a1623] text-[28px] mb-6" style="font-family:'Poppins',sans-serif; font-weight:700;">Simple, Transparent Pricing</h2>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+      <article class="bg-[#eef5ff] rounded-2xl p-7 ring-1 ring-blue-100">
+        <h3 class="text-[#1a1623] text-[22px]" style="font-family:'Poppins',sans-serif; font-weight:700;">1-Day AI Fundamentals</h3>
+        <p class="mt-2 text-[#0095ff] text-2xl font-bold" style="font-family:'Poppins',sans-serif;">
+          RM6,000.00 <span class="text-[#3b3b3b] line-through text-base font-normal ml-1">RM6,000</span>
+        </p>
+        <p class="mt-3 text-sm text-[#1a1623]" style="font-family:'Lato',sans-serif; font-weight:700;">What's included:</p>
+        <ul class="mt-2 text-sm text-[#1a1623] flex flex-col gap-1.5" style="font-family:'Lato',sans-serif;">
+          <li class="flex items-start gap-2"><span class="text-emerald-500 mt-0.5">●</span> Full access for up to 10 employees</li>
+          <li class="flex items-start gap-2"><span class="text-emerald-500 mt-0.5">●</span> +RM1,000 for extra employees</li>
+          <li class="flex items-start gap-2"><span class="text-emerald-500 mt-0.5">●</span> Lifetime access to course materials</li>
+          <li class="flex items-start gap-2"><span class="text-emerald-500 mt-0.5">●</span> Certificate of completion</li>
+        </ul>
+        <button class="mt-5 w-full rounded-full px-6 py-3 bg-[#0095ff] text-white" style="font-family:'Lato',sans-serif; font-weight:700;">Get Started</button>
+      </article>
+      <article class="bg-white rounded-2xl p-7 ring-1 ring-neutral-200">
+        <h3 class="text-[#1a1623] text-[22px]" style="font-family:'Poppins',sans-serif; font-weight:700;">Customised Training</h3>
+        <p class="mt-2 text-sm text-[#3b3b3b]" style="font-family:'Lato',sans-serif;">Get in touch with our team</p>
+        <p class="mt-4 text-sm text-[#1a1623]" style="font-family:'Lato',sans-serif; font-weight:700;">What's included:</p>
+        <ul class="mt-2 text-sm text-[#1a1623] flex flex-col gap-1.5" style="font-family:'Lato',sans-serif;">
+          <li class="flex items-start gap-2"><span class="text-emerald-500 mt-0.5">●</span> Free business consultation</li>
+          <li class="flex items-start gap-2"><span class="text-emerald-500 mt-0.5">●</span> Dedicated account manager</li>
+          <li class="flex items-start gap-2"><span class="text-emerald-500 mt-0.5">●</span> Packaged pricing</li>
+          <li class="flex items-start gap-2"><span class="text-emerald-500 mt-0.5">●</span> Custom AI prompt templates for your business</li>
+        </ul>
+        <button class="mt-5 w-full rounded-full px-6 py-3 bg-white border border-[#0095ff] text-[#0095ff]" style="font-family:'Lato',sans-serif; font-weight:700;">Contact Us</button>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="bg-[#eef5ff]">
+  <div class="max-w-[860px] mx-auto px-6 py-16">
+    <h2 class="text-center text-[#1a1623] text-[34px]"
+        style="font-family:'Poppins',sans-serif; font-weight:700;">FAQ</h2>
+    <ul class="mt-8 flex flex-col gap-3">
+      <li *ngFor="let f of faqs; let i = index"
+          class="bg-white rounded-xl overflow-hidden">
+        <button type="button" (click)="toggleFaq(i)" class="w-full flex items-center justify-between text-left px-5 py-4">
+          <span class="text-[#1a1623] text-[15px]" style="font-family:'Lato',sans-serif; font-weight:700;">{{ f.q }}</span>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+               class="text-neutral-500 transition-transform" [class.rotate-180]="openFaq() === i">
+            <polyline points="6 9 12 15 18 9"/>
+          </svg>
+        </button>
+        <div *ngIf="openFaq() === i" class="px-5 pb-4 text-sm text-[#3b3b3b]" style="font-family:'Lato',sans-serif;">
+          {{ f.a }}
+        </div>
+      </li>
+    </ul>
+    <div class="text-center mt-8">
+      <button class="rounded-full px-6 py-3 bg-[#1a1623] text-white" style="font-family:'Lato',sans-serif; font-weight:700;">Sign Up Today</button>
+    </div>
+    <p class="text-center text-xs text-neutral-500 mt-4" style="font-family:'Lato',sans-serif;">
+      This programme is part of the AI Opportunity Fund: Asia-Pacific, in collaboration with AVPN and supported by Google.org and the Asian Development Bank.
+    </p>
+  </div>
+</section>
