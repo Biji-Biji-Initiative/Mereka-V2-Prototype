@@ -1,0 +1,58 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci --no-audit --no-fund
+
+      # The repo is served at https://faizmereka.github.io/mereka-frontend-v2/,
+      # so the Angular base href must be /mereka-frontend-v2/.
+      - name: Build (production, /mereka-frontend-v2/ base href)
+        run: npx ng build --configuration production --base-href "/mereka-frontend-v2/"
+
+      # GitHub Pages serves a static site — there's no router rewrite. The standard
+      # workaround for client-side Angular routes is to copy index.html → 404.html
+      # so refreshes on /programs/ai4u/feed don't return a real 404.
+      - name: SPA fallback
+        run: cp dist/mereka-frontend-v2/browser/index.html dist/mereka-frontend-v2/browser/404.html
+
+      # Tell Jekyll not to touch _underscore files (we don't have any, but it's cheap insurance).
+      - name: Disable Jekyll
+        run: touch dist/mereka-frontend-v2/browser/.nojekyll
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist/mereka-frontend-v2/browser
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

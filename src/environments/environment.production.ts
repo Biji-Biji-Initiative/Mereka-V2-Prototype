@@ -1,6 +1,6 @@
 export const environment = {
   production: true,
-  useMocks: false,
+  useMocks: true, // GitHub Pages demo — flip to false when real backend is reachable
 
   apiUrl: 'https://api.mereka.io/api/v1',
   apiBaseUrl: 'https://api.mereka.io',
