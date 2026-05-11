@@ -1,4 +1,9 @@
-import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { map } from 'rxjs';
+import { AuthService } from '../../../../core/services/auth.service';
+import { EnrollmentStore } from '../../services/enrollment.store';
 import { CommonModule } from '@angular/common';
 
 interface Expert {
@@ -8,11 +13,39 @@ interface Expert {
 @Component({
   selector: 'mereka-program-landing',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, RouterLink],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './program-landing.page.html',
 })
 export class ProgramLandingPage {
+  private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
+  private readonly auth = inject(AuthService);
+  private readonly enrollment = inject(EnrollmentStore);
+
+  /** The slug from /programs/:slug/landing. Drives Join Program + Hub link. */
+  readonly slug = toSignal(this.route.paramMap.pipe(map((p) => p.get('slug') ?? '')), { initialValue: '' });
+  /** For the demo, all programmes on this prototype belong to the same hub. */
+  readonly hubSlug = 'bijibiji';
+  readonly hubName = 'Biji-Biji';
+
+  /** Already enrolled? Used to swap the CTA wording on the landing. */
+  readonly enrolled = (): boolean => this.enrollment.isEnrolled(this.slug());
+
+  joinProgram(): void {
+    const slug = this.slug();
+    if (!slug) return;
+    // Guests must sign in first; bounce through /auth/login with a redirect.
+    if (!this.auth.isLoggedIn()) {
+      this.router.navigate(['/auth/login'], {
+        queryParams: { redirect: '/programs/' + slug + '/feed' },
+      });
+      return;
+    }
+    this.enrollment.enroll(slug);
+    this.router.navigate(['/programs', slug, 'feed']);
+  }
+
   /* Hero collage photos */
   readonly heroPhotos = [
     { src: 'img/program-landing/hero-1.jpg', delta: 0 },

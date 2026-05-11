@@ -11,7 +11,11 @@
 <section class="bg-white">
   <div class="max-w-[1320px] mx-auto px-6 pt-16 pb-12 grid grid-cols-1 lg:grid-cols-[1fr_auto] gap-12 items-center">
     <div class="text-center lg:text-left max-w-2xl">
-      <p class="text-sm text-neutral-500 mb-2" style="font-family:'Lato',sans-serif;">Welcome to</p>
+      <p class="text-sm text-neutral-500 mb-2" style="font-family:'Lato',sans-serif;">
+        Welcome to
+        <span class="text-neutral-400">·</span>
+        <a [routerLink]="['/hubs', hubSlug]" class="text-[#0095ff] hover:underline" style="font-weight:600;">{{ hubName }}</a>
+      </p>
       <h1 class="text-[#1a1623]"
           style="font-family:'Poppins',sans-serif; font-weight:800; font-size:64px; line-height:72px; letter-spacing:-0.03em;">
         AI4U Program
@@ -23,8 +27,8 @@
       <div class="flex justify-center lg:justify-start gap-3 mt-6">
         <button class="rounded-full px-5 py-2.5 text-sm bg-white border border-neutral-300 text-[#1a1623] hover:bg-neutral-50"
                 style="font-family:'Lato',sans-serif; font-weight:700;">Learn More</button>
-        <button class="rounded-full px-5 py-2.5 text-sm bg-[#1a1623] text-white hover:bg-[#2a2436]"
-                style="font-family:'Lato',sans-serif; font-weight:700;">Join Program</button>
+        <button type="button" (click)="joinProgram()" class="rounded-full px-5 py-2.5 text-sm bg-[#1a1623] text-white hover:bg-[#2a2436]"
+                style="font-family:'Lato',sans-serif; font-weight:700;">{{ enrolled() ? "Open Programme" : "Join Program" }}</button>
       </div>
     </div>
 
@@ -69,7 +73,7 @@
         <dd class="text-[#0095ff]" style="font-family:'Lato',sans-serif; font-weight:700;">4</dd>
       </div>
     </dl>
-    <button class="mt-5 rounded-full px-6 py-2.5 text-sm bg-[#1a1623] text-white hover:bg-[#2a2436]"
+    <button type="button" (click)="joinProgram()" class="mt-5 rounded-full px-6 py-2.5 text-sm bg-[#1a1623] text-white hover:bg-[#2a2436]"
             style="font-family:'Lato',sans-serif; font-weight:700;">Sign Up</button>
   </div>
 </section>
@@ -163,7 +167,7 @@
   <div class="max-w-[800px] mx-auto px-6 py-14 text-center">
     <h2 class="text-[#1a1623] text-[32px]" style="font-family:'Poppins',sans-serif; font-weight:700;">Start your journey today!</h2>
     <p class="mt-2 text-[#3b3b3b]" style="font-family:'Lato',sans-serif;">Gain practical skills, get certified, and lead the future of work.</p>
-    <button class="mt-6 rounded-full px-6 py-3 bg-[#1a1623] text-white" style="font-family:'Lato',sans-serif; font-weight:700;">Join Program</button>
+    <button type="button" (click)="joinProgram()" class="mt-6 rounded-full px-6 py-3 bg-[#1a1623] text-white" style="font-family:'Lato',sans-serif; font-weight:700;">{{ enrolled() ? "Open Programme" : "Join Program" }}</button>
   </div>
 </section>
 
@@ -241,7 +245,7 @@
       </li>
     </ul>
     <div class="text-center mt-8">
-      <button class="rounded-full px-6 py-3 bg-[#1a1623] text-white" style="font-family:'Lato',sans-serif; font-weight:700;">Sign Up Today</button>
+      <button type="button" (click)="joinProgram()" class="rounded-full px-6 py-3 bg-[#1a1623] text-white" style="font-family:'Lato',sans-serif; font-weight:700;">Sign Up Today</button>
     </div>
     <p class="text-center text-xs text-neutral-500 mt-4" style="font-family:'Lato',sans-serif;">
       This programme is part of the AI Opportunity Fund: Asia-Pacific, in collaboration with AVPN and supported by Google.org and the Asian Development Bank.

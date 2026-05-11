@@ -1,4 +1,5 @@
 import { Routes } from '@angular/router';
+import { programAccessGuard } from './guards/program-access.guard';
 import { ProgramListPage } from './pages/program-list/program-list.page';
 import { ProgramDetailPage } from './pages/program-detail/program-detail.page';
 import { ProgramFeedTab } from './pages/program-detail/tabs/program-feed.tab';
@@ -31,6 +32,7 @@ export const PROGRAMS_ROUTES: Routes = [
   {
     path: ':slug',
     component: ProgramDetailPage,
+    canActivate: [programAccessGuard],
     children: [
       { path: '', pathMatch: 'full', redirectTo: 'feed' },
       { path: 'feed', component: ProgramFeedTab },
