@@ -1,0 +1,138 @@
+<div class="bg-neutral-50 min-h-screen">
+  <div class="max-w-[1320px] mx-auto px-6 py-8 grid grid-cols-12 gap-6">
+    <aside class="col-span-12 md:col-span-3 space-y-4">
+      <div class="bg-white border border-neutral-200 rounded-lg p-5">
+        <div class="text-xs uppercase tracking-wider text-neutral-400 mb-2">Personal</div>
+        <div class="font-semibold">{{ snapshot()?.user?.name || '—' }}</div>
+        <button class="text-xs text-primary-700 mt-1">View Profile →</button>
+        <div class="mt-4">
+          <div class="text-xs text-neutral-500 mb-1">Complete your profile</div>
+          <div class="h-1.5 bg-neutral-100 rounded-full overflow-hidden">
+            <div class="h-full bg-success" [style.width.%]="snapshot()?.user?.profileCompletion ?? 0"></div>
+          </div>
+          <div class="text-right text-xs text-neutral-500 mt-1">{{ snapshot()?.user?.profileCompletion ?? 0 }}%</div>
+        </div>
+      </div>
+      <div class="bg-white border border-neutral-200 rounded-lg p-5 space-y-2 text-sm">
+        <a routerLink="/dashboard" class="block px-3 py-1.5 rounded-md bg-neutral-100 font-medium">Dashboard</a>
+        <a routerLink="/programs" class="block px-3 py-1.5 rounded-md text-neutral-700 hover:bg-neutral-50">My Programmes</a>
+        <a routerLink="/programs/admin" class="block px-3 py-1.5 rounded-md text-neutral-700 hover:bg-neutral-50">Manage Programmes</a>
+        <a routerLink="/inbox" class="block px-3 py-1.5 rounded-md text-neutral-700 hover:bg-neutral-50">Inbox</a>
+      </div>
+      <div class="bg-white border border-neutral-200 rounded-lg p-5 text-sm">
+        <h4 class="font-semibold mb-3">Upcoming deadlines</h4>
+        <ul class="space-y-2">
+          <li *ngFor="let d of snapshot()?.upcomingDeadlines" class="flex items-start gap-2 text-xs">
+            <span class="text-error font-semibold tabular-nums">{{ d.deadline | date: 'MMM d' }}</span>
+            <a [routerLink]="['/programs', d.programSlug, 'curriculum']" class="text-neutral-700 hover:text-neutral-900 leading-snug">
+              {{ d.itemTitle }}
+              <span class="block text-[10px] text-neutral-400">in {{ d.programTitle }}</span>
+            </a>
+          </li>
+          <li *ngIf="(snapshot()?.upcomingDeadlines?.length ?? 0) === 0" class="text-neutral-500 text-xs">No upcoming deadlines.</li>
+        </ul>
+      </div>
+    </aside>
+    <main class="col-span-12 md:col-span-9 space-y-6">
+      <header class="flex items-baseline justify-between">
+        <h1 class="text-2xl font-semibold">Welcome to your dashboard, {{ firstName() }}</h1>
+        <div class="text-right text-sm">
+          <div class="text-neutral-500">Earned with Mereka</div>
+          <div class="text-lg font-semibold">{{ snapshot()?.earnings?.currency }} {{ (snapshot()?.earnings?.amount ?? 0) | number }}</div>
+        </div>
+      </header>
+      <section>
+        <h2 class="font-semibold mb-3">My Programmes</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <a *ngFor="let p of snapshot()?.enrolledPrograms" [routerLink]="['/programs', p.slug, 'curriculum']"
+             class="flex gap-4 bg-white border border-neutral-200 rounded-lg p-5 hover:shadow-sm transition">
+            <img [src]="p.coverImageUrl" [alt]="p.title" class="w-20 h-20 rounded-md object-cover shrink-0" />
+            <div class="flex-1 min-w-0">
+              <div class="text-xs text-neutral-500">{{ p.ownerHub.hubName }}</div>
+              <h3 class="font-medium truncate">{{ p.title }}</h3>
+              <p class="text-xs text-neutral-500 line-clamp-2 mt-1">{{ p.tagline }}</p>
+              <button class="inline-block mt-3 px-3 py-1 rounded-full bg-success text-white text-[11px] font-medium">Continue →</button>
+            </div>
+          </a>
+          <div *ngIf="(snapshot()?.enrolledPrograms?.length ?? 0) === 0" class="col-span-full text-center text-neutral-500 border border-dashed border-neutral-200 rounded-lg py-10">
+            You haven't joined any programs yet. <a routerLink="/programs" class="text-primary-700">Browse programs →</a>
+          </div>
+        </div>
+      </section>
+      <section class="rounded-lg bg-info/10 border border-info/20 p-5 flex gap-4 items-start">
+        <span class="text-2xl">🪪</span>
+        <div class="flex-1">
+          <h3 class="font-medium">Verify your identity on Stripe</h3>
+          <p class="text-sm text-neutral-700 mt-1">KYC protocols and setup your bank account to receive payments for your services.</p>
+        </div>
+        <div class="flex flex-col gap-2 text-sm">
+          <button class="px-3 py-1 rounded-full border border-info text-info">Verify Identity</button>
+          <button class="text-info underline text-xs">Learn More</button>
+        </div>
+      </section>
+      <section>
+        <div class="flex items-center justify-between mb-3">
+          <h2 class="font-semibold">My Listings</h2>
+          <button class="text-sm text-primary-700">+ Add new listing</button>
+        </div>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+          <div class="bg-white border border-neutral-200 rounded-lg p-4 flex flex-col items-center text-center">
+            <span class="text-2xl">🛎️</span>
+            <div class="text-xs text-neutral-500 mt-2">Services</div>
+            <div class="text-xl font-semibold mt-1">{{ snapshot()?.listings?.services ?? 0 }}</div>
+          </div>
+          <div class="bg-white border border-neutral-200 rounded-lg p-4 flex flex-col items-center text-center">
+            <span class="text-2xl">🎟️</span>
+            <div class="text-xs text-neutral-500 mt-2">Experiences</div>
+            <div class="text-xl font-semibold mt-1">{{ snapshot()?.listings?.experiences ?? 0 }}</div>
+          </div>
+          <div class="bg-white border border-neutral-200 rounded-lg p-4 flex flex-col items-center text-center">
+            <span class="text-2xl">💼</span>
+            <div class="text-xs text-neutral-500 mt-2">Gigs</div>
+            <div class="text-xl font-semibold mt-1">{{ snapshot()?.listings?.gigs ?? 0 }}</div>
+          </div>
+          <div class="bg-white border border-neutral-200 rounded-lg p-4 flex flex-col items-center text-center">
+            <span class="text-2xl">🧑‍🏫</span>
+            <div class="text-xs text-neutral-500 mt-2">Expertise</div>
+            <div class="text-xl font-semibold mt-1">0</div>
+          </div>
+        </div>
+      </section>
+      <section>
+        <div class="flex items-center justify-between mb-3">
+          <h2 class="font-semibold">Active Orders</h2>
+          <button class="text-sm text-primary-700">Manage orders →</button>
+        </div>
+        <div class="bg-white border border-neutral-200 rounded-lg overflow-hidden">
+          <table class="w-full text-sm">
+            <thead class="text-xs text-neutral-500 bg-neutral-50">
+              <tr>
+                <th class="text-left font-normal px-4 py-3">Customer</th>
+                <th class="text-left font-normal px-4 py-3">Service</th>
+                <th class="text-left font-normal px-4 py-3">Date</th>
+                <th class="text-left font-normal px-4 py-3">Mode</th>
+                <th class="text-right font-normal px-4 py-3">Paid</th>
+                <th class="text-right font-normal px-4 py-3">Status</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-neutral-100">
+              <tr *ngFor="let o of snapshot()?.recentOrders">
+                <td class="px-4 py-3 font-medium">{{ o.customer }}</td>
+                <td class="px-4 py-3">{{ o.expertise || o.kind }}</td>
+                <td class="px-4 py-3 text-neutral-500">{{ o.bookedAt | date: 'MMM d, y' }}</td>
+                <td class="px-4 py-3 capitalize">{{ o.mode }}</td>
+                <td class="px-4 py-3 text-right tabular-nums">{{ o.currency }} {{ o.amount }}</td>
+                <td class="px-4 py-3 text-right">
+                  <span class="text-xs uppercase tracking-wider text-info">{{ humanStatus(o.status) }}</span>
+                </td>
+              </tr>
+              <tr *ngIf="(snapshot()?.recentOrders?.length ?? 0) === 0">
+                <td colspan="6" class="px-4 py-10 text-center text-neutral-500">You have not created an experience listing yet.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+  </div>
+</div>
