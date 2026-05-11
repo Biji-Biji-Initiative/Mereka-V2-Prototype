@@ -1,53 +1,173 @@
-<section class="bg-gradient-to-br from-program-hero-start to-program-hero-end">
-  <div class="max-w-[1320px] mx-auto px-6 py-16">
-    <p class="uppercase tracking-widest text-xs font-medium text-primary-700">Programs</p>
-    <h1 class="mt-3 text-4xl md:text-5xl font-semibold text-neutral-900 max-w-2xl leading-tight">
-      Guided learning journeys, made of the best of Mereka.
+<!-- ====================================================================
+     HERO — "Learn Together. Grow Together."  (Figma 8351:3960)
+     ==================================================================== -->
+<section class="bg-white">
+  <div class="max-w-[1320px] mx-auto px-6 pt-16 pb-12 text-center">
+    <h1 class="text-[#1a1623] tracking-[-0.03em]"
+        style="font-family:'Poppins',sans-serif; font-weight:700; font-size:56px; line-height:64px;">
+      Learn Together. <span class="text-neutral-400">Grow Together.</span>
     </h1>
-    <p class="mt-4 text-neutral-700 max-w-xl">
-      Programs combine self-paced courses, live experiences, and 1:1 expertise from one or more
-      hubs into a single coherent journey. Pay once — or join free — and everything inside is
-      unlocked.
+    <p class="mt-4 text-[#1a1623] max-w-2xl mx-auto"
+       style="font-family:'Poppins',sans-serif; font-size:18px; line-height:28px; letter-spacing:-0.01em;">
+      Discover guided programs that combine the best of Mereka — courses, hands-on experiences and 1:1 expertise — into one focused journey.
     </p>
 
-    <div class="mt-8 flex flex-col sm:flex-row gap-3 max-w-2xl">
-      <input
-        type="search"
-        [ngModel]="search()"
-        (ngModelChange)="search.set($event)"
-        placeholder="Search programs, hubs, or topics…"
-        class="flex-1 px-4 py-3 rounded-lg bg-white border border-neutral-200 focus:outline-none focus:border-neutral-400 text-sm"
-      />
-      <select
-        [ngModel]="pricing()"
-        (ngModelChange)="pricing.set($event)"
-        class="px-4 py-3 rounded-lg bg-white border border-neutral-200 text-sm"
-      >
-        <option value="">All pricing</option>
-        <option value="free">Free</option>
-        <option value="paid">Paid</option>
-      </select>
+    <!-- Category pills -->
+    <div class="mt-8 flex items-center justify-center flex-wrap gap-2">
+      <button *ngFor="let c of categories" type="button"
+              class="rounded-full px-4 py-2 text-sm transition"
+              [class.bg-neutral-900]="activeCategory() === c"
+              [class.text-white]="activeCategory() === c"
+              [class.bg-white]="activeCategory() !== c"
+              [class.border]="activeCategory() !== c"
+              [class.border-neutral-200]="activeCategory() !== c"
+              [class.text-neutral-700]="activeCategory() !== c"
+              (click)="activeCategory.set(c)"
+              style="font-family:'Lato',sans-serif;">
+        {{ c }}
+      </button>
     </div>
   </div>
 </section>
 
-<section class="max-w-[1320px] mx-auto px-6 py-12">
-  <div class="flex items-baseline justify-between mb-6">
-    <h2 class="text-xl font-semibold">For You</h2>
-    <a routerLink="/programs/new" class="text-sm text-primary-700 font-medium">+ Create a program</a>
+<!-- ====================================================================
+     POPULAR PROGRAMS  (horizontal row of 4 cards)
+     ==================================================================== -->
+<section class="bg-white">
+  <div class="max-w-[1320px] mx-auto px-6 pb-10">
+    <h2 class="text-center mb-6 text-[#1a1623]"
+        style="font-family:'Poppins',sans-serif; font-weight:700; font-size:28px; line-height:38px; letter-spacing:-0.005em;">
+      Popular Programs
+    </h2>
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <a *ngFor="let p of popular()"
+         [routerLink]="['/programs', p.slug]"
+         class="block bg-white border border-neutral-200 rounded-2xl overflow-hidden hover:shadow-md transition">
+        <div class="aspect-[4/3] bg-neutral-100 overflow-hidden">
+          <img [src]="p.image" [alt]="p.title" class="w-full h-full object-cover" loading="lazy" />
+        </div>
+        <div class="p-4 flex flex-col gap-2">
+          <div class="text-xs text-neutral-500 uppercase tracking-wider"
+               style="font-family:'Poppins',sans-serif; font-weight:600; letter-spacing:0.06em;">
+            {{ p.hub }}
+          </div>
+          <h3 class="text-[#1a1623] line-clamp-2"
+              style="font-family:'Lato',sans-serif; font-weight:700; font-size:17px; line-height:26px; letter-spacing:-0.005em;">
+            {{ p.title }}
+          </h3>
+          <ul class="flex flex-wrap gap-1.5 mt-1">
+            <li *ngFor="let t of p.tags"
+                class="rounded-full px-2.5 py-0.5 text-[12px] text-[#1a1623]"
+                style="font-family:'Lato',sans-serif; line-height:18px; background:linear-gradient(90deg,#ecedf1,#ecedf1),linear-gradient(90deg,#ebd3f6,#ebd3f6);">
+              {{ t }}
+            </li>
+          </ul>
+        </div>
+      </a>
+    </div>
   </div>
+</section>
 
-  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-    <a
-      *ngFor="let program of filtered(); trackBy: trackById"
-      [routerLink]="['/programs', program.slug]"
-      class="block"
-    >
-      <mereka-program-card [program]="program" />
-    </a>
+<!-- ====================================================================
+     ALL PROGRAMS — 4-col grid w/ Sort dropdown
+     ==================================================================== -->
+<section class="bg-white">
+  <div class="max-w-[1320px] mx-auto px-6 pb-16">
+    <div class="flex items-center justify-between mb-6">
+      <h2 class="text-[#1a1623]"
+          style="font-family:'Poppins',sans-serif; font-weight:700; font-size:28px; line-height:38px; letter-spacing:-0.005em;">
+        All Programs
+      </h2>
+      <label class="text-sm text-neutral-500 inline-flex items-center gap-2" style="font-family:'Lato',sans-serif;">
+        Sort by
+        <select [ngModel]="sort()" (ngModelChange)="sort.set($event)"
+                class="rounded-full border border-neutral-200 px-3 py-1.5 text-sm bg-white">
+          <option *ngFor="let opt of sortOptions" [ngValue]="opt">{{ opt }}</option>
+        </select>
+      </label>
+    </div>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <a *ngFor="let p of filtered()"
+         [routerLink]="['/programs', p.slug]"
+         class="block bg-white border border-neutral-200 rounded-2xl overflow-hidden hover:shadow-md transition">
+        <div class="aspect-[4/3] bg-neutral-100 overflow-hidden">
+          <img [src]="p.image" [alt]="p.title" class="w-full h-full object-cover" loading="lazy" />
+        </div>
+        <div class="p-4 flex flex-col gap-2">
+          <div class="text-xs text-neutral-500 uppercase tracking-wider"
+               style="font-family:'Poppins',sans-serif; font-weight:600; letter-spacing:0.06em;">
+            {{ p.hub }}
+          </div>
+          <h3 class="text-[#1a1623] line-clamp-2"
+              style="font-family:'Lato',sans-serif; font-weight:700; font-size:17px; line-height:26px; letter-spacing:-0.005em;">
+            {{ p.title }}
+          </h3>
+          <ul class="flex flex-wrap gap-1.5 mt-1">
+            <li *ngFor="let t of p.tags"
+                class="rounded-full px-2.5 py-0.5 text-[12px] text-[#1a1623]"
+                style="font-family:'Lato',sans-serif; line-height:18px; background:linear-gradient(90deg,#ecedf1,#ecedf1),linear-gradient(90deg,#ebd3f6,#ebd3f6);">
+              {{ t }}
+            </li>
+          </ul>
+        </div>
+      </a>
+    </div>
   </div>
+</section>
 
-  <div *ngIf="filtered().length === 0" class="text-center text-neutral-500 py-16">
-    No programs match your filters yet.
+<!-- ====================================================================
+     COMMON QUESTIONS — accordion
+     ==================================================================== -->
+<section class="bg-white">
+  <div class="max-w-[820px] mx-auto px-6 pb-16">
+    <h2 class="text-center mb-6 text-[#1a1623]"
+        style="font-family:'Poppins',sans-serif; font-weight:700; font-size:28px; line-height:38px; letter-spacing:-0.005em;">
+      Common Questions
+    </h2>
+    <ul class="divide-y divide-neutral-200 border border-neutral-200 rounded-2xl overflow-hidden bg-white">
+      <li *ngFor="let f of faqs; let i = index">
+        <button type="button" (click)="toggleFaq(i)"
+                class="w-full flex items-center justify-between text-left px-5 py-4 hover:bg-neutral-50 transition"
+                style="font-family:'Lato',sans-serif;">
+          <span class="text-[16px] text-[#1a1623]" style="font-weight:700; line-height:24px;">{{ f.q }}</span>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+               class="text-neutral-500 transition-transform"
+               [class.rotate-180]="openFaq() === i">
+            <polyline points="6 9 12 15 18 9"/>
+          </svg>
+        </button>
+        <div *ngIf="openFaq() === i" class="px-5 pb-5 text-[#7b7b7b]" style="font-family:'Lato',sans-serif; font-size:15px; line-height:24px;">
+          {{ f.a }}
+        </div>
+      </li>
+    </ul>
+  </div>
+</section>
+
+<!-- ====================================================================
+     CTA BANNER — "Not sure where to begin?"
+     ==================================================================== -->
+<section class="bg-white">
+  <div class="max-w-[1320px] mx-auto px-6 pb-16">
+    <div class="relative rounded-3xl overflow-hidden text-white"
+         style="background: linear-gradient(110deg, #1a1623 0%, #2b1e44 45%, #3f2a78 75%, #1a1623 100%);">
+      <div class="grid grid-cols-1 lg:grid-cols-[1fr_auto] gap-6 items-center px-8 py-10 lg:px-12 lg:py-12">
+        <div>
+          <h3 style="font-family:'Poppins',sans-serif; font-weight:700; font-size:32px; line-height:40px; letter-spacing:-0.01em;">
+            Not sure where to begin?
+          </h3>
+          <p class="mt-2 text-white/80 max-w-md" style="font-family:'Lato',sans-serif; font-size:16px; line-height:24px;">
+            Tell us about you — we'll match you with the right program in 60 seconds.
+          </p>
+          <a routerLink="/dashboard"
+             class="inline-flex items-center gap-2 mt-6 bg-white text-[#1a1623] rounded-full px-6 py-3 text-[15px] hover:bg-white/90"
+             style="font-family:'Lato',sans-serif; font-weight:700;">
+            ✦ Find my program
+          </a>
+        </div>
+        <img src="img/programs/cta-banner.jpg" alt="" class="hidden lg:block w-[280px] h-[180px] object-cover rounded-2xl" />
+      </div>
+    </div>
   </div>
 </section>
