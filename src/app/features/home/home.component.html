@@ -1,0 +1,367 @@
+<!-- ============================================================
+     HERO SECTION
+     ============================================================ -->
+<section class="bg-white pt-8 pb-12">
+  <div class="max-w-[1320px] mx-auto px-6">
+    <div class="flex flex-col lg:flex-row items-center gap-10">
+      <!-- Left: text + search -->
+      <div class="flex-1 max-w-xl">
+        <h1 class="text-5xl lg:text-[56px] font-bold leading-[1.1] text-neutral-900 tracking-tight">
+          Find certified<br/>experts and<br/>services
+        </h1>
+        <p class="mt-5 text-neutral-600 text-lg leading-relaxed">
+          Browse high-quality talent to solve your business problems and bring your projects to life.
+        </p>
+        <!-- Search bar -->
+        <div class="mt-6 relative">
+          <input
+            type="text"
+            placeholder="What work do you need help with?"
+            class="w-full pl-5 pr-14 py-4 rounded-xl border border-neutral-200 bg-white text-sm focus:outline-none focus:border-neutral-400"
+            style="border:1px solid #e5e5e5"
+          />
+          <button class="absolute right-3 top-1/2 -translate-y-1/2 w-10 h-10 flex items-center justify-center rounded-lg bg-neutral-900 text-white" style="border:none">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+          </button>
+        </div>
+        <!-- Tags -->
+        <div class="mt-4 flex flex-wrap gap-2">
+          <span class="px-3 py-1.5 rounded-full border border-neutral-200 text-xs text-neutral-700">website development</span>
+          <span class="px-3 py-1.5 rounded-full border border-neutral-200 text-xs text-neutral-700">presentation design</span>
+          <span class="px-3 py-1.5 rounded-full border border-neutral-200 text-xs text-neutral-700">digital marketing</span>
+          <span class="px-3 py-1.5 rounded-full border border-neutral-200 text-xs text-neutral-700 bg-neutral-50">+125 more</span>
+        </div>
+        <!-- Trusted by -->
+        <div class="mt-8 flex items-center gap-6 text-neutral-400">
+          <span class="text-xs text-neutral-500 font-medium">Trusted by:</span>
+          <span class="font-semibold text-sm text-neutral-700">Google</span>
+          <span class="font-semibold text-sm text-neutral-700">Meta</span>
+          <span class="font-semibold text-sm text-neutral-700 tracking-widest">NETFLIX</span>
+          <span class="font-semibold text-sm text-neutral-700 italic">P&amp;G</span>
+          <span class="font-semibold text-sm text-neutral-700 italic">PayPal</span>
+          <span class="font-semibold text-sm text-neutral-700">Payoneer</span>
+        </div>
+      </div>
+      <!-- Right: image collage -->
+      <div class="flex-1 relative hidden lg:block">
+        <div class="grid grid-cols-2 gap-3 max-w-md ml-auto">
+          <div class="rounded-2xl overflow-hidden h-44">
+            <img src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=400&h=300&fit=crop" alt="" class="w-full h-full object-cover" />
+          </div>
+          <div class="rounded-2xl overflow-hidden h-44">
+            <img src="https://images.unsplash.com/photo-1478737270239-2f02b77fc618?w=400&h=300&fit=crop" alt="" class="w-full h-full object-cover" />
+          </div>
+          <div class="rounded-2xl overflow-hidden h-44">
+            <img src="https://images.unsplash.com/photo-1536240478700-b869070f9279?w=400&h=300&fit=crop" alt="" class="w-full h-full object-cover" />
+          </div>
+          <div class="rounded-2xl overflow-hidden h-44">
+            <img src="https://images.unsplash.com/photo-1560250097-0b93528c311a?w=400&h=300&fit=crop" alt="" class="w-full h-full object-cover" />
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     POPULAR SERVICES
+     ============================================================ -->
+<section class="py-12 bg-white">
+  <div class="max-w-[1320px] mx-auto px-6">
+    <h2 class="text-2xl font-bold text-neutral-900 mb-6">Popular Services</h2>
+    <div class="flex gap-4 overflow-x-auto pb-4" style="scrollbar-width:thin">
+      <div
+        *ngFor="let svc of popularServices"
+        class="flex-shrink-0 w-44 rounded-xl overflow-hidden bg-neutral-900 cursor-pointer hover:scale-105 transition-transform"
+      >
+        <div class="p-3 pb-0">
+          <span class="text-white text-sm font-medium leading-tight block">{{ svc.name }}</span>
+        </div>
+        <div class="mt-3 h-28 overflow-hidden">
+          <img [src]="svc.image" [alt]="svc.name" class="w-full h-full object-cover" loading="lazy" />
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     FOR TALENT – "Looking to earn more from your expertise?"
+     ============================================================ -->
+<section class="py-16 bg-[#f0f4f0]">
+  <div class="max-w-[1320px] mx-auto px-6">
+    <div class="flex flex-col lg:flex-row items-center gap-12">
+      <!-- Left -->
+      <div class="flex-1">
+        <span class="text-sm font-semibold text-green-700">For Talent</span>
+        <h2 class="mt-2 text-3xl lg:text-4xl font-bold text-neutral-900 leading-tight">
+          Looking to earn more<br/>from your expertise?
+        </h2>
+        <div class="mt-8 space-y-5">
+          <div *ngFor="let step of talentSteps" class="flex gap-4">
+            <div class="w-8 h-8 rounded-full bg-green-600 text-white flex items-center justify-center text-sm flex-shrink-0">✓</div>
+            <div>
+              <div class="font-semibold text-neutral-900 text-sm">{{ step.title }}</div>
+              <div class="text-neutral-600 text-sm mt-0.5">{{ step.desc }}</div>
+            </div>
+          </div>
+        </div>
+        <div class="mt-8 flex gap-3">
+          <a href="https://v2.mereka.dev/experts" class="px-6 py-2.5 rounded-full bg-neutral-900 text-white text-sm font-medium hover:bg-neutral-700 transition-colors">
+            Sign up for FREE
+          </a>
+          <a href="https://v2.mereka.dev/experts" class="px-6 py-2.5 rounded-full border border-neutral-300 text-neutral-900 text-sm font-medium hover:bg-neutral-100 transition-colors" style="border:1px solid #d4d4d4">
+            Learn how to earn
+          </a>
+        </div>
+      </div>
+      <!-- Right: Expert photo + earnings card -->
+      <div class="flex-1 relative hidden lg:flex justify-center">
+        <div class="relative">
+          <img
+            src="https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?w=400&h=500&fit=crop"
+            alt="Expert"
+            class="rounded-2xl w-80 h-96 object-cover"
+          />
+          <!-- Earnings badge -->
+          <div class="absolute top-4 right-[-40px] bg-white rounded-xl shadow-lg p-3 text-center">
+            <div class="text-xs text-neutral-500">Expert Name</div>
+            <div class="text-lg font-bold text-neutral-900 mt-1">$1,875</div>
+            <div class="text-xs text-green-600">↗ Earnings this month</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     UPSKILL WITH MEREKA – Courses section
+     ============================================================ -->
+<section class="py-16 bg-[#fef7ed]">
+  <div class="max-w-[1320px] mx-auto px-6">
+    <div class="flex flex-col lg:flex-row items-center gap-12">
+      <!-- Left: course images -->
+      <div class="flex-1 hidden lg:block">
+        <div class="grid grid-cols-2 gap-3 max-w-sm">
+          <div class="rounded-xl overflow-hidden h-40">
+            <img src="https://images.unsplash.com/photo-1524178232363-1fb2b075b655?w=300&h=200&fit=crop" alt="" class="w-full h-full object-cover" />
+          </div>
+          <div class="rounded-xl overflow-hidden h-40">
+            <img src="https://images.unsplash.com/photo-1531482615713-2afd69097998?w=300&h=200&fit=crop" alt="" class="w-full h-full object-cover" />
+          </div>
+          <div class="col-span-2 rounded-xl overflow-hidden h-40">
+            <img src="https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?w=600&h=200&fit=crop" alt="" class="w-full h-full object-cover" />
+          </div>
+        </div>
+      </div>
+      <!-- Right: text -->
+      <div class="flex-1">
+        <div class="flex items-center gap-2 mb-3">
+          <span class="text-xs text-neutral-500">Certified courses</span>
+          <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/44/Microsoft_logo.svg/512px-Microsoft_logo.svg.png" alt="Microsoft" class="h-4" />
+        </div>
+        <div class="flex items-center gap-2 mb-4">
+          <span class="text-sm text-neutral-500">Upskill with</span>
+          <img src="mereka-logo.svg" alt="mereka" class="h-5" />
+        </div>
+        <h2 class="text-3xl lg:text-4xl font-bold text-neutral-900 leading-tight">
+          On-demand courses,<br/>&amp; experiences hosted<br/>by experts.
+        </h2>
+        <p class="mt-4 text-neutral-600 text-base leading-relaxed">
+          Discover courses, conferences and experiences on in-demand skills for you and your team.
+        </p>
+        <div class="mt-6 flex gap-3">
+          <a href="https://v2.mereka.dev/courses" class="px-6 py-2.5 rounded-full bg-neutral-900 text-white text-sm font-medium hover:bg-neutral-700 transition-colors">
+            Courses
+          </a>
+          <a href="https://v2.mereka.dev/experiences" class="px-6 py-2.5 rounded-full border border-neutral-300 text-neutral-900 text-sm font-medium hover:bg-neutral-100 transition-colors" style="border:1px solid #d4d4d4">
+            Experiences
+          </a>
+        </div>
+        <div class="mt-8 flex items-center gap-4 text-neutral-400">
+          <span class="text-xs text-neutral-500">Accredited by:</span>
+          <span class="font-semibold text-sm text-neutral-700">Google</span>
+          <span class="font-semibold text-sm text-neutral-700 tracking-wider">PSMB</span>
+          <span class="font-semibold text-sm text-neutral-700 tracking-wider">HRDF</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     FEATURED EXPERTS
+     ============================================================ -->
+<section class="py-16 bg-white">
+  <div class="max-w-[1320px] mx-auto px-6">
+    <div class="flex items-center justify-between mb-8">
+      <h2 class="text-2xl font-bold text-neutral-900">Featured <span class="text-purple-600 italic">Experts</span></h2>
+      <a href="https://v2.mereka.dev/experts" class="text-sm text-purple-600 font-medium hover:underline">Browse all experts →</a>
+    </div>
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div *ngFor="let expert of featuredExperts" class="bg-white rounded-xl border border-neutral-200 overflow-hidden hover:shadow-md transition-shadow">
+        <div class="h-48 overflow-hidden bg-neutral-100">
+          <img [src]="expert.image" [alt]="expert.name" class="w-full h-full object-cover" loading="lazy" />
+        </div>
+        <div class="p-4">
+          <h3 class="font-semibold text-neutral-900 text-sm">{{ expert.name }}</h3>
+          <p class="text-xs text-neutral-500 mt-1 line-clamp-2">{{ expert.title }}</p>
+          <div class="mt-3 flex flex-wrap gap-1">
+            <span *ngFor="let tag of expert.tags" class="px-2 py-0.5 rounded-full bg-neutral-100 text-[10px] text-neutral-600">{{ tag }}</span>
+          </div>
+          <div class="mt-3 flex items-center gap-1 text-xs">
+            <svg width="12" height="12" viewBox="0 0 20 20" fill="#f59e0b"><path d="M10 1l2.39 4.84L18 6.71l-4 3.9.94 5.5L10 13.58 5.06 16.1l.94-5.5-4-3.9 5.61-.87z"/></svg>
+            <span class="font-medium text-neutral-700">{{ expert.rating }}</span>
+            <span class="text-neutral-400">({{ expert.reviews }})</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     MATCH WITH EXPERT
+     ============================================================ -->
+<section class="py-16 bg-neutral-50">
+  <div class="max-w-[1320px] mx-auto px-6 text-center">
+    <h2 class="text-3xl lg:text-4xl font-bold text-neutral-900 leading-tight">
+      Need help with a project?<br/>Get matched with an Expert instantly!
+    </h2>
+    <p class="mt-4 text-neutral-500 text-base max-w-xl mx-auto">
+      Tell us what you need, and let AI instantly match a gig for you. It's free, and only takes 5 minutes!
+    </p>
+    <div class="mt-8 max-w-lg mx-auto relative">
+      <input
+        type="text"
+        placeholder="Try &quot;I need a video editor for my marketing content&quot;"
+        class="w-full pl-5 pr-14 py-4 rounded-xl border border-neutral-200 bg-white text-sm focus:outline-none focus:border-neutral-400"
+        style="border:1px solid #e5e5e5"
+      />
+      <button class="absolute right-3 top-1/2 -translate-y-1/2 w-10 h-10 flex items-center justify-center rounded-lg bg-purple-600 text-white" style="border:none">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </button>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     FOR CLIENTS – "Find experts your way!"
+     ============================================================ -->
+<section class="py-16 bg-neutral-900 text-white">
+  <div class="max-w-[1320px] mx-auto px-6">
+    <span class="text-sm font-semibold text-purple-400">For Clients</span>
+    <h2 class="mt-2 text-3xl lg:text-4xl font-bold leading-tight">Find experts your way!</h2>
+    <p class="mt-3 text-neutral-400 text-base max-w-lg leading-relaxed">
+      Work with our network of independent professionals and get work done — from quick turnarounds to big transformations.
+    </p>
+    <div class="mt-10 grid grid-cols-1 md:grid-cols-3 gap-6">
+      <!-- Card 1 -->
+      <div class="bg-neutral-800 rounded-2xl p-6 hover:bg-neutral-700 transition-colors">
+        <h3 class="font-semibold text-lg">Post a gig and hire for your project</h3>
+        <p class="mt-2 text-neutral-400 text-sm">Describe it, review proposals, and hire.</p>
+        <div class="mt-4 flex items-center gap-2 text-sm text-purple-400 font-medium">
+          <a href="https://v2.mereka.dev/experiences" class="hover:underline">HIRE AN XC</a>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </div>
+      </div>
+      <!-- Card 2 -->
+      <div class="bg-neutral-800 rounded-2xl p-6 hover:bg-neutral-700 transition-colors">
+        <h3 class="font-semibold text-lg">Browse and buy Services</h3>
+        <p class="mt-2 text-neutral-400 text-sm">Ready-made service packages you can purchase instantly.</p>
+        <div class="mt-4 flex items-center gap-2 text-sm text-purple-400 font-medium">
+          <a href="https://v2.mereka.dev/experiences" class="hover:underline">Service Listings</a>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </div>
+      </div>
+      <!-- Card 3 -->
+      <div class="bg-neutral-800 rounded-2xl p-6 hover:bg-neutral-700 transition-colors">
+        <h3 class="font-semibold text-lg">Get advice from Experts</h3>
+        <p class="mt-2 text-neutral-400 text-sm">Book 1-on-1 consultations and mentoring sessions.</p>
+        <div class="mt-4 flex items-center gap-2 text-sm text-purple-400 font-medium">
+          <a href="https://v2.mereka.dev/expertise" class="hover:underline">Advisory Services</a>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     TRUSTED BY FREELANCERS & BUSINESSES
+     ============================================================ -->
+<section class="py-16 bg-white">
+  <div class="max-w-[1320px] mx-auto px-6">
+    <h2 class="text-2xl lg:text-3xl font-bold text-neutral-900 text-center mb-10">
+      Trusted by Freelancers &amp; Businesses
+    </h2>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div *ngFor="let t of testimonials" class="border border-neutral-200 rounded-xl p-5">
+        <div class="flex items-center gap-3 mb-3">
+          <div class="w-10 h-10 rounded-full bg-purple-100 text-purple-700 flex items-center justify-center font-semibold text-sm">{{ t.avatar }}</div>
+          <div>
+            <div class="font-semibold text-sm text-neutral-900">{{ t.name }}</div>
+            <div class="flex gap-0.5 mt-0.5">
+              <svg *ngFor="let s of [1,2,3,4,5]" width="12" height="12" viewBox="0 0 20 20" fill="#f59e0b"><path d="M10 1l2.39 4.84L18 6.71l-4 3.9.94 5.5L10 13.58 5.06 16.1l.94-5.5-4-3.9 5.61-.87z"/></svg>
+            </div>
+          </div>
+        </div>
+        <p class="text-sm text-neutral-600 leading-relaxed">{{ t.text }}</p>
+        <p class="text-xs text-neutral-400 mt-2">{{ t.role }}</p>
+        <div class="mt-4 pt-3 border-t border-neutral-100 flex gap-6">
+          <div>
+            <div class="text-sm font-bold text-neutral-900">{{ t.stat1 }}</div>
+            <div class="text-xs text-neutral-400">{{ t.stat1Label }}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     GIGS RECENTLY LISTED ON MEREKA
+     ============================================================ -->
+<section class="py-16 bg-neutral-50">
+  <div class="max-w-[1320px] mx-auto px-6">
+    <div class="flex items-center justify-between mb-8">
+      <h2 class="text-2xl font-bold text-neutral-900">
+        <span class="text-purple-600 italic">Gigs</span> Recently Listed on Mereka
+      </h2>
+      <a href="https://v2.mereka.dev/experiences" class="text-sm text-purple-600 font-medium hover:underline">Browse all gigs →</a>
+    </div>
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div *ngFor="let gig of recentGigs" class="bg-white border border-neutral-200 rounded-xl p-4 hover:shadow-md transition-shadow">
+        <div class="flex items-center gap-2 mb-2">
+          <span class="text-xs text-neutral-400">{{ gig.company }}</span>
+          <span class="text-xs text-neutral-400">•</span>
+          <span class="text-xs text-neutral-400">{{ gig.posted }}</span>
+        </div>
+        <h3 class="text-sm font-semibold text-neutral-900 mb-2 line-clamp-2 bg-purple-100 rounded-lg p-2">{{ gig.title }}</h3>
+        <div class="space-y-1 text-xs text-neutral-500">
+          <div>{{ gig.type }}</div>
+          <div>{{ gig.rate }}</div>
+        </div>
+        <a href="https://v2.mereka.dev/experiences" class="mt-3 block w-full text-center py-2 rounded-lg bg-purple-600 text-white text-xs font-medium hover:bg-purple-700 transition-colors">
+          Learn More &amp; Apply
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     CORPORATE SOLUTIONS
+     ============================================================ -->
+<section class="py-16 bg-purple-900 text-white">
+  <div class="max-w-[1320px] mx-auto px-6 text-center">
+    <h2 class="text-3xl lg:text-4xl font-bold">Corporate Solutions</h2>
+    <p class="mt-4 text-purple-200 text-base max-w-lg mx-auto leading-relaxed">
+      Need expertise with creating online courses or co-hosting events? Looking to fund impact programs? We've got you covered.
+    </p>
+    <a href="https://v2.mereka.dev/solutions" class="mt-8 inline-block px-8 py-3 rounded-full border border-white text-white text-sm font-medium hover:bg-white hover:text-purple-900 transition-colors" style="border:1px solid white">
+      Visit corporate.mereka.io
+    </a>
+  </div>
+</section>
