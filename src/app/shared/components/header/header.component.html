@@ -174,7 +174,7 @@
                   <div class="text-sm font-medium text-neutral-900">{{ user()?.name }}</div>
                   <div class="text-xs text-neutral-500">{{ user()?.email }}</div>
                 </div>
-                <a [href]="appUrl" class="block px-4 py-2 text-sm hover:bg-neutral-50">My dashboard</a>
+                <a routerLink="/programs" class="block px-4 py-2 text-sm hover:bg-neutral-50">My dashboard</a>
                 <button
                   type="button"
                   class="block w-full text-left px-4 py-2 text-sm text-error hover:bg-neutral-50"
@@ -188,13 +188,13 @@
         </ng-container>
         <ng-template #guest>
           <a
-            [href]="loginUrl()"
+            routerLink="/login"
             class="text-sm text-neutral-700 hover:text-neutral-900 px-3 py-1.5"
           >
             Log in
           </a>
           <a
-            [href]="loginUrl()"
+            routerLink="/login"
             class="text-sm font-medium text-white bg-neutral-900 hover:bg-neutral-700 rounded-full px-4 py-2"
           >
             Sign up

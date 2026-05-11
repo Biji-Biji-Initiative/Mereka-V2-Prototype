@@ -113,4 +113,15 @@ export class AuthService {
     this._user.set(null);
     this._hubs.set([]);
   }
+
+  /**
+   * Prototype-only: set user directly without hitting the backend.
+   * Used by the demo login flow.
+   */
+  setPrototypeUser(user: AuthUser): void {
+    this._user.set(user);
+    if (user.hubs) this._hubs.set(user.hubs);
+    this._isLoading.set(false);
+    this._isInitialized.set(true);
+  }
 }
