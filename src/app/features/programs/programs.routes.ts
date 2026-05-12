@@ -20,10 +20,12 @@ import { ProgramAdminContentTab } from './pages/program-detail/admin/admin-conte
 import { ProgramAdminInboxTab } from './pages/program-detail/admin/admin-inbox.tab';
 import { ProgramAdminFeedbackTab } from './pages/program-detail/admin/admin-feedback.tab';
 import { ProgramLandingPage } from './pages/program-landing/program-landing.page';
+import { YourProgramsPage } from './pages/your-programs/your-programs.page';
 
 export const PROGRAMS_ROUTES: Routes = [
   { path: '', component: ProgramListPage, pathMatch: 'full' },
   { path: 'new', component: ProgramCreatePage },
+  { path: 'me', component: YourProgramsPage },
   { path: 'admin', component: ProgramAdminAllPage },
   {
     path: ':slug/landing',

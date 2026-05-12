@@ -1,17 +1,27 @@
-<div class="bg-neutral-50 min-h-screen">
-  <div class="max-w-[1320px] mx-auto px-6 py-8 grid grid-cols-12 gap-6">
-    <!-- Side stepper -->
-    <aside class="col-span-12 md:col-span-3">
-      <div class="sticky top-20 bg-white rounded-lg border border-neutral-200 p-5">
-        <button type="button" class="text-neutral-400 mb-2" (click)="goBack()">←</button>
-        <h2 class="text-xl font-semibold mb-6">Create Program</h2>
+<div class="bg-neutral-50 min-h-screen pb-32">
+  <div class="max-w-[1320px] mx-auto px-4 lg:px-6 pt-6 grid grid-cols-12 gap-6">
+    <!-- Vertical stepper -->
+    <aside class="col-span-12 md:col-span-2">
+      <div class="sticky top-20">
+        <button
+          type="button"
+          class="text-neutral-400 hover:text-neutral-700 mb-3 inline-flex items-center"
+          (click)="goBack()"
+          aria-label="Back"
+        >
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M19 12H5M12 19l-7-7 7-7" />
+          </svg>
+        </button>
+        <h2 class="text-xl font-bold mb-6 text-neutral-900">Create Program</h2>
         <ul class="space-y-1">
           <li *ngFor="let step of steps">
             <button
               type="button"
-              class="w-full text-left px-4 py-2 rounded-full text-sm"
+              class="w-full text-left px-4 py-2 rounded-full text-sm transition"
               [class.bg-neutral-900]="active() === step.key"
               [class.text-white]="active() === step.key"
+              [class.font-semibold]="active() === step.key"
               [class.text-neutral-700]="active() !== step.key"
               [class.hover:bg-neutral-100]="active() !== step.key"
               (click)="setActive(step.key)"
@@ -23,110 +33,200 @@
       </div>
     </aside>
 
-    <!-- Main panel -->
-    <main class="col-span-12 md:col-span-9">
-      <div class="bg-white rounded-lg border border-neutral-200 p-8 min-h-[460px]">
+    <!-- Main panel + side TIPS column -->
+    <main class="col-span-12 md:col-span-7">
+      <div class="bg-white rounded-2xl border border-neutral-200 p-8 min-h-[460px]">
         <ng-container [ngSwitch]="active()">
           <!-- BASIC INFO ------------------------------------------------------ -->
-          <section *ngSwitchCase="'basic'" class="space-y-5 max-w-2xl">
+          <section *ngSwitchCase="'basic'" class="space-y-6">
             <header>
-              <h3 class="text-xl font-semibold">Basic Info</h3>
-              <p class="text-sm text-neutral-500">
-                Make your title descriptive and exciting — it's the first thing learners read.
-              </p>
+              <h3 class="text-2xl font-bold text-neutral-900">Basic info</h3>
+              <p class="text-sm text-neutral-500 mt-1">Start by defining the core identity of your program.</p>
             </header>
+
             <label class="block">
-              <span class="text-sm font-medium">Title</span>
-              <input
-                class="mt-1 w-full px-3 py-2 rounded border border-neutral-200 focus:outline-none focus:border-neutral-400"
-                [ngModel]="title()"
-                (ngModelChange)="title.set($event)"
-                placeholder="e.g. AI4U — Practical AI for Everyone"
-              />
+              <span class="text-sm font-semibold text-neutral-900">Program Name</span>
+              <p class="text-xs text-neutral-500 mt-0.5">
+                Short, clear name of what the program is about<br />
+                <span class="italic">Example: "AI4U" / "Video Editing Services"</span>
+              </p>
+              <div class="relative mt-2">
+                <input
+                  type="text"
+                  maxlength="70"
+                  class="w-full px-3 py-2.5 rounded-md border border-neutral-200 focus:outline-none focus:border-neutral-400 text-sm"
+                  placeholder="Title"
+                  [ngModel]="title()"
+                  (ngModelChange)="title.set($event)"
+                />
+                <span class="absolute right-3 top-2.5 text-xs text-neutral-400 tabular-nums">
+                  {{ title().length }}/70 max
+                </span>
+              </div>
             </label>
+
             <label class="block">
-              <span class="text-sm font-medium">Tagline</span>
-              <input
-                class="mt-1 w-full px-3 py-2 rounded border border-neutral-200 focus:outline-none focus:border-neutral-400"
-                [ngModel]="tagline()"
-                (ngModelChange)="tagline.set($event)"
-                placeholder="A 12-week guided journey from prompts to product."
-              />
-            </label>
-            <label class="block">
-              <span class="text-sm font-medium">Description</span>
+              <span class="text-sm font-semibold text-neutral-900">Describe your program</span>
+              <p class="text-xs text-neutral-500 mt-0.5">One or two sentences describing the program.</p>
               <textarea
                 rows="6"
-                class="mt-1 w-full px-3 py-2 rounded border border-neutral-200 focus:outline-none focus:border-neutral-400"
+                class="mt-2 w-full px-3 py-2.5 rounded-md border border-neutral-200 focus:outline-none focus:border-neutral-400 text-sm"
+                placeholder="Description"
                 [ngModel]="description()"
                 (ngModelChange)="description.set($event)"
               ></textarea>
-            </label>
-            <div>
-              <span class="text-sm font-medium block mb-2">Pricing</span>
-              <label class="inline-flex items-center gap-2 mr-4 text-sm">
-                <input type="radio" [checked]="!isPaid()" (change)="isPaid.set(false)" /> Free
-                (everything inside is included)
-              </label>
-              <label class="inline-flex items-center gap-2 text-sm">
-                <input type="radio" [checked]="isPaid()" (change)="isPaid.set(true)" /> Paid (single
-                price for the whole journey)
-              </label>
-              <div *ngIf="isPaid()" class="mt-2 max-w-xs">
-                <input
-                  type="number"
-                  min="0"
-                  class="w-full px-3 py-2 rounded border border-neutral-200"
-                  placeholder="MYR"
-                  [ngModel]="price()"
-                  (ngModelChange)="price.set($event)"
-                />
+              <div class="flex items-center gap-3 mt-1.5 text-neutral-400">
+                <button type="button" class="hover:text-neutral-700" aria-label="Bold">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M6 4h8a4 4 0 0 1 4 4 4 4 0 0 1-4 4H6zM6 12h9a4 4 0 0 1 4 4 4 4 0 0 1-4 4H6z" />
+                  </svg>
+                </button>
+                <button type="button" class="hover:text-neutral-700 italic font-serif text-sm" aria-label="Italic">I</button>
+                <button type="button" class="hover:text-neutral-700 underline text-sm" aria-label="Underline">U</button>
+                <span class="w-px h-4 bg-neutral-200"></span>
+                <button type="button" class="hover:text-neutral-700" aria-label="Link">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+                </button>
+                <button type="button" class="hover:text-neutral-700" aria-label="Bulleted list">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><circle cx="3.5" cy="6" r=".5" fill="currentColor"/><circle cx="3.5" cy="12" r=".5" fill="currentColor"/><circle cx="3.5" cy="18" r=".5" fill="currentColor"/></svg>
+                </button>
+                <button type="button" class="hover:text-neutral-700" aria-label="Numbered list">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="10" y1="6" x2="21" y2="6"/><line x1="10" y1="12" x2="21" y2="12"/><line x1="10" y1="18" x2="21" y2="18"/><path d="M4 6h1v4M4 10h2M6 18H4c0-1 2-2 2-3s-1-1.5-2-1"/></svg>
+                </button>
               </div>
+            </label>
+
+            <fieldset>
+              <legend class="text-sm font-semibold text-neutral-900">Are you hosting your Program physically or online?</legend>
+              <p class="text-xs text-neutral-500 mt-0.5 max-w-xl">
+                Online Programs can be hosted from anywhere via video-conferencing software such as Zoom or
+                Google Meet, whereas physical Programs must be conducted in either your own space or any venue
+                you are approved to use.
+              </p>
+              <div class="mt-3 space-y-2">
+                <label class="flex items-center gap-2 text-sm">
+                  <input type="radio" name="hosting" [checked]="hosting() === 'physical'" (change)="hosting.set('physical')" />
+                  Physical
+                </label>
+                <label class="flex items-center gap-2 text-sm">
+                  <input type="radio" name="hosting" [checked]="hosting() === 'online'" (change)="hosting.set('online')" />
+                  Online
+                </label>
+              </div>
+            </fieldset>
+
+            <fieldset *ngIf="hosting() === 'physical'">
+              <legend class="text-sm font-semibold text-neutral-900">Share the location of your Program!</legend>
+              <div class="mt-3 space-y-3">
+                <label class="block">
+                  <span class="text-xs text-neutral-500">Street Address</span>
+                  <input type="text" class="mt-1 w-full px-3 py-2 rounded-md border border-neutral-200 text-sm" [ngModel]="addrStreet()" (ngModelChange)="addrStreet.set($event)" />
+                </label>
+                <div class="grid grid-cols-2 gap-3">
+                  <label class="block">
+                    <span class="text-xs text-neutral-500">Country</span>
+                    <input type="text" class="mt-1 w-full px-3 py-2 rounded-md border border-neutral-200 text-sm" [ngModel]="addrCountry()" (ngModelChange)="addrCountry.set($event)" />
+                  </label>
+                  <label class="block">
+                    <span class="text-xs text-neutral-500">State (if any)</span>
+                    <input type="text" class="mt-1 w-full px-3 py-2 rounded-md border border-neutral-200 text-sm" [ngModel]="addrState()" (ngModelChange)="addrState.set($event)" />
+                  </label>
+                  <label class="block">
+                    <span class="text-xs text-neutral-500">Town/City</span>
+                    <input type="text" class="mt-1 w-full px-3 py-2 rounded-md border border-neutral-200 text-sm" [ngModel]="addrCity()" (ngModelChange)="addrCity.set($event)" />
+                  </label>
+                  <label class="block">
+                    <span class="text-xs text-neutral-500">Postcode</span>
+                    <input type="text" class="mt-1 w-full px-3 py-2 rounded-md border border-neutral-200 text-sm" [ngModel]="addrPost()" (ngModelChange)="addrPost.set($event)" />
+                  </label>
+                </div>
+              </div>
+            </fieldset>
+
+            <fieldset>
+              <legend class="text-sm font-semibold text-neutral-900">Program Visibility</legend>
+              <div class="mt-3 space-y-2">
+                <label class="flex items-center gap-2 text-sm">
+                  <input type="radio" name="visibility" [checked]="visibility() === 'public'" (change)="visibility.set('public')" />
+                  <strong>Public</strong> — Anyone can join
+                </label>
+                <label class="flex items-center gap-2 text-sm">
+                  <input type="radio" name="visibility" [checked]="visibility() === 'private'" (change)="visibility.set('private')" />
+                  <strong>Private</strong> — Invite only access
+                </label>
+              </div>
+            </fieldset>
+
+            <div>
+              <label class="block">
+                <span class="text-sm font-semibold text-neutral-900">
+                  Keyword tags <span class="text-xs text-neutral-400 font-normal italic ml-2">OPTIONAL</span>
+                </span>
+                <p class="text-xs text-neutral-500 mt-0.5">
+                  Tag your service with relevant keywords to the program you offer. Maximum 5 tags.
+                </p>
+                <div class="mt-2 flex items-center gap-2 flex-wrap">
+                  <span
+                    *ngFor="let t of tags(); let i = index"
+                    class="inline-flex items-center gap-1.5 bg-neutral-100 text-neutral-800 px-3 py-1 rounded-full text-xs"
+                  >
+                    {{ t }}
+                    <button type="button" (click)="removeTag(i)" class="text-neutral-400 hover:text-error" aria-label="Remove tag">×</button>
+                  </span>
+                  <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs text-neutral-500 border border-dashed border-neutral-300">
+                    <input
+                      type="text"
+                      placeholder="Type Tags"
+                      class="bg-transparent focus:outline-none text-xs w-24"
+                      [ngModel]="tagDraft()"
+                      (ngModelChange)="tagDraft.set($event)"
+                      (keydown.enter)="commitTag(); $event.preventDefault()"
+                    />
+                    <button type="button" (click)="commitTag()" class="text-neutral-400 hover:text-neutral-700" aria-label="Add tag">+</button>
+                  </span>
+                </div>
+              </label>
+            </div>
+
+            <div>
+              <label class="block">
+                <span class="text-sm font-semibold text-neutral-900">Program Completion Certificate</span>
+                <div class="mt-2 flex items-center gap-3 px-4 py-3 border border-neutral-200 rounded-md text-sm text-neutral-500">
+                  <span class="flex-1">Upload certificate here</span>
+                  <button type="button" class="text-neutral-700" aria-label="Upload">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                  </button>
+                </div>
+              </label>
             </div>
           </section>
 
           <!-- TIMELINE ------------------------------------------------------- -->
-          <section *ngSwitchCase="'timeline'" class="space-y-5 max-w-xl">
+          <section *ngSwitchCase="'timeline'" class="space-y-6">
             <header>
-              <h3 class="text-xl font-semibold">Timeline</h3>
-              <p class="text-sm text-neutral-500">When does enrolment open and the cohort run?</p>
+              <h3 class="text-2xl font-bold text-neutral-900">Timeline</h3>
+              <p class="text-sm text-neutral-500 mt-1">When does enrolment open and the cohort run?</p>
             </header>
-            <div class="grid grid-cols-2 gap-4">
+            <div class="grid grid-cols-2 gap-4 max-w-xl">
               <label class="block">
                 <span class="text-sm font-medium">Enrolment opens</span>
-                <input
-                  type="date"
-                  class="mt-1 w-full px-3 py-2 rounded border border-neutral-200"
-                  [ngModel]="enrollStart()"
-                  (ngModelChange)="enrollStart.set($event)"
-                />
+                <input type="date" class="mt-1 w-full px-3 py-2 rounded-md border border-neutral-200 text-sm"
+                  [ngModel]="enrollStart()" (ngModelChange)="enrollStart.set($event)" />
               </label>
               <label class="block">
                 <span class="text-sm font-medium">Enrolment closes</span>
-                <input
-                  type="date"
-                  class="mt-1 w-full px-3 py-2 rounded border border-neutral-200"
-                  [ngModel]="enrollEnd()"
-                  (ngModelChange)="enrollEnd.set($event)"
-                />
+                <input type="date" class="mt-1 w-full px-3 py-2 rounded-md border border-neutral-200 text-sm"
+                  [ngModel]="enrollEnd()" (ngModelChange)="enrollEnd.set($event)" />
               </label>
               <label class="block">
                 <span class="text-sm font-medium">Program starts</span>
-                <input
-                  type="date"
-                  class="mt-1 w-full px-3 py-2 rounded border border-neutral-200"
-                  [ngModel]="startsAt()"
-                  (ngModelChange)="startsAt.set($event)"
-                />
+                <input type="date" class="mt-1 w-full px-3 py-2 rounded-md border border-neutral-200 text-sm"
+                  [ngModel]="startsAt()" (ngModelChange)="startsAt.set($event)" />
               </label>
               <label class="block">
                 <span class="text-sm font-medium">Program ends</span>
-                <input
-                  type="date"
-                  class="mt-1 w-full px-3 py-2 rounded border border-neutral-200"
-                  [ngModel]="endsAt()"
-                  (ngModelChange)="endsAt.set($event)"
-                />
+                <input type="date" class="mt-1 w-full px-3 py-2 rounded-md border border-neutral-200 text-sm"
+                  [ngModel]="endsAt()" (ngModelChange)="endsAt.set($event)" />
               </label>
             </div>
           </section>
@@ -134,131 +234,115 @@
           <!-- COLLABORATORS ------------------------------------------------- -->
           <section *ngSwitchCase="'collaborators'">
             <header>
-              <h3 class="text-xl font-semibold">Program Partnership</h3>
-              <p class="text-sm text-neutral-500">
+              <h3 class="text-2xl font-bold text-neutral-900">Program Partnership</h3>
+              <p class="text-sm text-neutral-500 mt-1">
                 Invite partner hubs and define how you'll build this program together.
               </p>
             </header>
             <div class="mt-6 space-y-4">
-              <div
-                *ngFor="let row of collaborators(); let i = index"
-                class="grid grid-cols-12 gap-4 items-end"
-              >
+              <div *ngFor="let row of collaborators(); let i = index" class="grid grid-cols-12 gap-4 items-end">
                 <label class="col-span-5">
                   <span class="text-sm font-medium block mb-1">Hub</span>
-                  <select
-                    class="w-full px-3 py-2 rounded border border-neutral-200"
-                    [ngModel]="row.hubId"
-                    (ngModelChange)="updateCollaborator(i, { hubId: $event })"
-                  >
+                  <select class="w-full px-3 py-2 rounded-md border border-neutral-200 text-sm"
+                    [ngModel]="row.hubId" (ngModelChange)="updateCollaborator(i, { hubId: $event })">
                     <option [ngValue]="null" disabled selected>Select hub…</option>
                     <option *ngFor="let h of hubs()" [ngValue]="h.hubId">{{ h.hubName }}</option>
                   </select>
                 </label>
                 <label class="col-span-5">
                   <span class="text-sm font-medium block mb-1">Role</span>
-                  <select
-                    class="w-full px-3 py-2 rounded border border-neutral-200"
-                    [ngModel]="row.role"
-                    (ngModelChange)="updateCollaborator(i, { role: $event })"
-                  >
-                    <option *ngFor="let r of roles" [ngValue]="r.value">
-                      {{ r.label }} — {{ r.description }}
-                    </option>
+                  <select class="w-full px-3 py-2 rounded-md border border-neutral-200 text-sm"
+                    [ngModel]="row.role" (ngModelChange)="updateCollaborator(i, { role: $event })">
+                    <option *ngFor="let r of roles" [ngValue]="r.value">{{ r.label }} — {{ r.description }}</option>
                   </select>
                 </label>
-                <button
-                  type="button"
-                  (click)="removeCollaborator(i)"
-                  class="col-span-2 text-neutral-400 hover:text-error text-sm py-2"
-                >
+                <button type="button" (click)="removeCollaborator(i)" class="col-span-2 text-neutral-400 hover:text-error text-sm py-2">
                   Remove
                 </button>
               </div>
-              <button
-                type="button"
-                (click)="addCollaborator()"
-                class="text-sm text-primary-700 font-medium"
-              >
-                + Add hub
-              </button>
+              <button type="button" (click)="addCollaborator()" class="text-sm text-primary-700 font-medium">+ Add hub</button>
             </div>
-            <p *ngIf="hubs().length === 0" class="text-xs text-neutral-500 mt-4">
-              You're not a member of any hub yet — you can still invite hubs by ID once the backend
-              endpoint ships.
-            </p>
           </section>
 
           <!-- STRUCTURE ----------------------------------------------------- -->
           <section *ngSwitchCase="'structure'">
-            <header>
-              <h3 class="text-xl font-semibold">Program Structure</h3>
-              <p class="text-sm text-neutral-500">
-                Assemble the courses, experiences, and expertise that bring your program to life.
-              </p>
-            </header>
-            <div class="mt-6 grid grid-cols-2 gap-6">
+            <header class="flex items-baseline justify-between mb-6">
               <div>
-                <h4 class="font-semibold mb-3">Inventory</h4>
-                <input
-                  class="w-full px-3 py-2 rounded border border-neutral-200 mb-3 text-sm"
-                  placeholder="Search services…"
-                />
-                <ul class="space-y-2">
-                  <li
-                    *ngFor="let item of inventory"
-                    class="flex items-center justify-between border border-neutral-200 rounded p-3"
-                  >
-                    <div class="flex items-center gap-3">
-                      <span class="text-xl">
+                <h3 class="text-2xl font-bold text-neutral-900">Program Structure</h3>
+                <p class="text-sm text-neutral-500 mt-1">
+                  Assemble the courses, experiences, and expertise that bring your program to life.
+                </p>
+              </div>
+              <button type="button" (click)="openCurriculumPicker.set(true)"
+                class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-neutral-900 text-white text-sm font-semibold">
+                + Add curriculum
+              </button>
+            </header>
+            <div *ngIf="curriculum().length === 0" class="text-sm text-neutral-500 p-8 border border-dashed border-neutral-200 rounded-lg text-center">
+              Nothing here yet — click "Add curriculum" to pick courses, experiences and expertise.
+            </div>
+            <ul class="space-y-3">
+              <li *ngFor="let item of curriculum()" class="border border-neutral-200 rounded-lg p-4 flex items-center gap-4">
+                <span class="text-xl">
+                  {{ item.type === 'course' ? '📘' : item.type === 'experience' ? '🎟️' : '🧑‍🏫' }}
+                </span>
+                <div class="flex-1">
+                  <div class="font-medium text-sm">{{ item.title }}</div>
+                  <div class="text-xs text-neutral-500">{{ item.type | titlecase }} · {{ item.ownerHub.hubName }}</div>
+                </div>
+                <label class="flex items-center gap-2 text-xs text-neutral-600">
+                  <input type="checkbox" [checked]="item.isMandatory" (change)="toggleMandatory(item.id)" />
+                  Mandatory
+                </label>
+                <button type="button" (click)="removeFromCurriculum(item.id)" class="text-neutral-400 hover:text-error text-xs">
+                  Remove
+                </button>
+              </li>
+            </ul>
+
+            <!-- Add Curriculum modal (Figma 5208:88193) -->
+            <div *ngIf="openCurriculumPicker()" class="fixed inset-0 z-50 bg-neutral-900/40 flex items-center justify-center p-4" (click)="openCurriculumPicker.set(false)">
+              <div class="bg-white rounded-2xl w-full max-w-lg max-h-[80vh] overflow-hidden flex flex-col" (click)="$event.stopPropagation()">
+                <header class="flex items-center justify-between px-6 py-4 border-b border-neutral-100">
+                  <h4 class="text-lg font-bold text-neutral-900">Add Curriculum</h4>
+                  <button type="button" (click)="openCurriculumPicker.set(false)" class="text-neutral-400 hover:text-neutral-700" aria-label="Close">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                  </button>
+                </header>
+                <div class="px-6 py-4 border-b border-neutral-100 space-y-3">
+                  <label class="relative block">
+                    <span class="absolute inset-y-0 left-3 flex items-center text-neutral-400" aria-hidden="true">
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+                    </span>
+                    <input type="search" placeholder="Search services" class="w-full pl-9 pr-4 py-2.5 rounded-lg bg-neutral-50 border border-neutral-100 focus:outline-none focus:bg-white focus:border-neutral-300 text-sm"
+                      [ngModel]="invSearch()" (ngModelChange)="invSearch.set($event)" />
+                  </label>
+                  <div class="flex items-center gap-2 text-xs">
+                    <button *ngFor="let f of invFilters" type="button" class="px-3 py-1 rounded-full transition"
+                      [class.bg-neutral-900]="invFilter() === f"
+                      [class.text-white]="invFilter() === f"
+                      [class.bg-neutral-100]="invFilter() !== f"
+                      [class.text-neutral-700]="invFilter() !== f"
+                      (click)="invFilter.set(f)">{{ f | titlecase }}</button>
+                  </div>
+                </div>
+                <ul class="flex-1 overflow-y-auto px-6 py-2 space-y-2">
+                  <li *ngFor="let item of filteredInventory()" class="flex items-center justify-between gap-3 border border-neutral-100 rounded-lg p-3 hover:border-neutral-300">
+                    <div class="flex items-center gap-3 min-w-0">
+                      <div class="w-10 h-10 rounded-md bg-neutral-100 flex items-center justify-center text-base shrink-0">
                         {{ item.type === 'course' ? '📘' : item.type === 'experience' ? '🎟️' : '🧑‍🏫' }}
-                      </span>
-                      <div>
-                        <div class="font-medium text-sm">{{ item.title }}</div>
-                        <div class="text-xs text-neutral-500">
-                          {{ item.type | titlecase }} · {{ item.ownerHub.hubName }}
-                        </div>
+                      </div>
+                      <div class="min-w-0">
+                        <div class="font-semibold text-sm text-neutral-900 truncate">{{ item.title }}</div>
+                        <div class="text-xs text-neutral-500 truncate">{{ item.type | titlecase }} • {{ item.ownerHub.hubName }}</div>
                       </div>
                     </div>
-                    <button
-                      type="button"
-                      (click)="addToCurriculum(item)"
-                      class="text-primary-700 font-bold text-lg"
-                    >
-                      +
+                    <button type="button" (click)="addToCurriculum(item); openCurriculumPicker.set(false)"
+                      class="w-8 h-8 rounded-full text-neutral-500 hover:text-neutral-900 hover:bg-neutral-100 flex items-center justify-center" aria-label="Add">
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
                     </button>
                   </li>
-                </ul>
-              </div>
-              <div>
-                <h4 class="font-semibold mb-3">Active Curriculum ({{ curriculum().length }})</h4>
-                <div *ngIf="curriculum().length === 0" class="text-sm text-neutral-500">
-                  Nothing here yet — add items from the Inventory.
-                </div>
-                <ul class="space-y-3">
-                  <li
-                    *ngFor="let item of curriculum()"
-                    class="border border-neutral-200 rounded p-3"
-                  >
-                    <div class="flex items-center justify-between">
-                      <div class="font-medium text-sm">{{ item.title }}</div>
-                      <button
-                        type="button"
-                        (click)="removeFromCurriculum(item.id)"
-                        class="text-neutral-400 hover:text-error text-xs"
-                      >
-                        Remove
-                      </button>
-                    </div>
-                    <label class="mt-2 flex items-center gap-2 text-sm">
-                      <input
-                        type="checkbox"
-                        [checked]="item.isMandatory"
-                        (change)="toggleMandatory(item.id)"
-                      />
-                      Mandatory for program completion
-                    </label>
-                  </li>
+                  <li *ngIf="filteredInventory().length === 0" class="text-center text-sm text-neutral-500 py-6">No matches</li>
                 </ul>
               </div>
             </div>
@@ -266,39 +350,67 @@
 
           <!-- LANDING PAGE -------------------------------------------------- -->
           <section *ngSwitchCase="'landing'" class="max-w-xl text-sm text-neutral-500">
-            <h3 class="text-xl font-semibold text-neutral-900 mb-2">Landing Page</h3>
+            <h3 class="text-2xl font-bold text-neutral-900 mb-2">Landing Page</h3>
             <p>
-              The auto-generated landing page picks up your title, tagline, hub partners, and
-              cover image. You can override copy and hero imagery once the backend write
-              endpoints land — for now this is read-only.
+              The auto-generated landing page picks up your title, tagline, hub partners, and cover image.
+              You can override copy and hero imagery once the backend write endpoints land — for now this is read-only.
             </p>
           </section>
 
           <!-- PUBLISH ------------------------------------------------------- -->
           <section *ngSwitchCase="'publish'" class="max-w-md">
-            <h3 class="text-xl font-semibold mb-3">Ready to publish?</h3>
+            <h3 class="text-2xl font-bold text-neutral-900 mb-3">Ready to publish?</h3>
             <ul class="text-sm text-neutral-700 space-y-1 mb-5">
               <li>• Title: {{ title() || '—' }}</li>
-              <li>• Tagline: {{ tagline() || '—' }}</li>
+              <li>• Description: {{ (description() | slice:0:60) || '—' }}{{ description().length > 60 ? '…' : '' }}</li>
               <li>• Curriculum items: {{ curriculum().length }}</li>
               <li>• Collaborators: {{ validCollaboratorCount() }}</li>
-              <li>
-                • Pricing:
-                {{ isPaid() ? 'Paid (MYR ' + (price() ?? 0) + ')' : 'Free' }}
-              </li>
+              <li>• Visibility: {{ visibility() }}</li>
+              <li>• Hosting: {{ hosting() }}</li>
+              <li>• Pricing: {{ isPaid() ? 'Paid (MYR ' + (price() ?? 0) + ')' : 'Free' }}</li>
             </ul>
-            <button
-              type="button"
-              [disabled]="!canPublish()"
-              [class.opacity-40]="!canPublish()"
-              (click)="publish()"
-              class="px-5 py-2.5 rounded-full bg-neutral-900 text-white font-medium"
-            >
+            <button type="button" [disabled]="!canPublish()" [class.opacity-40]="!canPublish()" (click)="publish()"
+              class="px-5 py-2.5 rounded-full bg-neutral-900 text-white font-semibold">
               Publish program
             </button>
           </section>
         </ng-container>
       </div>
     </main>
+
+    <!-- Right TIPS column (Figma 5208:67078) -->
+    <aside class="hidden md:block col-span-3 space-y-4">
+      <div class="bg-white rounded-2xl border border-neutral-200 p-5">
+        <div class="text-[11px] font-bold tracking-widest text-warning mb-2 inline-flex items-center gap-1">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M9 21h6v-1H9v1zm3-19a7 7 0 0 0-7 7c0 2.4 1.2 4.5 3 5.7V17a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-2.3c1.8-1.2 3-3.3 3-5.7a7 7 0 0 0-7-7z"/></svg>
+          TIPS
+        </div>
+        <p class="text-sm text-neutral-700 leading-relaxed">
+          {{ activeTip() }}
+        </p>
+      </div>
+      <div *ngIf="active() === 'basic' && hosting() === 'physical'" class="bg-white rounded-2xl border border-neutral-200 p-5">
+        <div class="text-[11px] font-bold tracking-widest text-info mb-2 inline-flex items-center gap-1">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 1 1 0-5 2.5 2.5 0 0 1 0 5z"/></svg>
+          PIN IT
+        </div>
+        <p class="text-sm text-neutral-700">Is this pinned to the correct location?</p>
+        <div class="mt-3 aspect-[4/3] bg-neutral-100 rounded-lg overflow-hidden flex items-center justify-center text-neutral-400">
+          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="10" r="3"/><path d="M12 22s8-7.58 8-13a8 8 0 0 0-16 0c0 5.42 8 13 8 13z"/></svg>
+        </div>
+      </div>
+    </aside>
+  </div>
+
+  <!-- Sticky bottom action bar -->
+  <div class="fixed bottom-0 left-0 right-0 bg-white border-t border-neutral-200 z-20">
+    <div class="max-w-[1320px] mx-auto px-6 py-3 flex items-center justify-between">
+      <button type="button" (click)="prevStep()" [class.invisible]="!hasPrev()"
+        class="text-sm text-neutral-500 hover:text-neutral-900">← Back</button>
+      <button type="button" (click)="nextStep()"
+        class="px-6 py-2.5 rounded-full bg-neutral-900 text-white text-sm font-semibold hover:bg-neutral-800">
+        {{ active() === 'publish' ? 'Publish program' : 'Save & Continue' }}
+      </button>
+    </div>
   </div>
 </div>
