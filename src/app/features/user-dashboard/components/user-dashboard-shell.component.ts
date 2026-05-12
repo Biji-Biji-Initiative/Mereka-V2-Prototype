@@ -30,6 +30,7 @@ import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 export class UserDashboardShellComponent {
   readonly nav = [
     { label: 'Overview', link: '/dashboard', exact: true },
+    { label: 'Broadcasts', link: '/dashboard/broadcasts' },
     { label: 'Bookings', link: '/dashboard/bookings' },
     { label: 'Courses', link: '/dashboard/courses' },
     { label: 'Favorites', link: '/dashboard/favorites' },
