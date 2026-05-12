@@ -1,17 +1,17 @@
 import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ActivatedRoute, NavigationEnd, Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
+import { ActivatedRoute, NavigationEnd, Router, RouterOutlet } from '@angular/router';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { filter, map, startWith, switchMap } from 'rxjs';
 import { ProgramsService } from '../../services/programs.service';
 import type { Program } from '../../models/program.model';
 import { ProgramSidebarComponent } from '../../components/program-sidebar/program-sidebar.component';
-import { ProgramRosterComponent } from '../../components/program-roster/program-roster.component';
+import { ProgramLeftRailComponent } from '../../components/program-leftrail/program-leftrail.component';
 
 @Component({
   selector: 'mereka-program-detail',
   standalone: true,
-  imports: [CommonModule, RouterLink, RouterLinkActive, RouterOutlet, ProgramSidebarComponent, ProgramRosterComponent],
+  imports: [CommonModule, RouterOutlet, ProgramSidebarComponent, ProgramLeftRailComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './program-detail.page.html',
 })
