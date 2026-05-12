@@ -1,6 +1,14 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
+import { PlanFeatureService } from '../analytics/services/plan-feature.service';
+
+interface NavItem {
+  label: string;
+  link: string;
+  exact?: boolean;
+  badge?: string;
+}
 
 @Component({
   selector: 'mereka-user-dashboard-shell',
@@ -14,10 +22,16 @@ import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
           <div class="sticky top-20 bg-white border border-neutral-200 rounded-lg p-4 text-sm">
             <p class="text-[11px] uppercase tracking-widest text-neutral-400 mb-2 px-3">Dashboard</p>
             <ul class="space-y-0.5">
-              <li *ngFor="let item of nav">
+              <li *ngFor="let item of nav()">
                 <a [routerLink]="item.link" [routerLinkActiveOptions]="{ exact: item.exact || false }"
                    routerLinkActive="bg-neutral-100 text-neutral-900 font-medium"
-                   class="block px-3 py-1.5 rounded-md text-neutral-600 hover:bg-neutral-50">{{ item.label }}</a>
+                   class="flex items-center justify-between px-3 py-1.5 rounded-md text-neutral-600 hover:bg-neutral-50">
+                  <span>{{ item.label }}</span>
+                  <span *ngIf="item.badge"
+                        class="text-[10px] uppercase tracking-wider px-1.5 py-0.5 rounded bg-primary-100 text-primary-700 font-medium">
+                    {{ item.badge }}
+                  </span>
+                </a>
               </li>
             </ul>
           </div>
@@ -28,15 +42,24 @@ import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
   `,
 })
 export class UserDashboardShellComponent {
-  readonly nav = [
-    { label: 'Overview', link: '/dashboard', exact: true },
-    { label: 'Bookings', link: '/dashboard/bookings' },
-    { label: 'Courses', link: '/dashboard/courses' },
-    { label: 'Favorites', link: '/dashboard/favorites' },
-    { label: 'Notifications', link: '/dashboard/notifications' },
-    { label: 'Reviews', link: '/dashboard/reviews' },
-    { label: 'Billing', link: '/dashboard/billing' },
-    { label: 'Transactions', link: '/dashboard/transactions' },
-    { label: 'Settings', link: '/dashboard/settings' },
-  ];
+  private readonly plans = inject(PlanFeatureService);
+
+  readonly nav = computed<NavItem[]>(() => {
+    const items: NavItem[] = [
+      { label: 'Overview', link: '/dashboard', exact: true },
+      { label: 'Bookings', link: '/dashboard/bookings' },
+      { label: 'Courses', link: '/dashboard/courses' },
+      { label: 'Favorites', link: '/dashboard/favorites' },
+      { label: 'Notifications', link: '/dashboard/notifications' },
+      { label: 'Reviews', link: '/dashboard/reviews' },
+      { label: 'Billing', link: '/dashboard/billing' },
+      { label: 'Transactions', link: '/dashboard/transactions' },
+      { label: 'Settings', link: '/dashboard/settings' },
+    ];
+    // Analytics is Scale/Soar only — gate so Free/Spark users see no entry.
+    if (this.plans.canAccessAnalytics()) {
+      items.splice(1, 0, { label: 'Analytics', link: '/dashboard/analytics', badge: 'Scale' });
+    }
+    return items;
+  });
 }

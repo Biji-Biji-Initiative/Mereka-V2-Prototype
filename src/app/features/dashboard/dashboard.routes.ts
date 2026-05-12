@@ -26,4 +26,9 @@ export const DASHBOARD_ROUTES: Routes = [
       { path: 'settings', component: DashboardSettingsPage },
     ],
   },
+  {
+    path: 'analytics',
+    loadChildren: () =>
+      import('../user-dashboard/analytics/analytics.routes').then((m) => m.ANALYTICS_ROUTES),
+  },
 ];
