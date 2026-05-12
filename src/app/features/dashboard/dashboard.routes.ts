@@ -26,4 +26,9 @@ export const DASHBOARD_ROUTES: Routes = [
       { path: 'settings', component: DashboardSettingsPage },
     ],
   },
+  {
+    path: 'broadcasts',
+    loadChildren: () =>
+      import('../user-dashboard/broadcasts/broadcasts.routes').then((m) => m.BROADCASTS_ROUTES),
+  },
 ];

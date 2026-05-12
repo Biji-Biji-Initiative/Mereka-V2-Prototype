@@ -13,6 +13,11 @@ export const routes: Routes = [
       import('./features/auth/login.component').then((m) => m.LoginComponent),
   },
   {
+    path: 'dashboard',
+    loadChildren: () =>
+      import('./features/dashboard/dashboard.routes').then((m) => m.DASHBOARD_ROUTES),
+  },
+  {
     path: 'programs',
     loadChildren: () =>
       import('./features/programs/programs.routes').then((m) => m.PROGRAMS_ROUTES),
