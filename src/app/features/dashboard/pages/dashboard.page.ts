@@ -90,9 +90,20 @@ export class DashboardPage {
   toggleSidebar(): void { this.mobileSidebarOpen.update((v) => !v); }
   closeSidebar(): void { this.mobileSidebarOpen.set(false); }
 
-  // Sidebar profile state (mock data — backend wiring deferred to the profile API)
-  readonly profileCompletion = signal(40);
-  readonly accountTier = signal<'FREE' | 'PRO' | 'ENTERPRISE'>('FREE');
+  // Sidebar profile — computed from auth state (same logic as DashboardSidebarComponent)
+  readonly profileCompletion = computed(() => {
+    const user = this.auth.user();
+    if (!user) return 0;
+    let filled = 0;
+    const total = 5;
+    if (user.name) filled++;
+    if (user.email) filled++;
+    if (user.profilePhoto) filled++;
+    if (user.emailVerified) filled++;
+    if (user.hubs && user.hubs.length > 0) filled++;
+    return Math.round((filled / total) * 100);
+  });
+  readonly accountTier = computed<'FREE' | 'PRO' | 'ENTERPRISE'>(() => 'FREE');
 
   // ── Mini Calendar ────────────────────────────────────────────────────
   private static readonly MONTH_NAMES = [
