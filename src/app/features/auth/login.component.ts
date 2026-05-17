@@ -119,9 +119,10 @@ export class LoginComponent {
 
   goBack(): void {
     const s = this.step();
-    if (s === 'password') this.step.set('method');
-    else if (s === 'method') this.step.set('email');
-    this.error.set('');
+    if (s === 'password') { this.step.set('method'); this.error.set(''); return; }
+    if (s === 'method')   { this.step.set('email');  this.error.set(''); return; }
+    // Email step — leave the auth flow back to home
+    this.router.navigateByUrl('/');
   }
 
   signIn(): void {

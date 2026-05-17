@@ -1,6 +1,6 @@
-import { ChangeDetectionStrategy, Component, input } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { RouterLink, RouterLinkActive } from '@angular/router';
+import { ChangeDetectionStrategy, Component, input, inject} from '@angular/core';
+import { CommonModule, Location} from '@angular/common';
+import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 
 import type { Program } from '../../models/program.model';
 
@@ -90,7 +90,15 @@ export class ProgramSidebarComponent {
     },
   ];
 
+  private readonly _location = inject(Location);
+  private readonly _router = inject(Router);
   goBack(): void {
-    history.back();
+    const before: string = this._router.url;
+    this._location.back();
+    setTimeout(() => {
+      if (this._router.url === before) {
+        void this._router.navigateByUrl('/programs');
+      }
+    }, 100);
   }
 }

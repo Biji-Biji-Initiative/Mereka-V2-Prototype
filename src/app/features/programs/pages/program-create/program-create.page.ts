@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, Location } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 
@@ -263,8 +263,20 @@ export class ProgramCreatePage {
     () => this.collaborators().filter((c) => c.hubId !== null).length,
   );
 
+  private readonly location = inject(Location);
+  /** Step back through the wizard if we can; otherwise SPA history back, falling back to /programs. */
   goBack(): void {
-    history.back();
+    const keys = STEPS.map(s => s.key);
+    const idx = keys.indexOf(this.active());
+    if (idx > 0) { this.active.set(keys[idx - 1]); return; }
+    // First step (basic) — try SPA history; fall back to /programs after a beat.
+    const before = (typeof window !== 'undefined') ? window.location.pathname : '';
+    this.location.back();
+    setTimeout(() => {
+      if (typeof window !== 'undefined' && window.location.pathname === before) {
+        window.location.assign(window.location.pathname.replace(/\/programs\/new.*$/, '/programs'));
+      }
+    }, 100);
   }
 
   // ── Save / Publish ────────────────────────────────────────────────
