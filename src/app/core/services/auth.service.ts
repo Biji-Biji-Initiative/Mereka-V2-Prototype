@@ -35,6 +35,7 @@ interface ApiResponse<T> {
 @Injectable({ providedIn: 'root' })
 export class AuthService {
   private readonly http = inject(HttpClient);
+  private static readonly STORAGE_KEY = 'mereka_prototype_user';
 
   private readonly _user = signal<AuthUser | null>(null);
   private readonly _hubs = signal<AuthHub[]>([]);
@@ -46,6 +47,26 @@ export class AuthService {
   readonly isLoading = this._isLoading.asReadonly();
   readonly isInitialized = this._isInitialized.asReadonly();
   readonly isLoggedIn = computed(() => this._user() !== null);
+
+  constructor() {
+    // Restore prototype user from localStorage on startup
+    this.restorePrototypeUser();
+  }
+
+  /** Restore prototype user from localStorage (survives page refresh / SPA navigation). */
+  private restorePrototypeUser(): void {
+    try {
+      const stored = localStorage.getItem(AuthService.STORAGE_KEY);
+      if (stored) {
+        const user: AuthUser = JSON.parse(stored);
+        this._user.set(user);
+        if (user.hubs) this._hubs.set(user.hubs);
+        this._isInitialized.set(true);
+      }
+    } catch {
+      localStorage.removeItem(AuthService.STORAGE_KEY);
+    }
+  }
 
   /** Returns the auth app URL with `redirect` set so the user lands back on the current page. */
   loginUrl(redirectTo: string = typeof window !== 'undefined' ? window.location.href : '/'): string {
@@ -112,16 +133,19 @@ export class AuthService {
   clear(): void {
     this._user.set(null);
     this._hubs.set([]);
+    try { localStorage.removeItem(AuthService.STORAGE_KEY); } catch {}
   }
 
   /**
    * Prototype-only: set user directly without hitting the backend.
-   * Used by the demo login flow.
+   * Used by the demo login flow. Persists to localStorage so the
+   * session survives page refresh and SPA sub-navigation.
    */
   setPrototypeUser(user: AuthUser): void {
     this._user.set(user);
     if (user.hubs) this._hubs.set(user.hubs);
     this._isLoading.set(false);
     this._isInitialized.set(true);
+    try { localStorage.setItem(AuthService.STORAGE_KEY, JSON.stringify(user)); } catch {}
   }
 }
