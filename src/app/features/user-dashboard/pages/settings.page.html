@@ -1,0 +1,302 @@
+<div class="flex flex-col gap-6">
+  <!-- Header -->
+  <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+    <div class="flex flex-col gap-1">
+      <h1 class="text-[24px] sm:text-[28px] font-black leading-tight" style="color:#1A1623">Settings</h1>
+      <p class="text-sm font-medium" style="color:#7B7B7B">Manage your account preferences and profile</p>
+    </div>
+    <button
+      type="button"
+      (click)="save()"
+      class="inline-flex items-center justify-center h-10 px-5 rounded-xl text-sm font-bold text-white transition-colors hover:opacity-90"
+      style="background:#276EF1;border:none;outline:none;box-shadow:none"
+    >Save Changes</button>
+  </div>
+
+  <!-- Save confirmation -->
+  <div *ngIf="saveMessage()" class="px-4 py-3 rounded-xl text-sm font-medium" style="background:#DCFCE7;color:#16A34A">
+    {{ saveMessage() }}
+  </div>
+
+  <!-- Tab navigation -->
+  <div class="flex items-center gap-2 sm:gap-3 flex-wrap">
+    <button
+      *ngFor="let tab of tabs"
+      type="button"
+      (click)="setTab(tab)"
+      class="px-3 py-2.5 rounded-full text-xs leading-3 transition-colors"
+      [style.background]="activeTab() === tab ? '#303345' : '#ECECF1'"
+      [style.color]="activeTab() === tab ? 'white' : '#1A1623'"
+      style="border:none;outline:none;box-shadow:none"
+    >{{ tab }}</button>
+  </div>
+
+  <!-- ═══ PROFILE TAB ═══ -->
+  <div *ngIf="activeTab() === 'Profile'" class="flex flex-col gap-5">
+    <!-- Avatar section -->
+    <div class="p-5 rounded-xl bg-white flex items-center gap-5" style="outline:1px solid #DDDDDE;outline-offset:-1px">
+      <div class="w-20 h-20 rounded-full flex items-center justify-center text-2xl font-black text-white shrink-0" style="background:#303345">
+        {{ displayName().charAt(0) || 'U' }}
+      </div>
+      <div class="flex flex-col gap-2">
+        <span class="text-base font-bold" style="color:#1A1623">Profile Photo</span>
+        <span class="text-xs" style="color:#7B7B7B">JPG, PNG or GIF. Max 2MB.</span>
+        <div class="flex items-center gap-2">
+          <button type="button" class="px-3 py-1.5 rounded-lg text-xs font-bold" style="background:#276EF1;color:white;border:none;outline:none;box-shadow:none">Upload</button>
+          <button type="button" class="px-3 py-1.5 rounded-lg text-xs font-bold" style="background:#ECECF1;color:#1A1623;border:none;outline:none;box-shadow:none">Remove</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Form fields -->
+    <div class="p-5 rounded-xl bg-white flex flex-col gap-4" style="outline:1px solid #DDDDDE;outline-offset:-1px">
+      <h3 class="text-base font-bold" style="color:#1A1623">Personal Information</h3>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div class="flex flex-col gap-1.5">
+          <label class="text-[11px] font-bold uppercase tracking-wider" style="color:#7B7B7B;letter-spacing:0.5px">Full Name</label>
+          <input type="text" [value]="displayName()" readonly class="h-10 px-3 rounded-lg text-sm" style="border:1px solid #DDDDDE;outline:none;background:#FAFAFA;color:#1A1623" />
+        </div>
+        <div class="flex flex-col gap-1.5">
+          <label class="text-[11px] font-bold uppercase tracking-wider" style="color:#7B7B7B;letter-spacing:0.5px">Email</label>
+          <input type="email" [value]="email()" readonly class="h-10 px-3 rounded-lg text-sm" style="border:1px solid #DDDDDE;outline:none;background:#FAFAFA;color:#1A1623" />
+        </div>
+        <div class="flex flex-col gap-1.5">
+          <label class="text-[11px] font-bold uppercase tracking-wider" style="color:#7B7B7B;letter-spacing:0.5px">Phone</label>
+          <input type="tel" [value]="profileForm().phone" readonly class="h-10 px-3 rounded-lg text-sm" style="border:1px solid #DDDDDE;outline:none;background:#FAFAFA;color:#1A1623" />
+        </div>
+        <div class="flex flex-col gap-1.5">
+          <label class="text-[11px] font-bold uppercase tracking-wider" style="color:#7B7B7B;letter-spacing:0.5px">Location</label>
+          <input type="text" [value]="profileForm().location" readonly class="h-10 px-3 rounded-lg text-sm" style="border:1px solid #DDDDDE;outline:none;background:#FAFAFA;color:#1A1623" />
+        </div>
+        <div class="flex flex-col gap-1.5">
+          <label class="text-[11px] font-bold uppercase tracking-wider" style="color:#7B7B7B;letter-spacing:0.5px">Website</label>
+          <input type="url" [value]="profileForm().website" readonly class="h-10 px-3 rounded-lg text-sm" style="border:1px solid #DDDDDE;outline:none;background:#FAFAFA;color:#1A1623" />
+        </div>
+        <div class="flex flex-col gap-1.5">
+          <label class="text-[11px] font-bold uppercase tracking-wider" style="color:#7B7B7B;letter-spacing:0.5px">Language</label>
+          <input type="text" [value]="profileForm().language" readonly class="h-10 px-3 rounded-lg text-sm" style="border:1px solid #DDDDDE;outline:none;background:#FAFAFA;color:#1A1623" />
+        </div>
+      </div>
+
+      <div class="flex flex-col gap-1.5">
+        <label class="text-[11px] font-bold uppercase tracking-wider" style="color:#7B7B7B;letter-spacing:0.5px">Bio</label>
+        <textarea rows="3" [value]="profileForm().bio" readonly class="px-3 py-2 rounded-lg text-sm resize-none" style="border:1px solid #DDDDDE;outline:none;background:#FAFAFA;color:#1A1623"></textarea>
+      </div>
+
+      <div class="flex flex-col gap-1.5">
+        <label class="text-[11px] font-bold uppercase tracking-wider" style="color:#7B7B7B;letter-spacing:0.5px">Timezone</label>
+        <input type="text" [value]="profileForm().timezone" readonly class="h-10 px-3 rounded-lg text-sm" style="border:1px solid #DDDDDE;outline:none;background:#FAFAFA;color:#1A1623" />
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ SECURITY TAB ═══ -->
+  <div *ngIf="activeTab() === 'Security'" class="flex flex-col gap-5">
+    <!-- Password -->
+    <div class="p-5 rounded-xl bg-white flex flex-col gap-4" style="outline:1px solid #DDDDDE;outline-offset:-1px">
+      <h3 class="text-base font-bold" style="color:#1A1623">Password</h3>
+      <p class="text-sm" style="color:#7B7B7B">Last changed 45 days ago</p>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div class="flex flex-col gap-1.5">
+          <label class="text-[11px] font-bold uppercase tracking-wider" style="color:#7B7B7B;letter-spacing:0.5px">Current Password</label>
+          <input type="password" value="••••••••" readonly class="h-10 px-3 rounded-lg text-sm" style="border:1px solid #DDDDDE;outline:none;background:#FAFAFA;color:#1A1623" />
+        </div>
+        <div></div>
+        <div class="flex flex-col gap-1.5">
+          <label class="text-[11px] font-bold uppercase tracking-wider" style="color:#7B7B7B;letter-spacing:0.5px">New Password</label>
+          <input type="password" placeholder="Enter new password" class="h-10 px-3 rounded-lg text-sm" style="border:1px solid #DDDDDE;outline:none;background:white;color:#1A1623" />
+        </div>
+        <div class="flex flex-col gap-1.5">
+          <label class="text-[11px] font-bold uppercase tracking-wider" style="color:#7B7B7B;letter-spacing:0.5px">Confirm Password</label>
+          <input type="password" placeholder="Confirm new password" class="h-10 px-3 rounded-lg text-sm" style="border:1px solid #DDDDDE;outline:none;background:white;color:#1A1623" />
+        </div>
+      </div>
+      <div>
+        <button type="button" class="px-4 py-2 rounded-lg text-sm font-bold" style="background:#303345;color:white;border:none;outline:none;box-shadow:none">Update Password</button>
+      </div>
+    </div>
+
+    <!-- Two-Factor Authentication -->
+    <div class="p-5 rounded-xl bg-white flex items-start justify-between gap-4" style="outline:1px solid #DDDDDE;outline-offset:-1px">
+      <div class="flex flex-col gap-1">
+        <h3 class="text-base font-bold" style="color:#1A1623">Two-Factor Authentication</h3>
+        <p class="text-sm" style="color:#7B7B7B">Add an extra layer of security to your account with SMS or authenticator app verification.</p>
+      </div>
+      <button
+        type="button"
+        (click)="toggleTwoFactor()"
+        class="shrink-0 w-11 h-6 rounded-full relative transition-colors"
+        [style.background]="twoFactorEnabled() ? '#276EF1' : '#D1D5DB'"
+        style="border:none;outline:none;box-shadow:none"
+      >
+        <span class="absolute top-0.5 w-5 h-5 rounded-full bg-white shadow-sm transition-all" [style.left]="twoFactorEnabled() ? '22px' : '2px'"></span>
+      </button>
+    </div>
+
+    <!-- Active Sessions -->
+    <div class="p-5 rounded-xl bg-white flex flex-col gap-4" style="outline:1px solid #DDDDDE;outline-offset:-1px">
+      <div class="flex items-center justify-between">
+        <h3 class="text-base font-bold" style="color:#1A1623">Active Sessions</h3>
+        <span class="inline-flex items-center justify-center min-w-[20px] h-5 px-1.5 rounded-full text-white text-[11px] font-medium" style="background:#276EF1">{{ sessionCount() }}</span>
+      </div>
+      <div class="flex flex-col gap-3">
+        <div class="flex items-center justify-between py-2" style="border-bottom:1px solid #F0F0F0">
+          <div class="flex items-center gap-3">
+            <div class="w-8 h-8 rounded-lg flex items-center justify-center" style="background:#ECECF1">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><rect x="2" y="3" width="20" height="14" rx="2" stroke="#7B7B7B" stroke-width="2"/><path d="M8 21h8M12 17v4" stroke="#7B7B7B" stroke-width="2" stroke-linecap="round"/></svg>
+            </div>
+            <div class="flex flex-col">
+              <span class="text-sm font-medium" style="color:#1A1623">MacBook Pro - Chrome</span>
+              <span class="text-[11px]" style="color:#7B7B7B">Kuala Lumpur, MY - Current session</span>
+            </div>
+          </div>
+          <span class="text-[11px] font-bold px-2 py-0.5 rounded-full" style="background:#DCFCE7;color:#16A34A">Active</span>
+        </div>
+        <div class="flex items-center justify-between py-2" style="border-bottom:1px solid #F0F0F0">
+          <div class="flex items-center gap-3">
+            <div class="w-8 h-8 rounded-lg flex items-center justify-center" style="background:#ECECF1">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><rect x="5" y="2" width="14" height="20" rx="2" stroke="#7B7B7B" stroke-width="2"/><circle cx="12" cy="18" r="1" fill="#7B7B7B"/></svg>
+            </div>
+            <div class="flex flex-col">
+              <span class="text-sm font-medium" style="color:#1A1623">iPhone 15 - Safari</span>
+              <span class="text-[11px]" style="color:#7B7B7B">Kuala Lumpur, MY - 2 hours ago</span>
+            </div>
+          </div>
+          <button type="button" class="text-[11px] font-bold px-2 py-0.5 rounded-full" style="background:#FEE2E2;color:#EF4444;border:none;outline:none;box-shadow:none">Revoke</button>
+        </div>
+        <div class="flex items-center justify-between py-2">
+          <div class="flex items-center gap-3">
+            <div class="w-8 h-8 rounded-lg flex items-center justify-center" style="background:#ECECF1">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><rect x="2" y="3" width="20" height="14" rx="2" stroke="#7B7B7B" stroke-width="2"/><path d="M8 21h8M12 17v4" stroke="#7B7B7B" stroke-width="2" stroke-linecap="round"/></svg>
+            </div>
+            <div class="flex flex-col">
+              <span class="text-sm font-medium" style="color:#1A1623">Windows PC - Firefox</span>
+              <span class="text-[11px]" style="color:#7B7B7B">Petaling Jaya, MY - 1 day ago</span>
+            </div>
+          </div>
+          <button type="button" class="text-[11px] font-bold px-2 py-0.5 rounded-full" style="background:#FEE2E2;color:#EF4444;border:none;outline:none;box-shadow:none">Revoke</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Danger Zone -->
+    <div class="p-5 rounded-xl flex flex-col gap-3" style="outline:1px solid #FCA5A5;outline-offset:-1px;background:#FFF5F5">
+      <h3 class="text-base font-bold" style="color:#EF4444">Danger Zone</h3>
+      <p class="text-sm" style="color:#7B7B7B">Permanently delete your account and all associated data. This action cannot be undone.</p>
+      <div>
+        <button type="button" class="px-4 py-2 rounded-lg text-sm font-bold" style="background:#EF4444;color:white;border:none;outline:none;box-shadow:none">Delete Account</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ NOTIFICATIONS TAB ═══ -->
+  <div *ngIf="activeTab() === 'Notifications'" class="flex flex-col gap-5">
+    <div class="p-5 rounded-xl bg-white flex flex-col gap-4" style="outline:1px solid #DDDDDE;outline-offset:-1px">
+      <h3 class="text-base font-bold" style="color:#1A1623">Email Notifications</h3>
+
+      <div class="flex items-center justify-between py-3" style="border-bottom:1px solid #F0F0F0">
+        <div class="flex flex-col gap-0.5">
+          <span class="text-sm font-medium" style="color:#1A1623">Weekly Digest</span>
+          <span class="text-[11px]" style="color:#7B7B7B">Receive a weekly summary of your activity</span>
+        </div>
+        <button type="button" (click)="toggleNotifPref('emailDigest')" class="shrink-0 w-11 h-6 rounded-full relative transition-colors" [style.background]="notifPrefs().emailDigest ? '#276EF1' : '#D1D5DB'" style="border:none;outline:none;box-shadow:none">
+          <span class="absolute top-0.5 w-5 h-5 rounded-full bg-white shadow-sm transition-all" [style.left]="notifPrefs().emailDigest ? '22px' : '2px'"></span>
+        </button>
+      </div>
+
+      <div class="flex items-center justify-between py-3" style="border-bottom:1px solid #F0F0F0">
+        <div class="flex flex-col gap-0.5">
+          <span class="text-sm font-medium" style="color:#1A1623">Course Updates</span>
+          <span class="text-[11px]" style="color:#7B7B7B">New modules, assignments, and deadline reminders</span>
+        </div>
+        <button type="button" (click)="toggleNotifPref('courseUpdates')" class="shrink-0 w-11 h-6 rounded-full relative transition-colors" [style.background]="notifPrefs().courseUpdates ? '#276EF1' : '#D1D5DB'" style="border:none;outline:none;box-shadow:none">
+          <span class="absolute top-0.5 w-5 h-5 rounded-full bg-white shadow-sm transition-all" [style.left]="notifPrefs().courseUpdates ? '22px' : '2px'"></span>
+        </button>
+      </div>
+
+      <div class="flex items-center justify-between py-3" style="border-bottom:1px solid #F0F0F0">
+        <div class="flex flex-col gap-0.5">
+          <span class="text-sm font-medium" style="color:#1A1623">Hub Announcements</span>
+          <span class="text-[11px]" style="color:#7B7B7B">Important updates from your joined hubs</span>
+        </div>
+        <button type="button" (click)="toggleNotifPref('hubAnnouncements')" class="shrink-0 w-11 h-6 rounded-full relative transition-colors" [style.background]="notifPrefs().hubAnnouncements ? '#276EF1' : '#D1D5DB'" style="border:none;outline:none;box-shadow:none">
+          <span class="absolute top-0.5 w-5 h-5 rounded-full bg-white shadow-sm transition-all" [style.left]="notifPrefs().hubAnnouncements ? '22px' : '2px'"></span>
+        </button>
+      </div>
+
+      <div class="flex items-center justify-between py-3" style="border-bottom:1px solid #F0F0F0">
+        <div class="flex flex-col gap-0.5">
+          <span class="text-sm font-medium" style="color:#1A1623">Booking Reminders</span>
+          <span class="text-[11px]" style="color:#7B7B7B">Reminders for upcoming bookings and events</span>
+        </div>
+        <button type="button" (click)="toggleNotifPref('bookingReminders')" class="shrink-0 w-11 h-6 rounded-full relative transition-colors" [style.background]="notifPrefs().bookingReminders ? '#276EF1' : '#D1D5DB'" style="border:none;outline:none;box-shadow:none">
+          <span class="absolute top-0.5 w-5 h-5 rounded-full bg-white shadow-sm transition-all" [style.left]="notifPrefs().bookingReminders ? '22px' : '2px'"></span>
+        </button>
+      </div>
+
+      <div class="flex items-center justify-between py-3">
+        <div class="flex flex-col gap-0.5">
+          <span class="text-sm font-medium" style="color:#1A1623">Marketing Emails</span>
+          <span class="text-[11px]" style="color:#7B7B7B">Promotions, featured programmes, and partner offers</span>
+        </div>
+        <button type="button" (click)="toggleNotifPref('marketingEmails')" class="shrink-0 w-11 h-6 rounded-full relative transition-colors" [style.background]="notifPrefs().marketingEmails ? '#276EF1' : '#D1D5DB'" style="border:none;outline:none;box-shadow:none">
+          <span class="absolute top-0.5 w-5 h-5 rounded-full bg-white shadow-sm transition-all" [style.left]="notifPrefs().marketingEmails ? '22px' : '2px'"></span>
+        </button>
+      </div>
+    </div>
+
+    <div class="p-5 rounded-xl bg-white flex flex-col gap-4" style="outline:1px solid #DDDDDE;outline-offset:-1px">
+      <h3 class="text-base font-bold" style="color:#1A1623">Other Channels</h3>
+
+      <div class="flex items-center justify-between py-3" style="border-bottom:1px solid #F0F0F0">
+        <div class="flex flex-col gap-0.5">
+          <span class="text-sm font-medium" style="color:#1A1623">Push Notifications</span>
+          <span class="text-[11px]" style="color:#7B7B7B">Browser and mobile push notifications</span>
+        </div>
+        <button type="button" (click)="toggleNotifPref('pushNotifications')" class="shrink-0 w-11 h-6 rounded-full relative transition-colors" [style.background]="notifPrefs().pushNotifications ? '#276EF1' : '#D1D5DB'" style="border:none;outline:none;box-shadow:none">
+          <span class="absolute top-0.5 w-5 h-5 rounded-full bg-white shadow-sm transition-all" [style.left]="notifPrefs().pushNotifications ? '22px' : '2px'"></span>
+        </button>
+      </div>
+
+      <div class="flex items-center justify-between py-3">
+        <div class="flex flex-col gap-0.5">
+          <span class="text-sm font-medium" style="color:#1A1623">SMS Alerts</span>
+          <span class="text-[11px]" style="color:#7B7B7B">Critical alerts via SMS (booking changes, payment confirmations)</span>
+        </div>
+        <button type="button" (click)="toggleNotifPref('smsAlerts')" class="shrink-0 w-11 h-6 rounded-full relative transition-colors" [style.background]="notifPrefs().smsAlerts ? '#276EF1' : '#D1D5DB'" style="border:none;outline:none;box-shadow:none">
+          <span class="absolute top-0.5 w-5 h-5 rounded-full bg-white shadow-sm transition-all" [style.left]="notifPrefs().smsAlerts ? '22px' : '2px'"></span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ CONNECTED ACCOUNTS TAB ═══ -->
+  <div *ngIf="activeTab() === 'Connected Accounts'" class="flex flex-col gap-5">
+    <div class="p-5 rounded-xl bg-white flex flex-col gap-4" style="outline:1px solid #DDDDDE;outline-offset:-1px">
+      <h3 class="text-base font-bold" style="color:#1A1623">Linked Accounts</h3>
+      <p class="text-sm" style="color:#7B7B7B">Connect third-party accounts for faster login and data sync.</p>
+
+      <div *ngFor="let acct of connectedAccounts(); let last = last" class="flex items-center justify-between py-3" [style.border-bottom]="!last ? '1px solid #F0F0F0' : 'none'">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-lg flex items-center justify-center text-sm font-black" style="background:#ECECF1;color:#303345">
+            {{ acct.icon }}
+          </div>
+          <div class="flex flex-col gap-0.5">
+            <span class="text-sm font-medium" style="color:#1A1623">{{ acct.provider }}</span>
+            <span *ngIf="acct.connected && acct.email" class="text-[11px]" style="color:#7B7B7B">{{ acct.email }}</span>
+            <span *ngIf="!acct.connected" class="text-[11px]" style="color:#B9B9BA">Not connected</span>
+          </div>
+        </div>
+        <button
+          type="button"
+          (click)="toggleAccount(acct.provider)"
+          class="px-3 py-1.5 rounded-lg text-xs font-bold transition-colors"
+          [style.background]="acct.connected ? '#FEE2E2' : '#276EF1'"
+          [style.color]="acct.connected ? '#EF4444' : 'white'"
+          style="border:none;outline:none;box-shadow:none"
+        >{{ acct.connected ? 'Disconnect' : 'Connect' }}</button>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,104 @@
+<div class="flex flex-col gap-6">
+  <!-- Header -->
+  <div class="flex flex-col gap-1">
+    <h1 class="text-[24px] sm:text-[28px] font-black leading-tight" style="color:#1A1623">My Favorites</h1>
+    <p class="text-sm font-medium" style="color:#7B7B7B">Saved courses, programmes, experiences, and expertise</p>
+  </div>
+
+  <!-- Summary cards -->
+  <div class="grid grid-cols-2 sm:grid-cols-5 gap-3">
+    <div class="p-4 rounded-xl bg-white flex flex-col gap-1" style="outline:1px solid #DDDDDE;outline-offset:-1px">
+      <span class="text-[11px] font-bold uppercase tracking-wider" style="color:#7B7B7B;letter-spacing:0.5px">Total Saved</span>
+      <span class="text-xl font-black" style="color:#1A1623">{{ stats().total }}</span>
+    </div>
+    <div class="p-4 rounded-xl bg-white flex flex-col gap-1" style="outline:1px solid #DDDDDE;outline-offset:-1px">
+      <span class="text-[11px] font-bold uppercase tracking-wider" style="color:#276EF1;letter-spacing:0.5px">Courses</span>
+      <span class="text-xl font-black" style="color:#1A1623">{{ stats().courses }}</span>
+    </div>
+    <div class="p-4 rounded-xl bg-white flex flex-col gap-1" style="outline:1px solid #DDDDDE;outline-offset:-1px">
+      <span class="text-[11px] font-bold uppercase tracking-wider" style="color:#16A34A;letter-spacing:0.5px">Programmes</span>
+      <span class="text-xl font-black" style="color:#1A1623">{{ stats().programmes }}</span>
+    </div>
+    <div class="p-4 rounded-xl bg-white flex flex-col gap-1" style="outline:1px solid #DDDDDE;outline-offset:-1px">
+      <span class="text-[11px] font-bold uppercase tracking-wider" style="color:#D97706;letter-spacing:0.5px">Experiences</span>
+      <span class="text-xl font-black" style="color:#1A1623">{{ stats().experiences }}</span>
+    </div>
+    <div class="p-4 rounded-xl bg-white flex flex-col gap-1" style="outline:1px solid #DDDDDE;outline-offset:-1px">
+      <span class="text-[11px] font-bold uppercase tracking-wider" style="color:#7C3AED;letter-spacing:0.5px">Expertise</span>
+      <span class="text-xl font-black" style="color:#1A1623">{{ stats().expertise }}</span>
+    </div>
+  </div>
+
+  <!-- Filter chips -->
+  <div class="flex items-center gap-2 sm:gap-3 flex-wrap">
+    <button
+      *ngFor="let f of filters"
+      type="button"
+      (click)="setFilter(f)"
+      class="px-3 py-2.5 rounded-full text-xs leading-3 transition-colors"
+      [style.background]="activeFilter() === f ? '#303345' : '#ECECF1'"
+      [style.color]="activeFilter() === f ? 'white' : '#1A1623'"
+      style="border:none;outline:none;box-shadow:none"
+    >{{ f }}</button>
+  </div>
+
+  <!-- Card grid -->
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+    <div
+      *ngFor="let item of filteredFavorites()"
+      class="rounded-xl bg-white overflow-hidden flex flex-col"
+      style="outline:1px solid #DDDDDE;outline-offset:-1px"
+    >
+      <!-- Image -->
+      <div class="relative">
+        <img [src]="item.image" [alt]="item.title" class="w-full h-[140px] object-cover" />
+        <!-- Type badge -->
+        <span class="absolute top-2 left-2 px-2 py-0.5 rounded-full text-[10px] font-bold"
+          [style.background]="typeConfig[item.type].bg"
+          [style.color]="typeConfig[item.type].color"
+        >{{ typeConfig[item.type].label }}</span>
+        <!-- Remove button -->
+        <button
+          type="button"
+          (click)="removeFavorite(item.id)"
+          class="absolute top-2 right-2 w-7 h-7 rounded-full flex items-center justify-center"
+          style="background:rgba(255,255,255,0.9);border:none;outline:none;box-shadow:0 1px 3px rgba(0,0,0,0.1)"
+        >
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="#EF4444"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+        </button>
+      </div>
+
+      <!-- Content -->
+      <div class="p-4 flex flex-col gap-2 flex-1">
+        <div class="flex items-center gap-1.5">
+          <div class="flex items-center gap-0.5">
+            <svg *ngFor="let s of renderStars(item.rating)" width="12" height="12" viewBox="0 0 24 24" [attr.fill]="s === 'filled' ? '#F59E0B' : '#E5E5E7'">
+              <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+            </svg>
+          </div>
+          <span class="text-[11px] font-medium" style="color:#7B7B7B">{{ item.rating }} ({{ item.reviewCount }})</span>
+        </div>
+
+        <h3 class="text-sm font-bold leading-5" style="color:#1A1623">{{ item.title }}</h3>
+        <p class="text-[12px] leading-4 line-clamp-2" style="color:#7B7B7B">{{ item.description }}</p>
+
+        <div class="flex items-center justify-between mt-auto pt-2" style="border-top:1px solid #F0F0F0">
+          <div class="flex flex-col">
+            <span class="text-[11px]" style="color:#B9B9BA">{{ item.hub }}</span>
+            <span class="text-sm font-bold" style="color:#1A1623">{{ item.price }}</span>
+          </div>
+          <button
+            type="button"
+            class="px-3 py-1.5 rounded-lg text-xs font-bold"
+            style="background:#276EF1;color:white;border:none;outline:none;box-shadow:none"
+          >View</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Empty state -->
+  <div *ngIf="filteredFavorites().length === 0" class="rounded-xl bg-white p-8 text-center" style="outline:1px solid #DDDDDE;outline-offset:-1px">
+    <p class="text-base font-medium" style="color:#7B7B7B">No favorites saved yet. Browse courses and programmes to start saving!</p>
+  </div>
+</div>

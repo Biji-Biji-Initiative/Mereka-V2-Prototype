@@ -1,0 +1,79 @@
+<div class="flex flex-col gap-6">
+  <!-- Header -->
+  <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+    <div class="flex flex-col gap-1">
+      <div class="flex items-center gap-2">
+        <h1 class="text-[24px] sm:text-[28px] font-black leading-tight" style="color:#1A1623">Notifications</h1>
+        <span *ngIf="unreadCount() > 0" class="inline-flex items-center justify-center min-w-[20px] h-5 px-1.5 rounded-full text-white text-[11px] font-medium" style="background:#276EF1">{{ unreadCount() }}</span>
+      </div>
+      <p class="text-sm font-medium" style="color:#7B7B7B">Stay updated on your courses, bookings, and hub activity</p>
+    </div>
+    <button
+      *ngIf="unreadCount() > 0"
+      type="button"
+      (click)="markAllRead()"
+      class="inline-flex items-center gap-1.5 h-9 px-4 rounded-lg text-xs font-bold transition-colors hover:bg-neutral-100"
+      style="border:1px solid #DDDDDE;outline:none;box-shadow:none;color:#1A1623;background:white"
+    >
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M9 11l3 3L22 4M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Mark all as read
+    </button>
+  </div>
+
+  <!-- Filter chips -->
+  <div class="flex items-center gap-2 sm:gap-3 flex-wrap">
+    <button
+      *ngFor="let f of filters"
+      type="button"
+      (click)="setFilter(f)"
+      class="px-3 py-2.5 rounded-full text-xs leading-3 transition-colors"
+      [style.background]="activeFilter() === f ? '#303345' : '#ECECF1'"
+      [style.color]="activeFilter() === f ? 'white' : '#1A1623'"
+      style="border:none;outline:none;box-shadow:none"
+    >{{ f }}</button>
+  </div>
+
+  <!-- Notification list -->
+  <div class="flex flex-col gap-2">
+    <div
+      *ngFor="let n of filteredNotifications()"
+      class="p-4 rounded-xl bg-white flex items-start gap-3 cursor-pointer transition-colors hover:bg-neutral-50"
+      [style.outline]="n.read ? '1px solid #ECECF1' : '1px solid #BFDBFE'"
+      [style.outline-offset]="'-1px'"
+      [style.background]="n.read ? 'white' : '#F8FAFF'"
+      (click)="toggleRead(n.id)"
+    >
+      <!-- Type icon -->
+      <div class="w-10 h-10 rounded-lg flex items-center justify-center shrink-0 text-[11px] font-black"
+        [style.background]="typeIcon[n.type].bg"
+        [style.color]="typeIcon[n.type].color"
+      >{{ typeIcon[n.type].label }}</div>
+
+      <!-- Content -->
+      <div class="flex-1 min-w-0 flex flex-col gap-1">
+        <div class="flex items-start justify-between gap-2">
+          <span class="text-sm leading-5" [style.font-weight]="n.read ? '500' : '700'" style="color:#1A1623">{{ n.title }}</span>
+          <div class="flex items-center gap-2 shrink-0">
+            <span class="text-[11px] whitespace-nowrap" style="color:#B9B9BA">{{ n.time }}</span>
+            <span *ngIf="!n.read" class="w-2 h-2 rounded-full shrink-0" style="background:#276EF1"></span>
+          </div>
+        </div>
+        <p class="text-[13px] leading-5" style="color:#7B7B7B">{{ n.body }}</p>
+        <div class="flex items-center gap-3 mt-1">
+          <span *ngIf="n.hub" class="text-[11px] font-medium px-2 py-0.5 rounded-full" style="background:#F4F4F4;color:#7B7B7B">{{ n.hub }}</span>
+          <button
+            *ngIf="n.actionLabel"
+            type="button"
+            class="text-[11px] font-bold"
+            style="color:#276EF1;border:none;outline:none;box-shadow:none;background:transparent;padding:0"
+          >{{ n.actionLabel }} &rarr;</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Empty state -->
+  <div *ngIf="filteredNotifications().length === 0" class="rounded-xl bg-white p-8 text-center" style="outline:1px solid #DDDDDE;outline-offset:-1px">
+    <p class="text-base font-medium" style="color:#7B7B7B">No notifications match this filter.</p>
+  </div>
+</div>
