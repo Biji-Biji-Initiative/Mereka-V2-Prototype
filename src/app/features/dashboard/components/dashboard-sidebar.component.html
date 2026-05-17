@@ -1,0 +1,139 @@
+<!-- Mobile FAB toggle -->
+<button
+  type="button"
+  (click)="toggleSidebar()"
+  class="lg:hidden fixed bottom-4 right-4 z-50 w-12 h-12 rounded-full bg-neutral-900 text-white flex items-center justify-center shadow-lg"
+  style="border:none;outline:none;box-shadow:0 4px 12px rgba(0,0,0,0.15)"
+  [attr.aria-label]="mobileSidebarOpen() ? 'Close menu' : 'Open menu'"
+>
+  <svg *ngIf="!mobileSidebarOpen()" width="20" height="20" viewBox="0 0 24 24" fill="none">
+    <path d="M3 6h18M3 12h18M3 18h18" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+  </svg>
+  <svg *ngIf="mobileSidebarOpen()" width="20" height="20" viewBox="0 0 24 24" fill="none">
+    <path d="M6 6l12 12M6 18L18 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+  </svg>
+</button>
+
+<!-- Mobile backdrop -->
+<div
+  *ngIf="mobileSidebarOpen()"
+  (click)="closeSidebar()"
+  class="lg:hidden fixed inset-0 z-30 bg-black/40"
+  style="top:64px"
+></div>
+
+<aside
+  class="flex flex-col w-[300px] shrink-0 bg-white px-10 py-6 gap-3 self-start sticky top-16 max-h-[calc(100vh-64px)] overflow-y-auto z-40"
+  style="border-top:1px solid #DDDDDE;border-right:1px solid #DDDDDE"
+  [class.hidden]="!mobileSidebarOpen()"
+  [class.lg:flex]="true"
+  [class.fixed]="mobileSidebarOpen()"
+  [class.left-0]="mobileSidebarOpen()"
+  [style.top]="'64px'"
+>
+  <div class="flex flex-col gap-3">
+    <div class="flex items-start">
+      <div class="flex-1 flex flex-col">
+        <span class="text-[15px] text-neutral-500 leading-6">Personal</span>
+        <span class="text-[17px] font-medium leading-7" style="color:rgba(25.2,28.03,47.81,0.9)">{{ displayName() }}</span>
+      </div>
+      <span class="inline-flex items-center px-1.5 py-0.5 rounded-md text-white text-[11px] font-medium tracking-wider" style="background:#303345">{{ accountTier() }}</span>
+    </div>
+    <div class="flex flex-col gap-0.5">
+      <div class="h-1 rounded-full overflow-hidden" style="background:#EDEDED">
+        <div class="h-full" style="background:#303345" [style.width.%]="profileCompletion()"></div>
+      </div>
+      <div class="flex items-center justify-between gap-2">
+        <a class="text-xs font-medium cursor-pointer" style="color:#276EF1;text-decoration:underline;text-decoration-color:rgba(39,110,241,0.48)">Complete your profile</a>
+        <span class="text-[15px] font-extrabold" style="color:rgba(27,31,59,0.65)">{{ profileCompletion() }}%</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="h-px my-1" style="background:#E0E0E0"></div>
+
+  <nav class="flex flex-col">
+    <a routerLink="/dashboard" routerLinkActive="active-nav" [routerLinkActiveOptions]="{ exact: true }" (click)="closeSidebar()" class="flex items-center gap-2 px-2 py-2.5 rounded-lg text-sm font-medium nav-link">Dashboard</a>
+    <a routerLink="/dashboard/courses" routerLinkActive="active-nav" (click)="closeSidebar()" class="flex items-center justify-between gap-2 px-2 py-2.5 rounded-lg text-sm font-medium nav-link">
+      <span>My Courses</span>
+      <span class="inline-flex items-center justify-center min-w-[20px] h-5 px-1.5 rounded-full text-white text-[11px] font-medium" style="background:#276EF1;letter-spacing:0.4px">3</span>
+    </a>
+    <a routerLink="/dashboard/transactions" routerLinkActive="active-nav" (click)="closeSidebar()" class="flex items-center gap-2 px-2 py-2.5 rounded-lg text-sm font-medium nav-link">My Purchases</a>
+    <a routerLink="/dashboard/bookings" routerLinkActive="active-nav" (click)="closeSidebar()" class="mt-2 inline-flex items-center justify-center h-11 rounded-xl text-base font-extrabold hover:bg-neutral-50" style="border:1px solid #E0E0E0;color:#232534">Fulfill Orders</a>
+  </nav>
+
+  <div class="h-px my-1" style="background:#E0E0E0"></div>
+
+  <nav class="flex flex-col">
+    <a routerLink="/dashboard/forms" routerLinkActive="active-nav" (click)="closeSidebar()" class="flex items-center px-2 py-2.5 rounded-lg text-sm font-medium nav-link">Manage Forms</a>
+    <a routerLink="/dashboard/broadcasts" routerLinkActive="active-nav" (click)="closeSidebar()" class="flex items-center px-2 py-2.5 rounded-lg text-sm font-medium nav-link">Manage Communications</a>
+    <a routerLink="/dashboard/analytics" routerLinkActive="active-nav" (click)="closeSidebar()" class="flex items-center px-2 py-2.5 rounded-lg text-sm font-medium nav-link">Analytics Dashboard</a>
+  </nav>
+
+  <div class="h-px my-1" style="background:#E0E0E0"></div>
+
+  <nav class="flex flex-col">
+    <div class="flex items-center justify-between px-2 py-2.5 rounded-lg" style="background:#F4F4F4">
+      <span class="flex items-center gap-2">
+        <img [src]="hubIcon" alt="Hub" class="w-6 h-6 rounded-md" style="border:0.5px solid #7B7B7B" />
+        <span class="text-sm font-medium" style="color:#1A1623">Biji-biji Initiative</span>
+      </span>
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" style="color:#7B7B7B">
+        <path d="M6 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+      </svg>
+    </div>
+    <a routerLink="/dashboard/listings/new" routerLinkActive="active-nav" (click)="closeSidebar()" class="flex items-center px-2 py-2.5 rounded-lg text-sm font-medium nav-link">Post Listing</a>
+    <a routerLink="/dashboard/listings" routerLinkActive="active-nav" (click)="closeSidebar()" class="flex items-center px-2 py-2.5 rounded-lg text-sm font-medium nav-link">Manage Listings</a>
+    <a routerLink="/dashboard/gigs" routerLinkActive="active-nav" (click)="closeSidebar()" class="flex items-center px-2 py-2.5 rounded-lg text-sm font-medium nav-link">Manage Gigs</a>
+    <a routerLink="/dashboard/programs" routerLinkActive="active-nav" (click)="closeSidebar()" class="flex items-center px-2 py-2.5 rounded-lg text-sm font-medium nav-link">Manage Programs</a>
+  </nav>
+
+  <div class="h-px my-1" style="background:#E0E0E0"></div>
+
+  <!-- Mini calendar -->
+  <section class="flex flex-col pb-10">
+    <div class="flex items-center justify-between px-2 py-2.5">
+      <span class="text-[15px] font-medium" style="color:rgba(25.2,28.03,47.81,0.9)">My Calendar</span>
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+        <path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+      </svg>
+    </div>
+
+    <div class="p-3 rounded-xl flex flex-col gap-3" style="background:#F4F4F4">
+      <div class="flex items-center justify-between">
+        <button (click)="calPrev()" class="p-1 rounded-md hover:bg-white" style="border:none;outline:none;box-shadow:none;background:transparent">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" style="color:#276EF1">
+            <path d="M10 3l-5 5 5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+        </button>
+        <div class="flex items-center gap-1 text-[17px] font-medium">
+          <span style="color:rgba(25.2,28.03,47.81,0.9)">{{ calMonthName() }}</span>
+          <span style="color:#276EF1">{{ calYear() }}</span>
+        </div>
+        <button (click)="calNext()" class="p-1 rounded-md hover:bg-white" style="border:none;outline:none;box-shadow:none;background:transparent">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" style="color:#276EF1">
+            <path d="M6 3l5 5-5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+        </button>
+      </div>
+      <div class="grid grid-cols-7 text-center text-[13px] font-medium" style="color:rgba(27,31,59,0.4)">
+        <span *ngFor="let d of calDayHeaders">{{ d }}</span>
+      </div>
+      <div class="grid grid-cols-7 gap-y-1 text-center text-[15px] font-medium">
+        <span
+          *ngFor="let cell of calendarDays()"
+          class="w-8 h-8 flex items-center justify-center mx-auto rounded-full"
+          [style.color]="cell.isToday ? 'white' : !cell.isCurrentMonth ? 'rgba(25,28,48,0.35)' : cell.isWeekend ? '#DD4C1E' : 'rgba(25,28,48,0.9)'"
+          [style.background]="cell.isToday ? '#276EF1' : 'transparent'"
+          [style.fontWeight]="cell.isToday ? '700' : '500'"
+        >{{ cell.day }}</span>
+      </div>
+    </div>
+  </section>
+</aside>
+
+<style>
+.nav-link { color:rgba(27,31,59,0.65); }
+.nav-link:hover { background:#FAFAFA; }
+.nav-link.active-nav { background:#F4F4F4; color:rgba(25.2,28.03,47.81,0.9); }
+</style>

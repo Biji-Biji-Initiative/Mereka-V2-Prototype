@@ -2,18 +2,80 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Tailwind preflight is disabled to avoid clashes with Material — restore the bits we want */
+/* ─── Global reset (Tailwind preflight is disabled) ─── */
 *, ::before, ::after { box-sizing: border-box; }
 html, body { height: 100%; margin: 0; padding: 0; font-family: 'Inter', system-ui, sans-serif; }
 img, svg { display: block; max-width: 100%; }
-button { font-family: inherit; cursor: pointer; }
 a { color: inherit; text-decoration: none; }
 
-/* No bullet markers on any UL/OL — Tailwind preflight is disabled site-wide,
-   so browser default list-style would otherwise leak through (see issue with
-   Common Questions and footer columns rendering bulleted). */
+/* Reset buttons — remove browser default outlines, borders, backgrounds.
+ * Using just `button` (element selector, specificity 0,0,1) so any Tailwind
+ * utility class like .bg-neutral-900 or .px-4 (specificity 0,1,0) can win.
+ * Previously we also matched [type="button"] which tied with utility classes
+ * and made [class.bg-neutral-900] bindings invisible against white parents. */
+button {
+  font-family: inherit;
+  cursor: pointer;
+  border: none;
+  outline: none;
+  box-shadow: none;
+  background-color: transparent;
+  padding: 0;
+  -webkit-appearance: none;
+  appearance: none;
+}
+button:focus {
+  outline: none;
+  box-shadow: none;
+}
+
+/* Reset form elements — clean borders and outlines */
+input, textarea, select {
+  font-family: inherit;
+  font-size: inherit;
+  border: 1px solid #e5e7eb;
+  outline: none;
+  box-shadow: none;
+  -webkit-appearance: none;
+  appearance: none;
+}
+input:focus, textarea:focus, select:focus {
+  outline: none;
+  box-shadow: none;
+  border-color: #9ca3af;
+}
+/* Restore radio/checkbox native appearance */
+input[type="radio"], input[type="checkbox"] {
+  -webkit-appearance: auto;
+  appearance: auto;
+  border: revert;
+  width: auto;
+  height: auto;
+  padding: 0;
+}
+
+/* Reset fieldset — remove browser default border and padding */
+fieldset {
+  border: none;
+  padding: 0;
+  margin: 0;
+}
+legend {
+  padding: 0;
+}
+
+/* Remove list markers */
 ul, ol { list-style: none; padding-left: 0; margin: 0; }
 li::marker { content: ''; }
+
+/* Reset select dropdown arrow for consistent styling */
+select {
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+  background-position: right 0.5rem center;
+  background-repeat: no-repeat;
+  background-size: 1.5em 1.5em;
+  padding-right: 2.5rem;
+}
 
 :root {
   --mereka-bg: #f9fafb;
@@ -22,7 +84,105 @@ li::marker { content: ''; }
   --mereka-text-muted: #6b7280;
 }
 
-/* Scrollbar styling — keep it subtle, matches workspace patterns */
+/* Scrollbar styling */
 .scrollbar-thin { scrollbar-width: thin; }
 .scrollbar-thin::-webkit-scrollbar { width: 6px; height: 6px; }
 .scrollbar-thin::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 9999px; }
+
+/* ─── Button system ─────────────────────────────────────────────────────────
+ * The Tailwind preflight reset above wipes browser button styling, which left
+ * a number of buttons effectively invisible until hovered (transparent bg + no
+ * border). These utility classes give every primary CTA, secondary action, and
+ * ghost button a consistent height, padding, and visible default state.
+ *
+ *   .btn               base — same height (44px), centred content, rounded-full
+ *   .btn-primary       solid dark fill, white text (the main CTA)
+ *   .btn-secondary     white fill, dark outline (the secondary action)
+ *   .btn-ghost         transparent fill, no outline (links / cancel actions)
+ *   .btn-danger        red text on hover for destructive actions (Sign out)
+ *   .btn-sm            36px tall
+ *   .btn-lg            52px tall
+ *   .btn-block         full-width
+ *
+ * Use these in templates instead of inlining padding/colors so the same kind
+ * of button always renders the same way.
+ * ────────────────────────────────────────────────────────────────────────── */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  height: 44px;
+  padding: 0 1.25rem;
+  border-radius: 9999px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  line-height: 1;
+  white-space: nowrap;
+  transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease, transform 0.06s ease;
+  cursor: pointer;
+  user-select: none;
+}
+.btn:disabled,
+.btn[disabled] { opacity: 0.4; cursor: not-allowed; }
+.btn:active:not(:disabled) { transform: translateY(0.5px); }
+
+.btn-primary {
+  background: #1a1623;
+  color: #ffffff;
+  border: 1px solid #1a1623;
+}
+.btn-primary:hover:not(:disabled) { background: #2a2633; border-color: #2a2633; }
+
+.btn-secondary {
+  background: #ffffff;
+  color: #1a1623;
+  border: 1px solid #1a1623;
+}
+.btn-secondary:hover:not(:disabled) { background: #f5f5f5; }
+
+.btn-tertiary {
+  background: #f5f5f5;
+  color: #1a1623;
+  border: 1px solid transparent;
+}
+.btn-tertiary:hover:not(:disabled) { background: #ECECF1; }
+
+.btn-ghost {
+  background: transparent;
+  color: #1a1623;
+  border: 1px solid transparent;
+}
+.btn-ghost:hover:not(:disabled) { background: #f5f5f5; }
+
+.btn-danger {
+  background: transparent;
+  color: #dc2626;
+  border: 1px solid transparent;
+}
+.btn-danger:hover:not(:disabled) { background: #fef2f2; }
+
+.btn-gradient {
+  background: linear-gradient(90deg, #FD87A5 0%, #EE53B1 100%);
+  color: #ffffff;
+  border: 1px solid transparent;
+}
+.btn-gradient:hover:not(:disabled) { filter: brightness(1.05); }
+
+/* Size modifiers */
+.btn-sm  { height: 36px; padding: 0 0.875rem; font-size: 0.8125rem; }
+.btn-lg  { height: 52px; padding: 0 1.5rem;   font-size: 1rem; }
+.btn-xs  { height: 28px; padding: 0 0.625rem; font-size: 0.75rem; }
+
+/* Full-width */
+.btn-block { display: flex; width: 100%; }
+
+/* Pill that's a hyperlink not a real button: same visual, no cursor change */
+a.btn { text-decoration: none; }
+
+/* Make 'invisible' transparent buttons visible at-a-glance: any bare
+ * <button> that's missing a .btn class but has an aria-label or title gets
+ * a faint hover hint so it's not invisible against same-coloured cards. */
+button:not(.btn):not([class*="bg-"]):not([style*="background"]):hover {
+  background-color: rgba(0, 0, 0, 0.04);
+}

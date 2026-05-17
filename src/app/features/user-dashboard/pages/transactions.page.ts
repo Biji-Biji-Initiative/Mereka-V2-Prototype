@@ -1,40 +1,113 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { CommonModule, DatePipe } from '@angular/common';
+import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
+import { CommonModule } from '@angular/common';
+
+interface Transaction {
+  id: string;
+  date: string;
+  programme: string;
+  hub: string;
+  amount: string;
+  method: 'FPX' | 'Credit Card' | 'E-wallet' | 'Bank Transfer' | 'FREE';
+  status: 'paid' | 'pending' | 'refunded' | 'failed';
+  receiptId: string;
+}
 
 @Component({
   selector: 'mereka-dashboard-transactions',
   standalone: true,
-  imports: [CommonModule, DatePipe],
+  imports: [CommonModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  template: `
-    <h1 class="text-2xl font-semibold mb-6">Transactions</h1>
-    <div class="bg-white border border-neutral-200 rounded-lg overflow-hidden">
-      <table class="w-full text-sm">
-        <thead class="text-xs text-neutral-500 bg-neutral-50">
-          <tr>
-            <th class="text-left font-normal px-4 py-3">Date</th>
-            <th class="text-left font-normal px-4 py-3">Description</th>
-            <th class="text-right font-normal px-4 py-3">Amount</th>
-            <th class="text-right font-normal px-4 py-3">Status</th>
-            <th class="text-right font-normal px-4 py-3">Receipt</th>
-          </tr>
-        </thead>
-        <tbody class="divide-y divide-neutral-100">
-          <tr *ngFor="let t of rows">
-            <td class="px-4 py-3 text-neutral-500">{{ t.at | date: 'MMM d' }}</td>
-            <td class="px-4 py-3 font-medium">{{ t.desc }}</td>
-            <td class="px-4 py-3 text-right tabular-nums">{{ t.amount }}</td>
-            <td class="px-4 py-3 text-right text-success uppercase text-xs tracking-wider">{{ t.status }}</td>
-            <td class="px-4 py-3 text-right"><a href="#" class="text-primary-700 text-xs">View</a></td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-  `,
+  templateUrl: './transactions.page.html',
 })
 export class DashboardTransactionsPage {
-  readonly rows = [
-    { at: '2026-05-04', desc: 'Image Gen Crash Course · Early bird', amount: 'MYR 185.22', status: 'paid' },
-    { at: '2026-04-22', desc: 'AI4U cohort 3 enrolment', amount: 'MYR 1,499.00', status: 'paid' },
+  readonly filters = ['All', 'Paid', 'Pending', 'Refunded'] as const;
+  readonly activeFilter = signal<string>('All');
+
+  setFilter(f: string): void { this.activeFilter.set(f); }
+
+  readonly transactions: Transaction[] = [
+    {
+      id: 'TXN-2026-001',
+      date: '10 May 2026',
+      programme: 'AI4U Programme',
+      hub: 'Biji-biji Initiative',
+      amount: 'RM 490.00',
+      method: 'FPX',
+      status: 'paid',
+      receiptId: 'RCP-4821',
+    },
+    {
+      id: 'TXN-2026-002',
+      date: '28 Apr 2026',
+      programme: 'Digital Skills Accelerator',
+      hub: 'Biji-biji Initiative',
+      amount: 'RM 350.00',
+      method: 'Credit Card',
+      status: 'paid',
+      receiptId: 'RCP-4790',
+    },
+    {
+      id: 'TXN-2026-003',
+      date: '15 Apr 2026',
+      programme: 'Career Accelerator',
+      hub: 'Mereka',
+      amount: 'RM 749.00',
+      method: 'E-wallet',
+      status: 'paid',
+      receiptId: 'RCP-4756',
+    },
+    {
+      id: 'TXN-2026-004',
+      date: '02 Apr 2026',
+      programme: 'AI Fluency by Microsoft',
+      hub: 'Biji-biji Initiative',
+      amount: 'FREE',
+      method: 'FREE',
+      status: 'paid',
+      receiptId: 'RCP-4720',
+    },
+    {
+      id: 'TXN-2026-005',
+      date: '20 Mar 2026',
+      programme: 'Dynamous AI Mastery',
+      hub: 'Biji-biji Initiative',
+      amount: 'RM 620.00',
+      method: 'FPX',
+      status: 'refunded',
+      receiptId: 'RCP-4688',
+    },
+    {
+      id: 'TXN-2026-006',
+      date: '05 Mar 2026',
+      programme: 'Internet Search & Beyond',
+      hub: 'Mereka',
+      amount: 'FREE',
+      method: 'FREE',
+      status: 'paid',
+      receiptId: 'RCP-4650',
+    },
+    {
+      id: 'TXN-2026-007',
+      date: '18 Feb 2026',
+      programme: 'Bike Sizing and Fitting',
+      hub: 'Biji-biji Initiative',
+      amount: 'RM 150.00',
+      method: 'E-wallet',
+      status: 'pending',
+      receiptId: 'RCP-4612',
+    },
   ];
+
+  readonly filteredTransactions = () => {
+    const f = this.activeFilter();
+    if (f === 'All') return this.transactions;
+    return this.transactions.filter(t => t.status === f.toLowerCase());
+  };
+
+  readonly summary = {
+    totalSpent: 'RM 2,359.00',
+    totalTransactions: 7,
+    pendingPayments: 'RM 150.00',
+    refunds: 'RM 620.00',
+  };
 }

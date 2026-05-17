@@ -1,0 +1,55 @@
+<div class="flex flex-col gap-6">
+    <header class="flex flex-col sm:flex-row sm:items-end justify-between gap-3">
+      <div>
+        <div class="text-xs font-bold uppercase tracking-wider" style="color:#7B7B7B">Manage Forms</div>
+        <h1 class="text-[28px] sm:text-[32px] font-black leading-tight" style="color:#1A1623">Forms</h1>
+        <p class="text-sm mt-1" style="color:#7B7B7B">Build registration, application, survey & feedback forms — capture responses & sync to programmes.</p>
+      </div>
+      <a routerLink="/dashboard/forms/new" class="inline-flex items-center justify-center gap-2 h-10 px-5 rounded-full text-sm font-bold text-white" style="background:#1A1623;border:none">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        New Form
+      </a>
+    </header>
+
+    <div class="flex flex-col sm:flex-row gap-3 sm:items-center justify-between">
+      <div class="flex gap-2 flex-wrap">
+        <button *ngFor="let s of ['All','Live','Draft','Archived']" type="button" (click)="setStatus($any(s))"
+          class="px-3 py-2 rounded-full text-xs"
+          [style.background]="statusFilter() === s ? '#1A1623' : '#ECECF1'"
+          [style.color]="statusFilter() === s ? 'white' : '#1A1623'"
+          style="border:none">{{ s }}</button>
+      </div>
+      <label class="relative block w-full sm:w-64">
+        <input type="search" placeholder="Search forms..." (input)="setQuery($any($event.target).value)"
+          class="w-full pl-9 pr-4 py-2 rounded-full bg-white text-sm" style="border:1px solid #DDDDDE;outline:none" />
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" class="absolute left-3 top-1/2 -translate-y-1/2 text-neutral-400">
+          <circle cx="11" cy="11" r="8" stroke="currentColor" stroke-width="2"/>
+          <path d="m21 21-4.3-4.3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </label>
+    </div>
+
+    <div class="rounded-xl bg-white overflow-hidden" style="outline:1px solid #DDDDDE">
+      <div class="hidden md:grid px-5 py-2.5 grid-cols-[1fr_120px_120px_120px_140px_120px] gap-4 text-[11px] font-black uppercase tracking-wider" style="background:rgba(0,0,0,0.04);letter-spacing:0.5px">
+        <span>Form name</span><span>Type</span><span>Status</span><span>Responses</span><span>Updated</span><span class="text-center">Actions</span>
+      </div>
+      <div *ngFor="let f of visible(); let i=index" class="px-5 py-4 grid grid-cols-1 md:grid-cols-[1fr_120px_120px_120px_140px_120px] items-center gap-4" [style.background]="i%2===1 ? 'rgba(0,0,0,0.04)' : 'white'">
+        <div class="flex flex-col">
+          <span class="text-sm font-bold" style="color:#1A1623">{{ f.title }}</span>
+          <span class="text-xs md:hidden mt-0.5" style="color:#7B7B7B">{{ f.type }} · {{ f.status }} · {{ f.responses }} responses</span>
+        </div>
+        <span class="hidden md:inline text-xs" style="color:#7B7B7B">{{ f.type }}</span>
+        <span class="hidden md:inline-flex items-center gap-1 text-xs font-bold">
+          <span class="w-1.5 h-1.5 rounded-full" [style.background]="f.status==='Live' ? '#10B981' : f.status==='Draft' ? '#F59E0B' : '#9CA3AF'"></span>
+          {{ f.status }}
+        </span>
+        <span class="hidden md:inline text-xs" style="color:#1A1623">{{ f.responses }}</span>
+        <span class="hidden md:inline text-xs" style="color:#7B7B7B">{{ f.updated }}</span>
+        <div class="flex md:justify-end gap-2">
+          <a [routerLink]="['/dashboard/forms', f.id]" class="text-xs px-3 py-1.5 rounded-full" style="outline:1px solid #1A1623;color:#1A1623;outline-offset:-1px">Edit</a>
+          <a [routerLink]="['/dashboard/forms', f.id, 'responses']" class="text-xs px-3 py-1.5 rounded-full text-white" style="background:#1A1623">Responses</a>
+        </div>
+      </div>
+      <div *ngIf="visible().length === 0" class="px-5 py-10 text-center text-sm" style="color:#7B7B7B">No forms match. <a routerLink="/dashboard/forms/new" class="underline" style="color:#276EF1">Create one →</a></div>
+    </div>
+</div>

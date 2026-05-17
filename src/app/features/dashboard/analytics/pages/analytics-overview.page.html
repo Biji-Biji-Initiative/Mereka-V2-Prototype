@@ -1,0 +1,552 @@
+<div class="flex flex-col gap-6">
+    <!-- Header -->
+    <header class="flex flex-col sm:flex-row sm:items-end justify-between gap-3">
+      <div>
+        <div class="text-xs font-bold uppercase tracking-wider" style="color:#7B7B7B">Analytics Dashboard</div>
+        <h1 class="text-[28px] sm:text-[32px] font-black leading-tight" style="color:#1A1623">Insights &amp; Performance</h1>
+        <p class="text-sm mt-1" style="color:#7B7B7B">Revenue, learners, programmes, funnels, audience — across all your hubs.</p>
+      </div>
+      <div class="flex gap-2 flex-wrap items-center">
+        <div class="inline-flex p-1 rounded-full bg-white" style="outline:1px solid #DDDDDE">
+          <button *ngFor="let r of ['7d','30d','90d','12m','all']" type="button" (click)="setRange($any(r))"
+            class="px-3 py-1 rounded-full text-xs"
+            [style.background]="range() === r ? '#1A1623' : 'transparent'"
+            [style.color]="range() === r ? 'white' : '#1A1623'"
+            [style.font-weight]="range() === r ? '700' : '400'">{{ r }}</button>
+        </div>
+        <button class="text-xs font-bold px-4 py-2 rounded-full" style="outline:1px solid #1A1623;outline-offset:-1px;color:#1A1623;background:transparent">Export</button>
+      </div>
+    </header>
+
+    <!-- Tabs -->
+    <nav class="bg-white rounded-xl flex gap-1 p-1 overflow-x-auto" style="outline:1px solid #DDDDDE">
+      <button *ngFor="let t of ['overview','audience','engagement','revenue','programmes','funnels']" type="button" (click)="setTab($any(t))"
+        class="px-4 py-2 text-xs capitalize rounded-full whitespace-nowrap"
+        [style.background]="tab() === t ? '#1A1623' : 'transparent'"
+        [style.color]="tab() === t ? 'white' : '#1A1623'"
+        [style.font-weight]="tab() === t ? '700' : '500'">{{ t }}</button>
+    </nav>
+
+    <!-- ═══════════ OVERVIEW TAB ═══════════ -->
+    <ng-container *ngIf="tab() === 'overview'">
+      <!-- KPI cards -->
+      <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+        <div *ngFor="let k of kpis" class="rounded-xl bg-white p-4 flex flex-col gap-1" style="outline:1px solid #DDDDDE;outline-offset:-1px">
+          <div class="text-xs" style="color:#7B7B7B">{{ k.label }}</div>
+          <div class="text-2xl sm:text-3xl font-black" style="color:#1A1623">{{ k.value }}</div>
+          <div class="flex items-center gap-1 text-xs font-bold">
+            <span [style.color]="k.positive ? '#10B981' : '#EF4444'">
+              <span *ngIf="k.positive">▲</span><span *ngIf="!k.positive">▼</span> {{ k.delta }}
+            </span>
+            <span style="color:#7B7B7B">{{ k.hint }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Revenue chart + Traffic sources -->
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+        <section class="lg:col-span-2 rounded-xl bg-white p-4 sm:p-5" style="outline:1px solid #DDDDDE;outline-offset:-1px">
+          <div class="flex items-center justify-between gap-3 mb-4 flex-wrap">
+            <h3 class="text-base font-bold" style="color:#1A1623">Revenue trend</h3>
+            <div class="flex items-center gap-3 text-xs" style="color:#7B7B7B">
+              <span class="inline-flex items-center gap-1"><span class="w-2 h-2 rounded-full" style="background:#1A1623"></span>This period</span>
+              <span class="inline-flex items-center gap-1"><span class="w-2 h-2 rounded-full" style="background:#D4CCE6"></span>Previous</span>
+            </div>
+          </div>
+          <div class="h-48 flex items-end gap-1">
+            <div *ngFor="let h of chartBars; let i = index" class="flex-1 flex flex-col items-center gap-0.5">
+              <div class="w-full rounded-t" [style.height.%]="h" style="background:linear-gradient(to top, #1A1623, #303345)"></div>
+              <div class="w-full rounded-t" [style.height.%]="chartBarsPrev[i]" style="background:#E8E4F0;opacity:0.5"></div>
+            </div>
+          </div>
+          <div class="flex justify-between text-[10px] mt-2" style="color:#7B7B7B">
+            <span>Apr 12</span><span>Apr 19</span><span>Apr 26</span><span>May 3</span><span>May 10</span>
+          </div>
+        </section>
+
+        <aside class="rounded-xl bg-white p-4 sm:p-5 flex flex-col gap-3" style="outline:1px solid #DDDDDE;outline-offset:-1px">
+          <h3 class="text-base font-bold" style="color:#1A1623">Traffic sources</h3>
+          <!-- Donut visual -->
+          <div class="flex justify-center py-2">
+            <div class="relative w-28 h-28">
+              <svg viewBox="0 0 36 36" class="w-full h-full -rotate-90">
+                <circle *ngFor="let s of trafficSources; let i = index"
+                  cx="18" cy="18" r="14" fill="none"
+                  [attr.stroke]="s.color" stroke-width="5"
+                  [attr.stroke-dasharray]="s.value * 0.88 + ' ' + (88 - s.value * 0.88)"
+                  [attr.stroke-dashoffset]="getDonutOffset(i)" />
+              </svg>
+              <div class="absolute inset-0 flex flex-col items-center justify-center">
+                <span class="text-lg font-black" style="color:#1A1623">12.5K</span>
+                <span class="text-[10px]" style="color:#7B7B7B">visits</span>
+              </div>
+            </div>
+          </div>
+          <div *ngFor="let s of trafficSources" class="flex items-center gap-2 text-xs">
+            <span class="w-2.5 h-2.5 rounded-full" [style.background]="s.color"></span>
+            <span class="flex-1" style="color:#1A1623">{{ s.source }}</span>
+            <span class="font-bold" style="color:#1A1623">{{ s.value }}%</span>
+          </div>
+        </aside>
+      </div>
+
+      <!-- Funnel -->
+      <section class="rounded-xl bg-white p-4 sm:p-5" style="outline:1px solid #DDDDDE;outline-offset:-1px">
+        <div class="flex items-center justify-between gap-3 mb-4 flex-wrap">
+          <h3 class="text-base font-bold" style="color:#1A1623">Acquisition funnel</h3>
+          <span class="text-xs" style="color:#7B7B7B">Last {{ range() }}</span>
+        </div>
+        <div class="flex flex-col gap-2">
+          <div *ngFor="let f of funnel" class="flex items-center gap-3">
+            <div class="rounded-md py-2 px-3 text-white text-xs font-bold whitespace-nowrap overflow-hidden"
+              [style.background]="f.color" [style.width.%]="Math.max(f.pct, 12)">
+              {{ f.label }}
+            </div>
+            <span class="text-xs shrink-0 w-16 text-right" style="color:#1A1623">{{ f.count | number }}</span>
+            <span class="text-xs shrink-0 w-12 text-right font-bold" style="color:#7B7B7B">{{ f.pct }}%</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Top programmes + Geo -->
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+        <section class="lg:col-span-2 rounded-xl bg-white overflow-hidden" style="outline:1px solid #DDDDDE">
+          <div class="px-5 py-3 flex items-center justify-between" style="border-bottom:1px solid #DDDDDE">
+            <h3 class="text-base font-bold" style="color:#1A1623">Top programmes</h3>
+            <button (click)="setTab('programmes')" class="text-xs font-bold" style="color:#276EF1;background:transparent">View all →</button>
+          </div>
+          <div class="hidden md:grid px-5 py-2.5 grid-cols-[1fr_80px_140px_100px_60px] gap-4 text-[11px] font-black uppercase tracking-wider" style="background:rgba(0,0,0,0.03)">
+            <span>Programme</span><span>Learners</span><span>Completion</span><span>Revenue</span><span>Hubs</span>
+          </div>
+          <div *ngFor="let p of topPrograms.slice(0, 4); let i=index" class="px-5 py-3 grid grid-cols-1 md:grid-cols-[1fr_80px_140px_100px_60px] items-center gap-4" [style.background]="i%2===1 ? 'rgba(0,0,0,0.02)' : 'white'">
+            <div class="flex items-center gap-2">
+              <span class="text-sm font-bold" style="color:#1A1623">{{ p.title }}</span>
+              <span *ngIf="p.hubs > 1" class="text-[9px] font-bold px-1.5 py-0.5 rounded-full" style="background:#F0F0FF;color:#6366F1">Multi-hub</span>
+            </div>
+            <span class="text-xs" style="color:#1A1623">{{ p.learners | number }}</span>
+            <div class="flex items-center gap-2">
+              <span class="text-xs font-bold w-8" style="color:#1A1623">{{ p.completion }}%</span>
+              <div class="flex-1 h-1.5 rounded-full overflow-hidden" style="background:#EDEDED">
+                <div class="h-full rounded-full" style="background:#10B981" [style.width.%]="p.completion"></div>
+              </div>
+            </div>
+            <span class="text-xs font-bold" style="color:#1A1623">{{ p.revenue }}</span>
+            <span class="text-xs" style="color:#7B7B7B">{{ p.hubs }}</span>
+          </div>
+        </section>
+
+        <aside class="rounded-xl bg-white p-4 sm:p-5 flex flex-col gap-3" style="outline:1px solid #DDDDDE;outline-offset:-1px">
+          <h3 class="text-base font-bold" style="color:#1A1623">Top geographies</h3>
+          <div *ngFor="let g of topGeos" class="flex flex-col gap-1">
+            <div class="flex justify-between text-xs items-center">
+              <span style="color:#1A1623">{{ g.flag }} {{ g.country }}</span>
+              <span class="font-bold" style="color:#1A1623">{{ g.pct }}%</span>
+            </div>
+            <div class="h-1.5 rounded-full overflow-hidden" style="background:#EDEDED">
+              <div class="h-full rounded-full" style="background:linear-gradient(90deg, #6366F1 0%, #818CF8 100%)" [style.width.%]="g.pct"></div>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </ng-container>
+
+    <!-- ═══════════ AUDIENCE TAB ═══════════ -->
+    <ng-container *ngIf="tab() === 'audience'">
+      <!-- KPIs -->
+      <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+        <div *ngFor="let k of audienceKpis" class="rounded-xl bg-white p-4 flex flex-col gap-1" style="outline:1px solid #DDDDDE;outline-offset:-1px">
+          <div class="text-xs" style="color:#7B7B7B">{{ k.label }}</div>
+          <div class="text-2xl sm:text-3xl font-black" style="color:#1A1623">{{ k.value }}</div>
+          <div class="flex items-center gap-1 text-xs font-bold">
+            <span [style.color]="k.positive ? '#10B981' : '#EF4444'">
+              <span *ngIf="k.positive">▲</span><span *ngIf="!k.positive">▼</span> {{ k.delta }}
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+        <!-- Demographics -->
+        <section class="rounded-xl bg-white p-5" style="outline:1px solid #DDDDDE;outline-offset:-1px">
+          <h3 class="text-base font-bold mb-4" style="color:#1A1623">Age distribution</h3>
+          <div class="flex items-end gap-3 h-40">
+            <div *ngFor="let d of demographics" class="flex-1 flex flex-col items-center gap-1">
+              <span class="text-[10px] font-bold" style="color:#1A1623">{{ d.pct }}%</span>
+              <div class="w-full rounded-t" style="background:linear-gradient(to top, #1A1623, #4A3F6B)"
+                [style.height.%]="(d.pct / 42) * 100"></div>
+              <span class="text-[10px]" style="color:#7B7B7B">{{ d.label }}</span>
+            </div>
+          </div>
+        </section>
+
+        <!-- Devices -->
+        <section class="rounded-xl bg-white p-5" style="outline:1px solid #DDDDDE;outline-offset:-1px">
+          <h3 class="text-base font-bold mb-4" style="color:#1A1623">Devices</h3>
+          <div class="flex flex-col gap-4">
+            <div *ngFor="let d of deviceBreakdown" class="flex items-center gap-3">
+              <span class="text-2xl w-10 text-center">{{ d.icon }}</span>
+              <div class="flex-1">
+                <div class="flex justify-between text-xs mb-1">
+                  <span class="font-bold" style="color:#1A1623">{{ d.device }}</span>
+                  <span class="font-bold" style="color:#1A1623">{{ d.pct }}%</span>
+                </div>
+                <div class="h-2 rounded-full overflow-hidden" style="background:#EDEDED">
+                  <div class="h-full rounded-full" style="background:#1A1623" [style.width.%]="d.pct"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+        <!-- User roles -->
+        <section class="rounded-xl bg-white p-5" style="outline:1px solid #DDDDDE;outline-offset:-1px">
+          <h3 class="text-base font-bold mb-4" style="color:#1A1623">User segments</h3>
+          <div class="flex flex-col gap-3">
+            <div *ngFor="let u of userRoles" class="flex items-center gap-3">
+              <span class="text-xs w-32 truncate" style="color:#1A1623">{{ u.role }}</span>
+              <div class="flex-1 h-2 rounded-full overflow-hidden" style="background:#EDEDED">
+                <div class="h-full rounded-full" style="background:linear-gradient(90deg, #6366F1, #818CF8)" [style.width.%]="u.pct"></div>
+              </div>
+              <span class="text-xs font-bold w-16 text-right" style="color:#1A1623">{{ u.count | number }}</span>
+            </div>
+          </div>
+        </section>
+
+        <!-- Top referrers -->
+        <section class="rounded-xl bg-white p-5" style="outline:1px solid #DDDDDE;outline-offset:-1px">
+          <h3 class="text-base font-bold mb-4" style="color:#1A1623">Top referrers</h3>
+          <div class="flex flex-col gap-2">
+            <div *ngFor="let r of topReferrers; let i = index" class="flex items-center gap-3 py-2"
+              [style.border-bottom]="i < topReferrers.length - 1 ? '1px solid #F3F4F6' : 'none'">
+              <span class="text-xs font-bold w-5 text-center" style="color:#7B7B7B">{{ i + 1 }}</span>
+              <span class="text-sm flex-1" style="color:#1A1623">{{ r.source }}</span>
+              <span class="text-xs font-bold" style="color:#1A1623">{{ r.visits | number }} visits</span>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <!-- Geo map -->
+      <section class="rounded-xl bg-white p-5" style="outline:1px solid #DDDDDE;outline-offset:-1px">
+        <h3 class="text-base font-bold mb-4" style="color:#1A1623">Audience by country</h3>
+        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
+          <div *ngFor="let g of topGeos" class="text-center p-3 rounded-lg" style="background:#FAFAFA">
+            <div class="text-2xl mb-1">{{ g.flag }}</div>
+            <div class="text-sm font-bold" style="color:#1A1623">{{ g.pct }}%</div>
+            <div class="text-[10px]" style="color:#7B7B7B">{{ g.country }}</div>
+          </div>
+        </div>
+      </section>
+    </ng-container>
+
+    <!-- ═══════════ ENGAGEMENT TAB ═══════════ -->
+    <ng-container *ngIf="tab() === 'engagement'">
+      <!-- KPIs -->
+      <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+        <div *ngFor="let k of engagementKpis" class="rounded-xl bg-white p-4 flex flex-col gap-1" style="outline:1px solid #DDDDDE;outline-offset:-1px">
+          <div class="text-xs" style="color:#7B7B7B">{{ k.label }}</div>
+          <div class="text-2xl sm:text-3xl font-black" style="color:#1A1623">{{ k.value }}</div>
+          <div class="flex items-center gap-1 text-xs font-bold">
+            <span [style.color]="k.positive ? '#10B981' : '#EF4444'">
+              <span *ngIf="k.positive">▲</span><span *ngIf="!k.positive">▼</span> {{ k.delta }}
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Content engagement table -->
+      <section class="rounded-xl bg-white overflow-hidden" style="outline:1px solid #DDDDDE">
+        <div class="px-5 py-3" style="border-bottom:1px solid #DDDDDE">
+          <h3 class="text-base font-bold" style="color:#1A1623">Content engagement by type</h3>
+        </div>
+        <div class="hidden md:grid px-5 py-2.5 grid-cols-[1fr_100px_100px_140px] gap-4 text-[11px] font-black uppercase tracking-wider" style="background:rgba(0,0,0,0.03)">
+          <span>Content Type</span><span>Views</span><span>Completions</span><span>Completion Rate</span>
+        </div>
+        <div *ngFor="let c of contentEngagement; let i=index" class="px-5 py-3 grid grid-cols-1 md:grid-cols-[1fr_100px_100px_140px] items-center gap-4" [style.background]="i%2===1 ? 'rgba(0,0,0,0.02)' : 'white'">
+          <span class="text-sm font-bold" style="color:#1A1623">{{ c.type }}</span>
+          <span class="text-xs" style="color:#1A1623">{{ c.views | number }}</span>
+          <span class="text-xs" style="color:#1A1623">{{ c.completions | number }}</span>
+          <div class="flex items-center gap-2">
+            <span class="text-xs font-bold w-8" style="color:#1A1623">{{ c.rate }}%</span>
+            <div class="flex-1 h-1.5 rounded-full overflow-hidden" style="background:#EDEDED">
+              <div class="h-full rounded-full" style="background:#10B981" [style.width.%]="c.rate"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+        <!-- Weekly activity heatmap -->
+        <section class="rounded-xl bg-white p-5" style="outline:1px solid #DDDDDE;outline-offset:-1px">
+          <h3 class="text-base font-bold mb-4" style="color:#1A1623">Weekly activity pattern</h3>
+          <div class="flex items-end gap-3 h-36">
+            <div *ngFor="let w of weeklyActivity" class="flex-1 flex flex-col items-center gap-1">
+              <span class="text-[10px] font-bold" style="color:#1A1623">{{ w.sessions }}</span>
+              <div class="w-full rounded-t" [style.height.%]="(w.sessions / maxSessions) * 100"
+                [style.background]="w.sessions >= 1000 ? 'linear-gradient(to top, #059669, #10B981)' : 'linear-gradient(to top, #1A1623, #4A3F6B)'"></div>
+              <span class="text-[10px] font-bold" style="color:#7B7B7B">{{ w.day }}</span>
+            </div>
+          </div>
+          <div class="mt-3 text-xs text-center" style="color:#7B7B7B">
+            Peak: <span class="font-bold" style="color:#059669">Saturday</span> · Lowest: <span class="font-bold" style="color:#EF4444">Sunday</span>
+          </div>
+        </section>
+
+        <!-- Drop-off points -->
+        <section class="rounded-xl bg-white p-5" style="outline:1px solid #DDDDDE;outline-offset:-1px">
+          <h3 class="text-base font-bold mb-4" style="color:#1A1623">Top drop-off points</h3>
+          <div class="flex flex-col gap-3">
+            <div *ngFor="let d of dropOffPoints" class="flex flex-col gap-1">
+              <div class="flex justify-between text-xs">
+                <span style="color:#1A1623">{{ d.module }}</span>
+                <span class="font-bold" [style.color]="d.dropRate > 20 ? '#EF4444' : d.dropRate > 10 ? '#F59E0B' : '#10B981'">{{ d.dropRate }}%</span>
+              </div>
+              <div class="h-2 rounded-full overflow-hidden" style="background:#EDEDED">
+                <div class="h-full rounded-full"
+                  [style.background]="d.dropRate > 20 ? '#EF4444' : d.dropRate > 10 ? '#F59E0B' : '#10B981'"
+                  [style.width.%]="d.dropRate * 3"></div>
+              </div>
+            </div>
+          </div>
+          <div class="mt-4 p-3 rounded-lg flex items-start gap-2" style="background:#FFF7ED">
+            <span class="text-sm">⚠️</span>
+            <div class="text-xs" style="color:#92400E">
+              <strong>Module 3 — Midterm Project</strong> has the highest drop-off. Consider breaking it into smaller milestones or adding a checkpoint quiz.
+            </div>
+          </div>
+        </section>
+      </div>
+    </ng-container>
+
+    <!-- ═══════════ REVENUE TAB ═══════════ -->
+    <ng-container *ngIf="tab() === 'revenue'">
+      <!-- KPIs -->
+      <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+        <div *ngFor="let k of revenueKpis" class="rounded-xl bg-white p-4 flex flex-col gap-1" style="outline:1px solid #DDDDDE;outline-offset:-1px">
+          <div class="text-xs" style="color:#7B7B7B">{{ k.label }}</div>
+          <div class="text-2xl sm:text-3xl font-black" style="color:#1A1623">{{ k.value }}</div>
+          <div class="flex items-center gap-1 text-xs font-bold">
+            <span [style.color]="k.positive ? '#10B981' : '#EF4444'">
+              <span *ngIf="k.positive">▲</span><span *ngIf="!k.positive">▼</span> {{ k.delta }}
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+        <!-- MRR Growth chart -->
+        <section class="lg:col-span-2 rounded-xl bg-white p-5" style="outline:1px solid #DDDDDE;outline-offset:-1px">
+          <h3 class="text-base font-bold mb-4" style="color:#1A1623">Monthly recurring revenue (MRR)</h3>
+          <div class="flex items-end gap-3 h-44">
+            <div *ngFor="let m of revenueMonthly" class="flex-1 flex flex-col items-center gap-1">
+              <span class="text-[10px] font-bold" style="color:#1A1623">RM {{ (m.amount / 1000).toFixed(1) }}K</span>
+              <div class="w-full rounded-t" [style.height.%]="(m.amount / maxRevenue) * 100"
+                style="background:linear-gradient(to top, #059669, #34D399)"></div>
+              <span class="text-[10px]" style="color:#7B7B7B">{{ m.month }}</span>
+            </div>
+          </div>
+          <div class="mt-3 flex items-center gap-4 text-xs" style="color:#7B7B7B">
+            <span>6-month growth: <strong style="color:#059669">+126.8%</strong></span>
+            <span>Avg monthly growth: <strong style="color:#059669">+14.8%</strong></span>
+          </div>
+        </section>
+
+        <!-- Payment methods -->
+        <aside class="rounded-xl bg-white p-5 flex flex-col gap-3" style="outline:1px solid #DDDDDE;outline-offset:-1px">
+          <h3 class="text-base font-bold" style="color:#1A1623">Payment methods</h3>
+          <div *ngFor="let pm of paymentMethods" class="flex flex-col gap-1">
+            <div class="flex justify-between text-xs">
+              <span style="color:#1A1623">{{ pm.method }}</span>
+              <span class="font-bold" style="color:#1A1623">{{ pm.pct }}%</span>
+            </div>
+            <div class="h-2 rounded-full overflow-hidden" style="background:#EDEDED">
+              <div class="h-full rounded-full" style="background:linear-gradient(90deg, #059669, #34D399)" [style.width.%]="pm.pct"></div>
+            </div>
+          </div>
+        </aside>
+      </div>
+
+      <!-- Revenue by programme -->
+      <section class="rounded-xl bg-white overflow-hidden" style="outline:1px solid #DDDDDE">
+        <div class="px-5 py-3" style="border-bottom:1px solid #DDDDDE">
+          <h3 class="text-base font-bold" style="color:#1A1623">Revenue by programme</h3>
+        </div>
+        <div class="hidden md:grid px-5 py-2.5 grid-cols-[1fr_120px_160px] gap-4 text-[11px] font-black uppercase tracking-wider" style="background:rgba(0,0,0,0.03)">
+          <span>Programme</span><span>Revenue (RM)</span><span>Share</span>
+        </div>
+        <div *ngFor="let r of revenueByProgram; let i=index" class="px-5 py-3 grid grid-cols-1 md:grid-cols-[1fr_120px_160px] items-center gap-4" [style.background]="i%2===1 ? 'rgba(0,0,0,0.02)' : 'white'">
+          <span class="text-sm font-bold" style="color:#1A1623">{{ r.program }}</span>
+          <span class="text-xs font-bold" style="color:#1A1623">{{ r.revenue | number }}</span>
+          <div class="flex items-center gap-2">
+            <span class="text-xs font-bold w-10" style="color:#1A1623">{{ r.pct }}%</span>
+            <div class="flex-1 h-1.5 rounded-full overflow-hidden" style="background:#EDEDED">
+              <div class="h-full rounded-full" style="background:linear-gradient(90deg, #059669, #34D399)" [style.width.%]="r.pct"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Subscription tiers -->
+      <section class="rounded-xl bg-white overflow-hidden" style="outline:1px solid #DDDDDE">
+        <div class="px-5 py-3" style="border-bottom:1px solid #DDDDDE">
+          <h3 class="text-base font-bold" style="color:#1A1623">Subscription tiers</h3>
+        </div>
+        <div class="hidden md:grid px-5 py-2.5 grid-cols-[1fr_120px_120px_100px] gap-4 text-[11px] font-black uppercase tracking-wider" style="background:rgba(0,0,0,0.03)">
+          <span>Tier</span><span>Subscribers</span><span>Revenue</span><span>Churn</span>
+        </div>
+        <div *ngFor="let s of subscriptionTiers; let i=index" class="px-5 py-3 grid grid-cols-1 md:grid-cols-[1fr_120px_120px_100px] items-center gap-4" [style.background]="i%2===1 ? 'rgba(0,0,0,0.02)' : 'white'">
+          <span class="text-sm font-bold" style="color:#1A1623">{{ s.tier }}</span>
+          <span class="text-xs" style="color:#1A1623">{{ s.subscribers | number }}</span>
+          <span class="text-xs font-bold" style="color:#059669">{{ s.revenue }}</span>
+          <span class="text-xs font-bold" [style.color]="s.churn === '1.8%' ? '#10B981' : '#F59E0B'">{{ s.churn }}</span>
+        </div>
+      </section>
+    </ng-container>
+
+    <!-- ═══════════ PROGRAMMES TAB ═══════════ -->
+    <ng-container *ngIf="tab() === 'programmes'">
+      <!-- Summary cards -->
+      <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+        <div class="rounded-xl bg-white p-4 flex flex-col gap-1" style="outline:1px solid #DDDDDE;outline-offset:-1px">
+          <div class="text-xs" style="color:#7B7B7B">Total Programmes</div>
+          <div class="text-3xl font-black" style="color:#1A1623">6</div>
+          <div class="text-xs" style="color:#10B981">5 live · 1 draft</div>
+        </div>
+        <div class="rounded-xl bg-white p-4 flex flex-col gap-1" style="outline:1px solid #DDDDDE;outline-offset:-1px">
+          <div class="text-xs" style="color:#7B7B7B">Total Learners</div>
+          <div class="text-3xl font-black" style="color:#1A1623">5,945</div>
+          <div class="text-xs font-bold" style="color:#10B981">▲ +842 this month</div>
+        </div>
+        <div class="rounded-xl bg-white p-4 flex flex-col gap-1" style="outline:1px solid #DDDDDE;outline-offset:-1px">
+          <div class="text-xs" style="color:#7B7B7B">Avg Completion</div>
+          <div class="text-3xl font-black" style="color:#1A1623">63%</div>
+          <div class="text-xs font-bold" style="color:#10B981">▲ +2.1pp</div>
+        </div>
+        <div class="rounded-xl bg-white p-4 flex flex-col gap-1" style="outline:1px solid #DDDDDE;outline-offset:-1px">
+          <div class="text-xs" style="color:#7B7B7B">Multi-Hub Programs</div>
+          <div class="text-3xl font-black" style="color:#6366F1">2</div>
+          <div class="text-xs" style="color:#7B7B7B">8 hubs involved</div>
+        </div>
+      </div>
+
+      <!-- Full programmes table -->
+      <section class="rounded-xl bg-white overflow-hidden" style="outline:1px solid #DDDDDE">
+        <div class="px-5 py-3 flex items-center justify-between" style="border-bottom:1px solid #DDDDDE">
+          <h3 class="text-base font-bold" style="color:#1A1623">All programmes</h3>
+          <a routerLink="/programs/me" class="text-xs font-bold" style="color:#276EF1">Manage →</a>
+        </div>
+        <div class="hidden md:grid px-5 py-2.5 grid-cols-[1fr_80px_140px_100px_60px_70px] gap-4 text-[11px] font-black uppercase tracking-wider" style="background:rgba(0,0,0,0.03)">
+          <span>Programme</span><span>Learners</span><span>Completion</span><span>Revenue</span><span>Hubs</span><span>Status</span>
+        </div>
+        <div *ngFor="let p of topPrograms; let i=index" class="px-5 py-3 grid grid-cols-1 md:grid-cols-[1fr_80px_140px_100px_60px_70px] items-center gap-4" [style.background]="i%2===1 ? 'rgba(0,0,0,0.02)' : 'white'">
+          <div class="flex items-center gap-2">
+            <span class="text-sm font-bold" style="color:#1A1623">{{ p.title }}</span>
+            <span *ngIf="p.hubs > 1" class="text-[9px] font-bold px-1.5 py-0.5 rounded-full" style="background:#F0F0FF;color:#6366F1">Multi-hub</span>
+          </div>
+          <span class="text-xs" style="color:#1A1623">{{ p.learners | number }}</span>
+          <div class="flex items-center gap-2">
+            <span class="text-xs font-bold w-8" style="color:#1A1623">{{ p.completion }}%</span>
+            <div class="flex-1 h-1.5 rounded-full overflow-hidden" style="background:#EDEDED">
+              <div class="h-full rounded-full" style="background:#10B981" [style.width.%]="p.completion"></div>
+            </div>
+          </div>
+          <span class="text-xs font-bold" style="color:#1A1623">{{ p.revenue }}</span>
+          <span class="text-xs" style="color:#7B7B7B">{{ p.hubs }}</span>
+          <span class="text-[10px] font-bold uppercase px-2 py-0.5 rounded-full text-center"
+            [style.background]="p.status === 'live' ? '#ECFDF5' : '#FFFBEB'"
+            [style.color]="p.status === 'live' ? '#059669' : '#D97706'">{{ p.status }}</span>
+        </div>
+      </section>
+    </ng-container>
+
+    <!-- ═══════════ FUNNELS TAB ═══════════ -->
+    <ng-container *ngIf="tab() === 'funnels'">
+      <!-- Visual funnel -->
+      <section class="rounded-xl bg-white p-5" style="outline:1px solid #DDDDDE;outline-offset:-1px">
+        <div class="flex items-center justify-between gap-3 mb-5 flex-wrap">
+          <h3 class="text-base font-bold" style="color:#1A1623">Conversion funnel</h3>
+          <span class="text-xs" style="color:#7B7B7B">Last {{ range() }}</span>
+        </div>
+        <div class="flex flex-col gap-1">
+          <div *ngFor="let f of funnelStages; let i = index" class="flex items-center gap-4">
+            <!-- Stage label -->
+            <div class="w-28 shrink-0 text-right">
+              <div class="text-xs font-bold" style="color:#1A1623">{{ f.stage }}</div>
+              <div class="text-[10px]" style="color:#7B7B7B">{{ f.description }}</div>
+            </div>
+            <!-- Bar -->
+            <div class="flex-1 relative">
+              <div class="rounded-md py-2.5 px-3 text-white text-xs font-bold flex items-center justify-between"
+                [style.width.%]="Math.max((f.count / 12480) * 100, 8)"
+                style="background:linear-gradient(90deg, #1A1623, #4A3F6B)">
+                <span>{{ f.count | number }}</span>
+              </div>
+            </div>
+            <!-- Conv rate -->
+            <div class="w-16 shrink-0 text-right">
+              <span *ngIf="f.convRate !== null" class="text-xs font-bold" style="color:#10B981">{{ f.convRate }}%</span>
+              <span *ngIf="f.convRate === null" class="text-xs" style="color:#7B7B7B">—</span>
+            </div>
+          </div>
+        </div>
+        <!-- Overall conversion -->
+        <div class="mt-5 p-4 rounded-lg flex items-center gap-4 flex-wrap" style="background:#F0FDF4">
+          <div class="flex flex-col">
+            <span class="text-xs" style="color:#065F46">Overall conversion (Visitor → Active Learner)</span>
+            <span class="text-2xl font-black" style="color:#059669">3.92%</span>
+          </div>
+          <div class="flex flex-col">
+            <span class="text-xs" style="color:#065F46">Visitor → Paid</span>
+            <span class="text-2xl font-black" style="color:#059669">7.85%</span>
+          </div>
+          <div class="flex flex-col">
+            <span class="text-xs" style="color:#065F46">Paid → Retained (30d)</span>
+            <span class="text-2xl font-black" style="color:#059669">49.9%</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Funnel by source -->
+      <section class="rounded-xl bg-white overflow-hidden" style="outline:1px solid #DDDDDE">
+        <div class="px-5 py-3" style="border-bottom:1px solid #DDDDDE">
+          <h3 class="text-base font-bold" style="color:#1A1623">Conversion by traffic source</h3>
+        </div>
+        <div class="hidden md:grid px-5 py-2.5 grid-cols-[1fr_100px_100px_160px] gap-4 text-[11px] font-black uppercase tracking-wider" style="background:rgba(0,0,0,0.03)">
+          <span>Source</span><span>Visitors</span><span>Enrolled</span><span>Conversion Rate</span>
+        </div>
+        <div *ngFor="let f of funnelBySource; let i=index" class="px-5 py-3 grid grid-cols-1 md:grid-cols-[1fr_100px_100px_160px] items-center gap-4" [style.background]="i%2===1 ? 'rgba(0,0,0,0.02)' : 'white'">
+          <span class="text-sm font-bold" style="color:#1A1623">{{ f.source }}</span>
+          <span class="text-xs" style="color:#1A1623">{{ f.visitors | number }}</span>
+          <span class="text-xs font-bold" style="color:#059669">{{ f.enrolled | number }}</span>
+          <div class="flex items-center gap-2">
+            <span class="text-xs font-bold w-10" style="color:#1A1623">{{ f.rate }}%</span>
+            <div class="flex-1 h-1.5 rounded-full overflow-hidden" style="background:#EDEDED">
+              <div class="h-full rounded-full" style="background:linear-gradient(90deg, #6366F1, #818CF8)" [style.width.%]="f.rate * 10"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Funnel insights -->
+      <section class="rounded-xl bg-white p-5" style="outline:1px solid #DDDDDE;outline-offset:-1px">
+        <h3 class="text-base font-bold mb-4" style="color:#1A1623">Funnel insights</h3>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div class="p-4 rounded-lg" style="background:#FFF7ED">
+            <div class="text-sm font-bold mb-1" style="color:#92400E">Biggest leak</div>
+            <div class="text-xs" style="color:#92400E">Interest → Consideration (38.3% drop). Consider simplifying the application form or adding a "quick apply" option.</div>
+          </div>
+          <div class="p-4 rounded-lg" style="background:#F0FDF4">
+            <div class="text-sm font-bold mb-1" style="color:#065F46">Strongest stage</div>
+            <div class="text-xs" style="color:#065F46">Retention rate at 79.9% is excellent. Learners who complete week 1 tend to stay engaged long-term.</div>
+          </div>
+          <div class="p-4 rounded-lg" style="background:#EFF6FF">
+            <div class="text-sm font-bold mb-1" style="color:#1E40AF">Best source</div>
+            <div class="text-xs" style="color:#1E40AF">Organic search has the highest conversion rate at 8.8%. Consider investing more in SEO and content marketing.</div>
+          </div>
+        </div>
+      </section>
+    </ng-container>
+
+</div>

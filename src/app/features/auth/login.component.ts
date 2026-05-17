@@ -83,6 +83,21 @@ export class LoginComponent {
   readonly error = signal('');
   readonly showPassword = signal(false);
 
+  /** Quick-login buttons displayed on the email step. */
+  readonly quickAccounts = [
+    { email: 'candidate@mereka.io', name: 'Sarah Ahmad', initial: 'S', color: '#a78bfa', badge: 'Candidate' },
+    { email: 'soar@mereka.io', name: 'Amir Razak', initial: 'A', color: '#60a5fa', badge: 'Soar (Hub Admin)' },
+    { email: 'scale@mereka.io', name: 'Priya Nair', initial: 'P', color: '#f472b6', badge: 'Scale (2 Hubs)' },
+  ];
+
+  /** Instant sign-in for demo accounts — no password needed. */
+  quickLogin(email: string): void {
+    const account = DEMO_ACCOUNTS[email];
+    if (!account) return;
+    this.auth.setPrototypeUser(account.user);
+    this.router.navigate(['/programs']);
+  }
+
   goToMethodSelect(): void {
     const e = this.email().trim().toLowerCase();
     if (!e || !e.includes('@')) {

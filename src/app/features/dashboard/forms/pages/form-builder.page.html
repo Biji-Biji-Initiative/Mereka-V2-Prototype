@@ -1,0 +1,111 @@
+<div class="flex-1 min-w-0 w-full flex flex-col" style="background:#F6F6F6">
+    <!-- Builder header -->
+    <header class="px-4 sm:px-6 lg:px-10 py-4 bg-white flex items-center justify-between gap-3 sticky top-16 z-30" style="border-bottom:1px solid #DDDDDE">
+      <div class="flex items-center gap-3 min-w-0">
+        <a routerLink="/dashboard/forms" class="text-sm font-medium" style="color:#7B7B7B">← Forms</a>
+        <input [ngModel]="title()" (ngModelChange)="title.set($event)" class="text-base font-bold bg-transparent px-2 py-1 rounded outline-none focus:bg-neutral-100 w-48 sm:w-72" style="color:#1A1623;border:none" placeholder="Untitled Form" />
+      </div>
+      <div class="flex items-center gap-2">
+        <button type="button" class="hidden sm:inline px-4 py-1.5 text-xs font-bold rounded-full" style="outline:1px solid #1A1623;color:#1A1623;outline-offset:-1px;border:none;background:transparent">Preview</button>
+        <button type="button" class="px-4 py-1.5 text-xs font-bold rounded-full text-white" style="background:#1A1623;border:none">Save draft</button>
+        <button type="button" class="px-4 py-1.5 text-xs font-bold rounded-full text-white" style="background:linear-gradient(90deg, #FD87A5 0%, #EE53B1 100%);border:none">Publish</button>
+      </div>
+    </header>
+
+    <!-- Tabs -->
+    <nav class="px-4 sm:px-6 lg:px-10 bg-white flex gap-1 overflow-x-auto" style="border-bottom:1px solid #DDDDDE">
+      <button *ngFor="let t of ['build','design','settings','share']" type="button" (click)="setTab($any(t))"
+        class="px-4 py-3 text-sm capitalize whitespace-nowrap"
+        [style.color]="tab() === t ? '#1A1623' : '#7B7B7B'"
+        [style.font-weight]="tab() === t ? '700' : '500'"
+        [style.borderBottom]="tab() === t ? '2px solid #1A1623' : '2px solid transparent'"
+        style="background:transparent;border-top:none;border-left:none;border-right:none;outline:none">{{ t }}</button>
+    </nav>
+
+    <!-- Build tab body -->
+    <div *ngIf="tab() === 'build'" class="flex-1 px-4 sm:px-6 lg:px-10 py-6 grid grid-cols-1 lg:grid-cols-[240px_1fr_320px] gap-4">
+      <!-- Field library -->
+      <aside class="lg:order-1 rounded-xl bg-white p-3 flex flex-col gap-1.5" style="outline:1px solid #DDDDDE;outline-offset:-1px">
+        <div class="text-xs font-bold uppercase tracking-wider px-1 pb-2" style="color:#7B7B7B;letter-spacing:0.5px">Add field</div>
+        <button *ngFor="let item of library" type="button" (click)="addField(item.type)" class="flex items-center gap-2 px-2 py-2 rounded-lg text-sm hover:bg-neutral-50 text-left" style="border:none;outline:none;background:transparent;color:#1A1623">
+          <span class="inline-flex items-center justify-center w-6 h-6 rounded text-xs font-bold" style="background:#ECECF1;color:#1A1623">{{ item.icon }}</span>
+          {{ item.label }}
+        </button>
+      </aside>
+
+      <!-- Canvas -->
+      <section class="lg:order-2 rounded-xl bg-white p-4 sm:p-6 flex flex-col gap-4" style="outline:1px solid #DDDDDE;outline-offset:-1px">
+        <input [ngModel]="title()" (ngModelChange)="title.set($event)" class="text-2xl font-black bg-transparent outline-none w-full" style="color:#1A1623;border:none" placeholder="Form title" />
+        <textarea [ngModel]="description()" (ngModelChange)="description.set($event)" rows="2" class="text-sm bg-transparent outline-none w-full resize-none" style="color:#7B7B7B;border:none" placeholder="Add a description for respondents…"></textarea>
+        <div class="h-px" style="background:#E5E5E7"></div>
+
+        <div *ngFor="let f of fields(); let i=index" (click)="selectField(f.id)" class="rounded-lg p-3 sm:p-4 cursor-pointer transition-colors flex flex-col gap-2"
+          [style.outline]="selectedFieldId() === f.id ? '2px solid #1A1623' : '1px solid transparent'"
+          [style.background]="selectedFieldId() === f.id ? '#FAFAFA' : 'transparent'">
+          <div class="flex items-center justify-between gap-2">
+            <div class="flex items-center gap-2">
+              <span class="inline-flex items-center justify-center w-5 h-5 rounded text-[10px] font-bold" style="background:#ECECF1;color:#1A1623">{{ fieldIcon(f.type) }}</span>
+              <span class="text-sm font-bold" style="color:#1A1623">{{ f.label }}<span *ngIf="f.required" style="color:#EF4444">*</span></span>
+            </div>
+            <div class="flex items-center gap-1 opacity-60">
+              <button type="button" (click)="moveField(f.id, -1); $event.stopPropagation()" class="w-6 h-6 rounded hover:bg-neutral-100" style="border:none;background:transparent">↑</button>
+              <button type="button" (click)="moveField(f.id, 1); $event.stopPropagation()"  class="w-6 h-6 rounded hover:bg-neutral-100" style="border:none;background:transparent">↓</button>
+              <button type="button" (click)="duplicateField(f.id); $event.stopPropagation()" class="w-6 h-6 rounded hover:bg-neutral-100" style="border:none;background:transparent">⎘</button>
+              <button type="button" (click)="deleteField(f.id); $event.stopPropagation()" class="w-6 h-6 rounded hover:bg-red-50" style="border:none;background:transparent;color:#EF4444">×</button>
+            </div>
+          </div>
+
+          <!-- Preview by type -->
+          <input *ngIf="f.type === 'short_text' || f.type === 'email' || f.type === 'phone' || f.type === 'number'" type="text" [placeholder]="f.placeholder || ''" disabled class="w-full px-3 py-2 rounded text-sm" style="background:#F4F4F4;border:1px solid #DDDDDE;color:#7B7B7B;outline:none" />
+          <textarea *ngIf="f.type === 'long_text'" rows="3" [placeholder]="f.placeholder || ''" disabled class="w-full px-3 py-2 rounded text-sm resize-none" style="background:#F4F4F4;border:1px solid #DDDDDE;color:#7B7B7B;outline:none"></textarea>
+          <div *ngIf="f.type === 'single_choice'" class="flex flex-col gap-2">
+            <label *ngFor="let opt of f.options" class="flex items-center gap-2 text-sm" style="color:#1A1623"><input type="radio" disabled /> {{ opt }}</label>
+          </div>
+          <div *ngIf="f.type === 'multi_choice'" class="flex flex-col gap-2">
+            <label *ngFor="let opt of f.options" class="flex items-center gap-2 text-sm" style="color:#1A1623"><input type="checkbox" disabled /> {{ opt }}</label>
+          </div>
+          <select *ngIf="f.type === 'dropdown'" disabled class="w-full px-3 py-2 rounded text-sm" style="background:#F4F4F4;border:1px solid #DDDDDE;color:#7B7B7B"><option *ngFor="let o of f.options">{{o}}</option></select>
+          <input *ngIf="f.type === 'date'" type="date" disabled class="w-full px-3 py-2 rounded text-sm" style="background:#F4F4F4;border:1px solid #DDDDDE;color:#7B7B7B;outline:none" />
+          <div *ngIf="f.type === 'file'" class="px-3 py-6 rounded text-center text-sm" style="background:#F4F4F4;border:1px dashed #DDDDDE;color:#7B7B7B">Drop file here or click to upload</div>
+          <div *ngIf="f.type === 'rating'" class="flex gap-1 text-2xl" style="color:#FBBF24">★ ★ ★ ★ ★</div>
+          <div *ngIf="f.type === 'section_break'" class="h-px" style="background:#E5E5E7"></div>
+        </div>
+
+        <button type="button" (click)="addField('short_text')" class="self-start text-sm font-bold inline-flex items-center gap-1 px-4 py-2 rounded-full" style="outline:1px solid #1A1623;outline-offset:-1px;color:#1A1623;border:none;background:transparent">+ Add field</button>
+      </section>
+
+      <!-- Inspector -->
+      <aside class="lg:order-3 rounded-xl bg-white p-4 flex flex-col gap-3" style="outline:1px solid #DDDDDE;outline-offset:-1px">
+        <div class="text-xs font-bold uppercase tracking-wider" style="color:#7B7B7B;letter-spacing:0.5px">Field settings</div>
+        <ng-container *ngIf="selectedField() as sf; else noSelection">
+          <label class="flex flex-col gap-1">
+            <span class="text-xs font-bold" style="color:#1A1623">Label</span>
+            <input [ngModel]="sf.label" (ngModelChange)="updateSelectedField({ label: $event })" class="px-3 py-2 rounded text-sm" style="background:white;border:1px solid #DDDDDE;outline:none" />
+          </label>
+          <label class="flex flex-col gap-1" *ngIf="sf.type !== 'section_break'">
+            <span class="text-xs font-bold" style="color:#1A1623">Placeholder / hint</span>
+            <input [ngModel]="sf.placeholder" (ngModelChange)="updateSelectedField({ placeholder: $event })" class="px-3 py-2 rounded text-sm" style="background:white;border:1px solid #DDDDDE;outline:none" />
+          </label>
+          <label class="flex flex-col gap-1">
+            <span class="text-xs font-bold" style="color:#1A1623">Description</span>
+            <textarea [ngModel]="sf.description" (ngModelChange)="updateSelectedField({ description: $event })" rows="2" class="px-3 py-2 rounded text-sm resize-none" style="background:white;border:1px solid #DDDDDE;outline:none"></textarea>
+          </label>
+          <label class="flex items-center gap-2 text-sm" style="color:#1A1623">
+            <input type="checkbox" [ngModel]="sf.required" (ngModelChange)="updateSelectedField({ required: $event })" />
+            Required field
+          </label>
+        </ng-container>
+        <ng-template #noSelection>
+          <p class="text-xs" style="color:#7B7B7B">Select a field in the canvas to edit its label, placeholder, and behaviour.</p>
+        </ng-template>
+      </aside>
+    </div>
+
+    <!-- Design/Settings/Share placeholders -->
+    <div *ngIf="tab() !== 'build'" class="flex-1 px-4 sm:px-6 lg:px-10 py-6">
+      <div class="rounded-xl bg-white p-8 text-center" style="outline:1px solid #DDDDDE;outline-offset:-1px">
+        <h3 class="text-xl font-bold capitalize" style="color:#1A1623">{{ tab() }}</h3>
+        <p class="text-sm mt-2" style="color:#7B7B7B">This tab will host {{ tab() }} controls — theming, submission limits, notifications, embeds, public form links.</p>
+      </div>
+    </div>
+</div>

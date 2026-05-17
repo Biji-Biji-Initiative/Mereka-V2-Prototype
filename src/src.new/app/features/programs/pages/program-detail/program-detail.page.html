@@ -1,0 +1,89 @@
+<div *ngIf="program() as p; else loading" class="bg-neutral-50 min-h-screen">
+  <div class="max-w-[1320px] mx-auto px-4 py-6 grid grid-cols-12 gap-6">
+    <!-- Left: program sidebar with nav -->
+    <aside class="col-span-12 md:col-span-2">
+      <mereka-program-sidebar [program]="p" />
+    </aside>
+
+    <!-- Center: hero + tab content -->
+    <section class="col-span-12 md:col-span-7">
+      <div
+        class="rounded-lg overflow-hidden bg-gradient-to-br from-program-hero-start to-program-hero-end h-40 md:h-48 relative flex items-end p-6"
+      >
+        <div>
+          <h1 class="text-2xl md:text-3xl font-semibold text-neutral-900">Welcome to {{ p.title }}</h1>
+          <p class="text-neutral-700 mt-1 max-w-md">{{ p.tagline }}</p>
+        </div>
+      </div>
+
+      <!-- Stat chips -->
+      <div class="flex flex-wrap gap-2 mt-4 text-xs">
+        <span
+          class="inline-flex items-center px-3 py-1 rounded-full bg-program-chip-members text-success font-medium"
+        >
+          {{ p.stats.memberCount | number }} Members
+        </span>
+        <span
+          class="inline-flex items-center px-3 py-1 rounded-full bg-program-chip-experts text-warning font-medium"
+        >
+          {{ p.stats.expertCount }} Experts
+        </span>
+        <span
+          class="inline-flex items-center px-3 py-1 rounded-full bg-program-chip-mentors text-primary-700 font-medium"
+        >
+          {{ p.stats.mentorCount }} Mentors
+        </span>
+      </div>
+
+      <!-- Tabs -->
+      <nav class="border-b border-neutral-200 mt-6 flex gap-6 text-sm">
+        <a
+          routerLink="feed"
+          routerLinkActive="border-neutral-900 text-neutral-900"
+          [routerLinkActiveOptions]="{ exact: false }"
+          class="py-3 border-b-2 border-transparent text-neutral-500 hover:text-neutral-900"
+          >Feed</a
+        >
+        <a
+          routerLink="discussions"
+          routerLinkActive="border-neutral-900 text-neutral-900"
+          class="py-3 border-b-2 border-transparent text-neutral-500 hover:text-neutral-900"
+          >Discussions</a
+        >
+        <a
+          routerLink="curriculum"
+          routerLinkActive="border-neutral-900 text-neutral-900"
+          class="py-3 border-b-2 border-transparent text-neutral-500 hover:text-neutral-900"
+          >Curriculum</a
+        >
+        <a
+          routerLink="members"
+          routerLinkActive="border-neutral-900 text-neutral-900"
+          class="py-3 border-b-2 border-transparent text-neutral-500 hover:text-neutral-900"
+          >Members</a
+        >
+        <a
+          routerLink="about"
+          routerLinkActive="border-neutral-900 text-neutral-900"
+          class="py-3 border-b-2 border-transparent text-neutral-500 hover:text-neutral-900"
+          >About</a
+        >
+      </nav>
+
+      <div class="py-6">
+        <router-outlet />
+      </div>
+    </section>
+
+    <!-- Right: members roster -->
+    <aside class="col-span-12 md:col-span-3">
+      <mereka-program-roster [slug]="p.slug" />
+    </aside>
+  </div>
+</div>
+
+<ng-template #loading>
+  <div class="max-w-[1320px] mx-auto px-6 py-24 text-center text-neutral-500">
+    Loading program…
+  </div>
+</ng-template>

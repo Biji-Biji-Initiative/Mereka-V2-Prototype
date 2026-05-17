@@ -1,0 +1,52 @@
+<div class="flex flex-col gap-6">
+    <header class="flex flex-col sm:flex-row sm:items-end justify-between gap-3">
+      <div>
+        <a routerLink="/dashboard/forms" class="text-xs font-bold uppercase tracking-wider" style="color:#7B7B7B">← Manage Forms</a>
+        <h1 class="text-[28px] sm:text-[32px] font-black leading-tight" style="color:#1A1623">Responses</h1>
+        <p class="text-sm mt-1" style="color:#7B7B7B">{{ responses.length }} total responses • {{ visible().length }} shown</p>
+      </div>
+      <div class="flex gap-2">
+        <button class="text-xs font-bold px-4 py-2 rounded-full" style="outline:1px solid #1A1623;outline-offset:-1px;color:#1A1623;background:transparent;border:none">Export CSV</button>
+        <button class="text-xs font-bold px-4 py-2 rounded-full text-white" style="background:#1A1623;border:none">Bulk action</button>
+      </div>
+    </header>
+
+    <!-- Stats row -->
+    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+      <div *ngFor="let s of [
+        { label:'Total', value: responses.length, color:'#1A1623' },
+        { label:'New', value: 2, color:'#3B82F6' },
+        { label:'Accepted', value: 1, color:'#10B981' },
+        { label:'Rejected', value: 1, color:'#EF4444' }
+      ]" class="rounded-xl bg-white p-4" style="outline:1px solid #DDDDDE;outline-offset:-1px">
+        <div class="text-xs" style="color:#7B7B7B">{{ s.label }}</div>
+        <div class="text-2xl font-black mt-1" [style.color]="s.color">{{ s.value }}</div>
+      </div>
+    </div>
+
+    <div class="flex gap-2 flex-wrap">
+      <button *ngFor="let s of ['All','New','Reviewed','Accepted','Rejected']" type="button" (click)="setFilter($any(s))"
+        class="px-3 py-2 rounded-full text-xs"
+        [style.background]="filter() === s ? '#1A1623' : '#ECECF1'"
+        [style.color]="filter() === s ? 'white' : '#1A1623'"
+        style="border:none">{{ s }}</button>
+    </div>
+
+    <div class="rounded-xl bg-white overflow-hidden" style="outline:1px solid #DDDDDE">
+      <div class="hidden md:grid px-5 py-2.5 grid-cols-[160px_1fr_1fr_120px_120px] gap-4 text-[11px] font-black uppercase tracking-wider" style="background:rgba(0,0,0,0.04);letter-spacing:0.5px">
+        <span>Submitted</span><span>Name</span><span>Email</span><span>Status</span><span class="text-center">Actions</span>
+      </div>
+      <div *ngFor="let r of visible(); let i=index" class="px-5 py-4 grid grid-cols-1 md:grid-cols-[160px_1fr_1fr_120px_120px] items-center gap-4" [style.background]="i%2===1 ? 'rgba(0,0,0,0.04)' : 'white'">
+        <span class="text-xs" style="color:#7B7B7B">{{ r.submittedAt }}</span>
+        <span class="text-sm font-bold" style="color:#1A1623">{{ r.name }}</span>
+        <span class="text-xs" style="color:#1A1623">{{ r.email }}</span>
+        <span class="inline-flex items-center gap-1 text-xs font-bold">
+          <span class="w-1.5 h-1.5 rounded-full" [style.background]="r.status==='Accepted' ? '#10B981' : r.status==='Rejected' ? '#EF4444' : r.status==='Reviewed' ? '#A855F7' : '#3B82F6'"></span>
+          {{ r.status }}
+        </span>
+        <div class="flex md:justify-end gap-2">
+          <button class="text-xs px-3 py-1.5 rounded-full" style="outline:1px solid #1A1623;color:#1A1623;outline-offset:-1px;background:transparent;border:none">View</button>
+        </div>
+      </div>
+    </div>
+</div>

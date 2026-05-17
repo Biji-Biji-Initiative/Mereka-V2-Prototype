@@ -1,0 +1,584 @@
+<!--
+  My Dashboard
+  ------------
+  Reference: Figma → Mereka V2 — UXA → node 5208-173854 (rebuild pass 2026-05-12).
+  Layout:
+    Desktop (>= lg, 1024px): 300px sticky white sidebar + #F6F6F6 main content (full screen width)
+    Mobile (< lg): collapsible drawer sidebar + stacked main content
+  All data is currently mock-served until /api/v1/users/me/dashboard ships.
+  Placeholder images use inline SVG data URIs (set in dashboard.page.ts) so they
+  always render even when external image services are blocked.
+-->
+<div class="flex w-full min-h-[calc(100vh-64px)] items-start" style="background:#F6F6F6">
+  <!-- ============== Mobile sidebar toggle (only < lg) ============== -->
+  <button
+    type="button"
+    (click)="toggleSidebar()"
+    class="lg:hidden fixed bottom-4 right-4 z-50 w-12 h-12 rounded-full bg-neutral-900 text-white flex items-center justify-center shadow-lg"
+    style="border:none;outline:none;box-shadow:0 4px 12px rgba(0,0,0,0.15)"
+    [attr.aria-label]="mobileSidebarOpen() ? 'Close menu' : 'Open menu'"
+    [attr.aria-expanded]="mobileSidebarOpen()"
+  >
+    <svg *ngIf="!mobileSidebarOpen()" width="20" height="20" viewBox="0 0 24 24" fill="none">
+      <path d="M3 6h18M3 12h18M3 18h18" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+    </svg>
+    <svg *ngIf="mobileSidebarOpen()" width="20" height="20" viewBox="0 0 24 24" fill="none">
+      <path d="M6 6l12 12M6 18L18 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+    </svg>
+  </button>
+
+  <!-- ============== Mobile backdrop ============== -->
+  <div
+    *ngIf="mobileSidebarOpen()"
+    (click)="closeSidebar()"
+    class="lg:hidden fixed inset-0 z-30 bg-black/40"
+    style="top:64px"
+    aria-hidden="true"
+  ></div>
+
+  <!-- =================== Sidebar =================== -->
+  <aside
+    class="flex flex-col w-[300px] shrink-0 bg-white px-10 py-6 gap-3 self-start sticky top-16 max-h-[calc(100vh-64px)] overflow-y-auto z-40"
+    style="border-top:1px solid #DDDDDE;border-right:1px solid #DDDDDE"
+    [class.hidden]="!mobileSidebarOpen()"
+    [class.lg:flex]="true"
+    [class.fixed]="mobileSidebarOpen()"
+    [class.left-0]="mobileSidebarOpen()"
+    [style.top]="'64px'"
+  >
+    <!-- Profile card -->
+    <div class="flex flex-col gap-6">
+      <div class="flex flex-col gap-3">
+        <div class="flex items-start">
+          <div class="flex-1 flex flex-col">
+            <span class="text-[15px] text-neutral-500 leading-6">Personal</span>
+            <span class="text-[17px] font-medium leading-7" style="color:rgba(25.2,28.03,47.81,0.9)">{{ displayName() }}</span>
+          </div>
+          <span
+            class="inline-flex items-center px-1.5 py-0.5 rounded-md text-white text-[11px] font-medium tracking-wider"
+            style="background:#303345"
+          >{{ accountTier() }}</span>
+        </div>
+
+        <!-- Profile completion -->
+        <div class="flex flex-col gap-0.5">
+          <div class="h-1 rounded-full overflow-hidden" style="background:#EDEDED">
+            <div class="h-full" style="background:#303345" [style.width.%]="profileCompletion()"></div>
+          </div>
+          <div class="flex items-center justify-between gap-2">
+            <a class="text-xs font-medium cursor-pointer" style="color:#276EF1;text-decoration:underline;text-decoration-color:rgba(39,110,241,0.48)">Complete your profile</a>
+            <span class="text-[15px] font-extrabold" style="color:rgba(27,31,59,0.65)">{{ profileCompletion() }}%</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="h-px my-1" style="background:#E0E0E0"></div>
+
+    <!-- Primary nav -->
+    <nav class="flex flex-col">
+      <a
+        routerLink="/dashboard"
+        routerLinkActive="active-nav"
+        [routerLinkActiveOptions]="{ exact: true }"
+        (click)="closeSidebar()"
+        class="relative flex items-center gap-2 px-2 py-2.5 rounded-lg text-sm font-medium nav-link"
+      >Dashboard</a>
+
+      <a
+        routerLink="/dashboard/courses"
+        routerLinkActive="active-nav"
+        (click)="closeSidebar()"
+        class="flex items-center justify-between gap-2 px-2 py-2.5 rounded-lg text-sm font-medium nav-link"
+      >
+        <span>My Courses</span>
+        <span class="inline-flex items-center justify-center min-w-[20px] h-5 px-1.5 rounded-full text-white text-[11px] font-medium" style="background:#276EF1;letter-spacing:0.4px">3</span>
+      </a>
+
+      <a
+        routerLink="/dashboard/transactions"
+        routerLinkActive="active-nav"
+        (click)="closeSidebar()"
+        class="flex items-center gap-2 px-2 py-2.5 rounded-lg text-sm font-medium nav-link"
+      >My Purchases</a>
+
+      <a
+        routerLink="/dashboard/bookings"
+        routerLinkActive="active-nav"
+        (click)="closeSidebar()"
+        class="mt-2 inline-flex items-center justify-center h-11 rounded-xl text-base font-extrabold hover:bg-neutral-50"
+        style="border:1px solid #E0E0E0;color:#232534"
+      >Fulfill Orders</a>
+    </nav>
+
+    <div class="h-px my-1" style="background:#E0E0E0"></div>
+
+    <nav class="flex flex-col">
+      <a routerLink="/dashboard/forms" routerLinkActive="active-nav" (click)="closeSidebar()" class="flex items-center px-2 py-2.5 rounded-lg text-sm font-medium nav-link">Manage Forms</a>
+      <a routerLink="/dashboard/broadcasts" routerLinkActive="active-nav" (click)="closeSidebar()" class="flex items-center px-2 py-2.5 rounded-lg text-sm font-medium nav-link">Manage Communications</a>
+      <a routerLink="/dashboard/analytics" routerLinkActive="active-nav" (click)="closeSidebar()" class="flex items-center px-2 py-2.5 rounded-lg text-sm font-medium nav-link">Analytics Dashboard</a>
+    </nav>
+
+    <div class="h-px my-1" style="background:#E0E0E0"></div>
+
+    <!-- Hub switcher + hub-scoped nav -->
+    <nav class="flex flex-col">
+      <button
+        type="button"
+        class="relative flex items-center justify-between px-2 py-2.5 rounded-lg"
+        style="background:#F4F4F4;border:none;outline:none;box-shadow:none"
+      >
+        <span class="flex items-center gap-2">
+          <img [src]="ph.hubIcon24" alt="Hub" class="w-6 h-6 rounded-md" style="border:0.5px solid #7B7B7B" />
+          <span class="text-sm font-medium" style="color:#1A1623">Biji-biji Initiative</span>
+        </span>
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" style="color:#7B7B7B">
+          <path d="M6 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+        </svg>
+      </button>
+      <a routerLink="/dashboard/listings/new" routerLinkActive="active-nav" (click)="closeSidebar()" class="flex items-center px-2 py-2.5 rounded-lg text-sm font-medium nav-link">Post Listing</a>
+      <a routerLink="/dashboard/listings" routerLinkActive="active-nav" (click)="closeSidebar()" class="flex items-center px-2 py-2.5 rounded-lg text-sm font-medium nav-link">Manage Listings</a>
+      <a routerLink="/dashboard/gigs" routerLinkActive="active-nav" (click)="closeSidebar()" class="flex items-center px-2 py-2.5 rounded-lg text-sm font-medium nav-link">Manage Gigs</a>
+      <a routerLink="/dashboard/programs" routerLinkActive="active-nav" (click)="closeSidebar()" class="flex items-center px-2 py-2.5 rounded-lg text-sm font-medium nav-link">Manage Programs</a>
+    </nav>
+
+    <div class="h-px my-1" style="background:#E0E0E0"></div>
+
+    <!-- Mini calendar -->
+    <section class="flex flex-col pb-10">
+      <div class="flex items-center justify-between px-2 py-2.5">
+        <span class="text-[15px] font-medium" style="color:rgba(25.2,28.03,47.81,0.9)">My Calendar</span>
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+          <path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+        </svg>
+      </div>
+
+      <div class="p-3 rounded-xl flex flex-col gap-3" style="background:#F4F4F4">
+        <div class="flex items-center justify-between">
+          <button (click)="calPrev()" class="p-1 rounded-md hover:bg-white" style="border:none;outline:none;box-shadow:none;background:transparent">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" style="color:#276EF1">
+              <path d="M10 3l-5 5 5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+          </button>
+          <div class="flex items-center gap-1 text-[17px] font-medium">
+            <span style="color:rgba(25.2,28.03,47.81,0.9)">{{ calMonthName() }}</span>
+            <span style="color:#276EF1">{{ calYear() }}</span>
+          </div>
+          <button (click)="calNext()" class="p-1 rounded-md hover:bg-white" style="border:none;outline:none;box-shadow:none;background:transparent">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" style="color:#276EF1">
+              <path d="M6 3l5 5-5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+          </button>
+        </div>
+        <div class="grid grid-cols-7 text-center text-[13px] font-medium" style="color:rgba(27,31,59,0.4)">
+          <span *ngFor="let d of calDayHeaders">{{ d }}</span>
+        </div>
+        <div class="grid grid-cols-7 gap-y-1 text-center text-[15px] font-medium">
+          <span
+            *ngFor="let cell of calendarDays()"
+            class="w-8 h-8 flex items-center justify-center mx-auto rounded-full"
+            [style.color]="cell.isToday ? 'white' : !cell.isCurrentMonth ? 'rgba(25,28,48,0.35)' : cell.isWeekend ? '#DD4C1E' : 'rgba(25,28,48,0.9)'"
+            [style.background]="cell.isToday ? '#276EF1' : 'transparent'"
+            [style.fontWeight]="cell.isToday ? '700' : '500'"
+          >{{ cell.day }}</span>
+        </div>
+      </div>
+    </section>
+  </aside>
+
+  <!-- =================== Main =================== -->
+  <main class="flex-1 min-w-0 w-full px-4 sm:px-6 lg:px-10 py-6 flex flex-col gap-10 lg:gap-[60px]" style="background:#F6F6F6">
+    <!-- Welcome banner + earnings card -->
+    <section class="flex flex-col gap-4">
+      <div class="flex flex-col sm:flex-row items-start sm:items-start justify-between gap-4">
+        <div class="flex flex-col">
+          <div class="text-base font-bold leading-4" style="color:#1A1623">Welcome to your dashboard,</div>
+          <div class="flex items-end gap-3 flex-wrap">
+            <h1 class="text-[24px] sm:text-[32px] leading-[36px] sm:leading-[48px] font-black" style="color:#1A1623">{{ displayName() }}</h1>
+            <a class="inline-flex items-center gap-1 text-xs font-medium pb-1 sm:pb-[11px] cursor-pointer" style="color:#276EF1;line-height:12px">
+              View Profile
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                <path d="M5 12h14m-5-5l5 5-5 5" stroke="#276EF1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+            </a>
+          </div>
+        </div>
+
+        <!-- Earnings card -->
+        <div class="flex items-center gap-3 px-3 py-2 rounded-lg bg-white self-stretch sm:self-auto" style="box-shadow:0px 2px 8px rgba(85,85,85,0.04)">
+          <div class="w-10 h-10 p-2 rounded-md flex items-center justify-center shrink-0" style="background:#D4CCE6">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+              <path d="M3 7a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7zm0 4h14a2 2 0 0 1 2 2v0a2 2 0 0 1-2 2h-2a2 2 0 0 1-2-2v0a2 2 0 0 1 2-2" stroke="#1A1623" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+              <circle cx="17" cy="13" r="1" fill="#1A1623" />
+            </svg>
+          </div>
+          <div class="flex flex-col items-end gap-1 py-2">
+            <span class="text-xs leading-4 whitespace-nowrap" style="color:#1A1623">Earned with Mereka</span>
+            <span class="text-base font-bold leading-5 whitespace-nowrap" style="color:#1A1623">USD 1,000.00</span>
+          </div>
+          <div class="hidden sm:block w-px h-16" style="background:#F6F6F6"></div>
+          <svg class="hidden sm:block" width="20" height="20" viewBox="0 0 24 24" fill="none">
+            <path d="M12 22s8-4 8-12V5l-8-3-8 3v5c0 8 8 12 8 12z" stroke="#1A1623" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+            <path d="M9 12l2 2 4-4" stroke="#1A1623" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+        </div>
+      </div>
+
+      <!-- Hub filter chips + browse CTA -->
+      <div class="flex flex-col gap-4">
+        <div class="flex items-center justify-between flex-wrap gap-3">
+          <div class="flex items-center gap-3 flex-wrap">
+            <button
+              type="button"
+              (click)="setActiveHub('all')"
+              class="inline-flex items-center gap-1 px-3 py-2.5 rounded-full text-xs"
+              [style.background]="activeHub() === 'all' ? '#F5F5F5' : '#ECECF1'"
+              [style.outline]="activeHub() === 'all' ? '1px solid #7B7B7C' : 'none'"
+              style="border:none;box-shadow:none;outline-offset:-1px;color:#1A1623"
+            >
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                <path d="M5 12l5 5L20 7" stroke="#1A1623" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+              All Hubs
+            </button>
+            <button
+              type="button"
+              *ngFor="let h of hubFilters()"
+              (click)="setActiveHub(h.id)"
+              class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs"
+              [style.background]="activeHub() === h.id ? '#1A1623' : '#ECECF1'"
+              [style.color]="activeHub() === h.id ? 'white' : '#1A1623'"
+              style="border:none;outline:none;box-shadow:none"
+            >
+              <img [src]="h.logo" [alt]="h.name" class="w-6 h-6 rounded-md" style="border:0.5px solid #7B7B7B" />
+              {{ h.name }}
+            </button>
+          </div>
+
+          <a
+            routerLink="/programs"
+            class="inline-flex items-center gap-2 px-[18px] py-1.5 rounded-full text-xs font-bold hover:bg-neutral-900 hover:text-white transition-colors cursor-pointer"
+            style="outline:1px solid #1A1623;outline-offset:-1px;color:#1A1623"
+          >
+            Browse Programmes
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+              <path d="M3 8h10M8 3l5 5-5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+          </a>
+        </div>
+
+        <!-- Feed cards -->
+        <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+          <article
+            *ngFor="let post of filteredFeed()"
+            class="p-3 rounded-lg bg-white flex flex-col gap-3"
+            style="outline:1px solid #DDDDDE;outline-offset:-1px"
+          >
+            <header class="flex items-center justify-between gap-2">
+              <div class="flex items-center gap-2 min-w-0">
+                <img [src]="post.authorAvatar" [alt]="post.authorName" class="w-9 h-9 rounded-full shrink-0" />
+                <div class="flex flex-col min-w-0">
+                  <div class="flex items-center gap-2">
+                    <span class="text-sm font-medium leading-6" style="color:#1A1623">{{ post.authorName }}</span>
+                    <span
+                      class="px-1 rounded text-white text-[10px] font-bold leading-[18px]"
+                      style="background:linear-gradient(58deg,#F7B9E0 0%,#F10097 100%)"
+                    >{{ post.badge }}</span>
+                  </div>
+                  <div class="flex items-center gap-1 text-xs font-semibold whitespace-nowrap overflow-hidden" style="color:#7B7B7B">
+                    <span>{{ post.date }}</span>
+                    <span>•</span>
+                    <span class="truncate">{{ post.postedIn }}</span>
+                  </div>
+                </div>
+              </div>
+              <div class="flex items-center gap-2 shrink-0">
+                <img [src]="post.hubLogo" [alt]="post.hubName" class="w-5 h-5 rounded" style="border:0.5px solid #7B7B7B" />
+                <span class="hidden sm:inline text-xs font-bold leading-5 whitespace-nowrap" style="color:#7B7B7B">{{ post.hubName }}</span>
+              </div>
+            </header>
+            <div class="flex items-start gap-3">
+              <div class="flex-1 flex flex-col gap-3 min-w-0">
+                <h3 class="text-xl font-bold leading-tight" style="color:#1A1623">{{ post.title }}</h3>
+                <p class="text-base font-medium leading-6 line-clamp-2 h-12 overflow-hidden" style="color:#1A1623">{{ post.body }}</p>
+              </div>
+              <img *ngIf="post.illustration" [src]="post.illustration" alt="" class="w-[84px] self-stretch rounded-md object-cover shrink-0" />
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- =================== Featured =================== -->
+    <section class="flex flex-col gap-4">
+      <div class="flex items-center gap-4 flex-wrap">
+        <h2 class="text-xl font-bold leading-[30px]" style="color:#1A1623">Featured</h2>
+        <div class="flex items-center gap-2 sm:gap-3 flex-wrap">
+          <button
+            *ngFor="let cat of featuredCategories"
+            type="button"
+            (click)="setFeaturedCategory(cat)"
+            class="px-3 py-2.5 rounded-full text-xs leading-3 transition-colors"
+            [style.background]="activeFeaturedCategory() === cat ? '#303345' : '#ECECF1'"
+            [style.color]="activeFeaturedCategory() === cat ? 'white' : '#1A1623'"
+            style="border:none;outline:none;box-shadow:none"
+          >{{ cat }}</button>
+        </div>
+      </div>
+
+      <div class="flex items-stretch gap-4 overflow-x-auto pb-2 -mx-4 px-4 sm:mx-0 sm:px-0">
+        <article *ngFor="let item of featured" class="w-[260px] shrink-0 flex items-start gap-3">
+          <img [src]="item.image" [alt]="item.title" class="w-[103px] h-[103px] rounded-lg shrink-0 object-cover" style="border-radius:7.77px" />
+          <div class="flex-1 flex flex-col gap-1 min-w-0">
+            <span class="inline-flex self-start px-1 rounded text-[10px] font-bold leading-[18px]" style="background:#EFEFF0;color:#1A1623">{{ item.category }}</span>
+            <h3 class="text-xl font-semibold leading-[30px] line-clamp-2 overflow-hidden" style="color:#1A1623;font-family:'Poppins',sans-serif">{{ item.title }}</h3>
+            <span class="text-sm font-medium" style="color:#1A1623">{{ item.price }}</span>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- =================== Milestones =================== -->
+    <section class="flex flex-col gap-4 items-end">
+      <div class="self-stretch flex items-center gap-4 flex-wrap">
+        <h2 class="text-xl font-bold leading-[30px]" style="color:#1A1623">My Milestones</h2>
+        <div class="flex items-center gap-2 sm:gap-3 flex-wrap">
+          <button
+            *ngFor="let cat of milestoneCategories"
+            type="button"
+            (click)="setMilestoneCategory(cat)"
+            class="px-3 py-2.5 rounded-full text-xs leading-3 transition-colors"
+            [style.background]="activeMilestoneCategory() === cat ? '#303345' : '#ECECF1'"
+            [style.color]="activeMilestoneCategory() === cat ? 'white' : '#1A1623'"
+            style="border:none;outline:none;box-shadow:none"
+          >{{ cat }}</button>
+        </div>
+      </div>
+
+      <div class="self-stretch flex items-stretch gap-2 overflow-x-auto pb-2 -mx-4 px-4 sm:mx-0 sm:px-0">
+        <article
+          *ngFor="let m of milestones"
+          class="w-[260px] sm:w-[304px] shrink-0 p-3 rounded-lg bg-white flex flex-col gap-3"
+          style="outline:1px solid #DDDDDE;outline-offset:-1px"
+        >
+          <header class="flex items-center justify-between gap-2">
+            <div class="flex items-center gap-1 text-xs font-semibold min-w-0" style="color:#7B7B7B">
+              <span class="whitespace-nowrap">{{ m.date }}</span>
+              <ng-container *ngIf="m.type"><span>•</span><span class="truncate">{{ m.type }}</span></ng-container>
+            </div>
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" class="shrink-0">
+              <path d="M11.5 5.5a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3zM4.5 9.5a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3zM11.5 13.5a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3z" stroke="#1A1623" stroke-width="1.5" />
+              <path d="M5.8 8.7l4.4 2.6M10.2 4.7L5.8 7.3" stroke="#1A1623" stroke-width="1.5" />
+            </svg>
+          </header>
+          <h3 class="text-xl font-bold leading-tight" style="color:#1A1623">{{ m.title }}</h3>
+          <footer class="flex items-center gap-2" [style.visibility]="m.hubName ? 'visible' : 'hidden'">
+            <img [src]="m.hubLogo || ph.hubBadge20" alt="" class="w-5 h-5 rounded" style="border:0.5px solid #7B7B7B" />
+            <span class="text-xs font-bold leading-5" style="color:#7B7B7B">{{ m.hubName || 'Biji-biji Initiative' }}</span>
+          </footer>
+        </article>
+      </div>
+    </section>
+
+    <!-- =================== My Activities =================== -->
+    <section class="flex flex-col gap-4">
+      <h2 class="text-xl font-bold leading-[30px]" style="color:#1A1623">My Activities</h2>
+
+      <!-- Programmes table -->
+      <div class="flex flex-col gap-3 pb-4" id="my-courses">
+        <div class="flex items-center gap-3 sm:gap-4 flex-wrap">
+          <div class="flex items-center">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+              <path d="M6 9l6 6 6-6" stroke="#7B7B7B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+            <h3 class="text-[17px] font-bold leading-[26px]" style="color:#1A1623">Programmes</h3>
+          </div>
+          <div class="flex items-center gap-2 sm:gap-3 flex-wrap">
+            <button class="px-3 py-2.5 rounded-full text-xs leading-3" style="background:#303345;color:white;border:none;outline:none;box-shadow:none">All</button>
+            <button class="px-3 py-2.5 rounded-full text-xs leading-3" style="background:#ECECF1;color:#1A1623;border:none;outline:none;box-shadow:none">In Progress</button>
+            <button class="px-3 py-2.5 rounded-full text-xs leading-3" style="background:#ECECF1;color:#1A1623;border:none;outline:none;box-shadow:none">Completed</button>
+          </div>
+        </div>
+
+        <!-- Desktop table -->
+        <div class="hidden md:block rounded-xl bg-white overflow-hidden" style="outline:1px solid #DDDDDE;outline-offset:-1px">
+          <div class="px-5 py-2.5 grid grid-cols-[1fr_160px_160px_180px] gap-5 text-[11px] font-black uppercase tracking-wider" style="background:rgba(0,0,0,0.04);color:black;letter-spacing:0.5px">
+            <span>Programme name</span>
+            <span>Due Date</span>
+            <span>Progress</span>
+            <span class="text-center">Actions</span>
+          </div>
+          <div>
+            <div
+              *ngFor="let p of programmes; let i = index"
+              class="px-5 py-4 grid grid-cols-[1fr_160px_160px_180px] items-center gap-5"
+              [style.background]="i % 2 === 1 ? 'rgba(0,0,0,0.04)' : 'white'"
+            >
+              <div class="flex items-center gap-2 min-w-0">
+                <img [src]="p.logo" alt="" class="w-6 h-6 rounded shrink-0" />
+                <span
+                  class="text-[11px] font-black uppercase tracking-wider truncate"
+                  [style.color]="p.completed ? '#7B7B7B' : 'black'"
+                  style="letter-spacing:0.5px"
+                >{{ p.name }}</span>
+              </div>
+              <span class="text-[11px] font-normal" style="color:#B9B9BA;letter-spacing:0.5px">{{ p.dueDate }}</span>
+              <div class="flex items-center gap-2">
+                <span class="text-[11px] font-bold text-right" style="color:rgba(27,31,59,0.65);letter-spacing:0.5px">{{ p.progress }}%</span>
+                <div class="flex-1 h-1 rounded-full overflow-hidden" style="background:#EDEDED">
+                  <div class="h-full" [style.background]="p.completed ? '#7B7B7B' : '#303345'" [style.width.%]="p.progress"></div>
+                </div>
+              </div>
+              <div class="flex justify-end">
+                <button
+                  type="button"
+                  class="inline-flex items-center gap-2 px-5 py-1.5 rounded-full text-[11px] font-medium"
+                  [style.background]="p.completed ? 'transparent' : '#1A1623'"
+                  [style.color]="p.completed ? '#1A1623' : 'white'"
+                  [style.outline]="p.completed ? '1px solid #1A1623' : 'none'"
+                  [style.font-weight]="p.completed ? '700' : '500'"
+                  style="outline-offset:-1px;border:none;box-shadow:none;letter-spacing:0.5px"
+                >
+                  {{ p.ctaLabel }}
+                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                    <path d="M3 8h10M8 3l5 5-5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                  </svg>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Mobile card list -->
+        <div class="md:hidden flex flex-col gap-3">
+          <div
+            *ngFor="let p of programmes"
+            class="p-4 rounded-xl bg-white flex flex-col gap-3"
+            style="outline:1px solid #DDDDDE;outline-offset:-1px"
+          >
+            <div class="flex items-center gap-2">
+              <img [src]="p.logo" alt="" class="w-6 h-6 rounded shrink-0" />
+              <span class="text-[12px] font-black uppercase tracking-wider truncate" [style.color]="p.completed ? '#7B7B7B' : 'black'" style="letter-spacing:0.5px">{{ p.name }}</span>
+            </div>
+            <div class="flex items-center justify-between text-[11px]">
+              <span class="font-normal" style="color:#B9B9BA;letter-spacing:0.5px">Due {{ p.dueDate }}</span>
+              <span class="font-bold" style="color:rgba(27,31,59,0.65);letter-spacing:0.5px">{{ p.progress }}%</span>
+            </div>
+            <div class="h-1 rounded-full overflow-hidden" style="background:#EDEDED">
+              <div class="h-full" [style.background]="p.completed ? '#7B7B7B' : '#303345'" [style.width.%]="p.progress"></div>
+            </div>
+            <button
+              type="button"
+              class="inline-flex items-center justify-center gap-2 w-full px-5 py-2 rounded-full text-[12px] font-medium"
+              [style.background]="p.completed ? 'transparent' : '#1A1623'"
+              [style.color]="p.completed ? '#1A1623' : 'white'"
+              [style.outline]="p.completed ? '1px solid #1A1623' : 'none'"
+              style="outline-offset:-1px;border:none;box-shadow:none"
+            >
+              {{ p.ctaLabel }}
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                <path d="M3 8h10M8 3l5 5-5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Experiences (empty state) -->
+      <div class="flex flex-col gap-3 pb-4">
+        <div class="flex items-center gap-3 sm:gap-4 flex-wrap">
+          <div class="flex items-center">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+              <path d="M6 9l6 6 6-6" stroke="#7B7B7B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+            <h3 class="text-[17px] font-bold leading-[26px]" style="color:#1A1623">Experiences</h3>
+          </div>
+          <div class="flex items-center gap-2 sm:gap-3 flex-wrap">
+            <button class="px-3 py-2.5 rounded-full text-xs leading-3" style="background:#303345;color:white;border:none;outline:none;box-shadow:none">All</button>
+            <button class="px-3 py-2.5 rounded-full text-xs leading-3" style="background:#ECECF1;color:#1A1623;border:none;outline:none;box-shadow:none">Coming Up</button>
+            <button class="px-3 py-2.5 rounded-full text-xs leading-3" style="background:#ECECF1;color:#1A1623;border:none;outline:none;box-shadow:none">Completed</button>
+          </div>
+        </div>
+        <div class="rounded-xl bg-white overflow-hidden" style="outline:1px solid #DDDDDE;outline-offset:-1px">
+          <div class="hidden md:grid px-5 py-2.5 grid-cols-[1fr_130px_100px_100px_auto] gap-5 text-[11px] font-black uppercase tracking-wider" style="background:rgba(0,0,0,0.04);color:black;letter-spacing:0.5px">
+            <span>Main information</span>
+            <span>Status</span>
+            <span>Last booked</span>
+            <span>Tickets</span>
+            <span class="text-center">Actions</span>
+          </div>
+          <div class="px-5 py-6 text-center text-sm sm:text-base" style="color:#1A1623">
+            You have not signed up for any experience yet.
+            <a class="underline cursor-pointer" style="color:#1A1623">Browse experiences</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Jobs (empty state) -->
+      <div class="flex flex-col gap-3 pb-4">
+        <div class="flex items-center gap-3 sm:gap-4 flex-wrap">
+          <div class="flex items-center">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+              <path d="M6 9l6 6 6-6" stroke="#7B7B7B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+            <h3 class="text-[17px] font-bold leading-[26px]" style="color:#1A1623">Jobs</h3>
+          </div>
+          <div class="flex items-center gap-2 sm:gap-3 flex-wrap">
+            <button class="px-3 py-2.5 rounded-full text-xs leading-3" style="background:#303345;color:white;border:none;outline:none;box-shadow:none">All</button>
+            <button class="px-3 py-2.5 rounded-full text-xs leading-3" style="background:#ECECF1;color:#1A1623;border:none;outline:none;box-shadow:none">In Progress</button>
+            <button class="px-3 py-2.5 rounded-full text-xs leading-3" style="background:#ECECF1;color:#1A1623;border:none;outline:none;box-shadow:none">Completed</button>
+          </div>
+        </div>
+        <div class="rounded-xl bg-white overflow-hidden" style="outline:1px solid #DDDDDE;outline-offset:-1px">
+          <div class="hidden md:grid px-5 py-2.5 grid-cols-[1fr_130px_100px_100px_auto] gap-5 text-[11px] font-black uppercase tracking-wider" style="background:rgba(0,0,0,0.04);color:black;letter-spacing:0.5px">
+            <span>Main information</span>
+            <span>Status</span>
+            <span>Last booked</span>
+            <span>Profit</span>
+            <span class="text-center">Actions</span>
+          </div>
+          <div class="px-5 py-6 text-center text-sm sm:text-base" style="color:#1A1623">
+            You have not applied for any jobs yet.
+            <a class="underline cursor-pointer" style="color:#1A1623">Browse jobs</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Expertise (empty state) -->
+      <div class="flex flex-col gap-3 pb-4">
+        <div class="flex items-center gap-3 sm:gap-4 flex-wrap">
+          <div class="flex items-center">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+              <path d="M6 9l6 6 6-6" stroke="#7B7B7B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+            <h3 class="text-[17px] font-bold leading-[26px]" style="color:#1A1623">Expertise</h3>
+          </div>
+          <div class="flex items-center gap-2 sm:gap-3 flex-wrap">
+            <button class="px-3 py-2.5 rounded-full text-xs leading-3" style="background:#303345;color:white;border:none;outline:none;box-shadow:none">All</button>
+            <button class="px-3 py-2.5 rounded-full text-xs leading-3" style="background:#ECECF1;color:#1A1623;border:none;outline:none;box-shadow:none">Coming Up</button>
+            <button class="px-3 py-2.5 rounded-full text-xs leading-3" style="background:#ECECF1;color:#1A1623;border:none;outline:none;box-shadow:none">Completed</button>
+          </div>
+        </div>
+        <div class="rounded-xl bg-white overflow-hidden" style="outline:1px solid #DDDDDE;outline-offset:-1px">
+          <div class="hidden md:grid px-5 py-2.5 grid-cols-[1fr_130px_100px_100px_auto] gap-5 text-[11px] font-black uppercase tracking-wider" style="background:rgba(0,0,0,0.04);color:black;letter-spacing:0.5px">
+            <span>Main information</span>
+            <span>Status</span>
+            <span>Last booked</span>
+            <span>Tickets</span>
+            <span class="text-center">Actions</span>
+          </div>
+          <div class="px-5 py-6 text-center text-sm sm:text-base" style="color:#1A1623">
+            You have not signed up for any expertise yet.
+            <a class="underline cursor-pointer" style="color:#1A1623">Browse expertise</a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+</div>
+
+<style>
+.nav-link { color:rgba(27,31,59,0.65); }
+.nav-link:hover { background:#FAFAFA; }
+.nav-link.active-nav { background:#F4F4F4; color:rgba(25.2,28.03,47.81,0.9); }
+</style>

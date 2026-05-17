@@ -1,47 +1,83 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
+
 @Component({
   selector: 'mereka-home',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, FormsModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './home.component.html',
 })
 export class HomeComponent {
+  private readonly router = inject(Router);
+
+  readonly heroSearch = signal('');
+  readonly matchSearch = signal('');
+
+  /** Navigate to programs page with the hero search query */
+  onHeroSearch(): void {
+    const q = this.heroSearch().trim();
+    if (q) {
+      this.router.navigate(['/programs'], { queryParams: { q } });
+    }
+  }
+
+  /** Navigate to programs page with the match search query */
+  onMatchSearch(): void {
+    const q = this.matchSearch().trim();
+    if (q) {
+      this.router.navigate(['/programs'], { queryParams: { q } });
+    }
+  }
+
+  /** Clicking a tag pill navigates with that tag as search query */
+  onTagClick(tag: string): void {
+    this.router.navigate(['/programs'], { queryParams: { q: tag } });
+  }
   readonly popularServices = [
-    { name: 'Website Development', image: 'img/home/service-1.png' },
-    { name: 'Logo & Branding', image: 'img/home/service-2.png' },
-    { name: 'Content Writing', image: 'img/home/service-3.png' },
-    { name: 'Social Media Marketing', image: 'img/home/service-4.png' },
-    { name: 'Voice Over', image: 'img/home/service-5.png' },
-    { name: 'Interior Design & Architecture', image: 'img/home/service-6.png' },
-    { name: 'Data Science & ML', image: 'img/home/service-7.png' },
+    { name: 'Website Development', color: 'bg-green-100', image: 'https://images.unsplash.com/photo-1547658719-da2b51169166?w=300&h=200&fit=crop' },
+    { name: 'Logo & Branding', color: 'bg-rose-100', image: 'https://images.unsplash.com/photo-1626785774573-4b799315345d?w=300&h=200&fit=crop' },
+    { name: 'Content Writing', color: 'bg-pink-100', image: 'https://images.unsplash.com/photo-1455390582262-044cdead277a?w=300&h=200&fit=crop' },
+    { name: 'Social Media Marketing', color: 'bg-teal-100', image: 'https://images.unsplash.com/photo-1611162617474-5b21e879e113?w=300&h=200&fit=crop' },
+    { name: 'Voice Over', color: 'bg-orange-100', image: 'https://images.unsplash.com/photo-1478737270239-2f02b77fc618?w=300&h=200&fit=crop' },
+    { name: 'Interior Design & Architecture', color: 'bg-neutral-800 text-white', image: 'https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?w=300&h=200&fit=crop' },
+    { name: 'Data Science & ML', color: 'bg-amber-100', image: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=300&h=200&fit=crop' },
   ];
 
   readonly featuredExperts = [
     {
-      name: 'Debra Chia',
-      title: 'Blockchain Innovator: Ensuring Secure Transactions for 100+ Fintech Clients, Decade at the Industry\'s Edge',
-      tags: ['Project Management', 'Social Media Manager', 'Graphic Design', 'Video Production & Editing'],
-      image: 'img/home/expert-1.png',
+      name: 'Diana Che',
+      title: 'Presentation Specialist, Consulting Beauty',
+      tags: ['Graphic Design', 'Slide/Pitch Design', 'Data/Info Management'],
+      image: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Diana&backgroundColor=b6e3f4',
+      rating: 5.0,
+      reviews: 12,
     },
     {
-      name: 'Razif Hashim',
-      title: 'Shaping Brighter Futures, 15+ Years Specializing in Adolescent Therapy with Compassionate Care',
-      tags: ['Project Management', 'Social Media Manager', 'Graphic Design', 'Video Production & Editing'],
-      image: 'img/home/expert-2.png',
+      name: 'Rauf Hantie',
+      title: 'Pricing Brighter Futures, Life Mentor, Marketing & Communications Expert',
+      tags: ['Graphic Design', 'Content/Portfolio Manage...', 'Photo Production/Editing'],
+      image: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Rauf&backgroundColor=c0aede',
+      rating: 4.9,
+      reviews: 8,
     },
     {
-      name: 'Nur Deena Syahirah',
-      title: 'Successfully managed social media campaigns for diverse clients, driving engagement and growth for 7 years',
-      tags: ['Project Management', 'Social Media Manager', 'Graphic Design', 'Video Production & Editing'],
-      image: 'img/home/expert-3.png',
+      name: 'Nur Diana Sukhrani',
+      title: 'Sustainability strategist across media, Communications specialist',
+      tags: ['Graphic Design', 'Slide/Pitch Design', 'Photo Production/Editing'],
+      image: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Nur&backgroundColor=d1d4f9',
+      rating: 5.0,
+      reviews: 15,
     },
     {
-      name: 'Tauqeer Rafique',
-      title: 'Pioneering Fusion Cuisine, Featured Chef in 20+ International Food Magazines, a Taste Revolution',
-      tags: ['Project Management', 'Social Media Manager', 'Graphic Design', 'Video Production & Editing'],
-      image: 'img/home/expert-4.png',
+      name: 'Taaeen Sofean',
+      title: 'Pioneering Green Fashion, Practitioner of AI in Sustainability',
+      tags: ['Graphic Design', 'Slide/Pitch Design', 'Photo Production/Editing'],
+      image: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Taaeen&backgroundColor=ffd5dc',
+      rating: 4.8,
+      reviews: 6,
     },
   ];
 

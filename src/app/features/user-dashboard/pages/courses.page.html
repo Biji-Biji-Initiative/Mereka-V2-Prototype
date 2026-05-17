@@ -1,0 +1,246 @@
+<div class="flex flex-col gap-6">
+  <!-- Header -->
+  <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+    <div class="flex flex-col gap-1">
+      <h1 class="text-[24px] sm:text-[28px] font-black leading-tight" style="color:#1A1623">My Courses</h1>
+      <p class="text-sm font-medium" style="color:#7B7B7B">Track your learning progress across all programmes</p>
+    </div>
+    <a routerLink="/programs" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-bold hover:bg-neutral-900 hover:text-white transition-colors" style="outline:1px solid #1A1623;outline-offset:-1px;color:#1A1623">
+      Browse Programmes
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M8 3l5 5-5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </a>
+  </div>
+
+  <!-- View toggle -->
+  <div class="flex items-center gap-1 p-1 rounded-full w-fit" style="background:#ECECF1">
+    <button
+      *ngFor="let v of views"
+      type="button"
+      (click)="setView(v)"
+      class="px-4 py-2 rounded-full text-xs font-bold transition-all"
+      [style.background]="activeView() === v ? 'white' : 'transparent'"
+      [style.color]="activeView() === v ? '#1A1623' : '#7B7B7B'"
+      [style.box-shadow]="activeView() === v ? '0 1px 3px rgba(0,0,0,0.1)' : 'none'"
+      style="border:none;outline:none"
+    >
+      <span class="flex items-center gap-1.5">
+        <svg *ngIf="v === 'Candidate'" width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2M12 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <svg *ngIf="v === 'Hub Admin'" width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        {{ v }}
+      </span>
+    </button>
+  </div>
+
+  <!-- Stats cards -->
+  <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+    <div class="p-4 rounded-xl bg-white flex flex-col gap-1" style="outline:1px solid #DDDDDE;outline-offset:-1px">
+      <span class="text-[11px] font-bold uppercase tracking-wider" style="color:#7B7B7B;letter-spacing:0.5px">Total Courses</span>
+      <span class="text-2xl font-black" style="color:#1A1623">{{ stats().total }}</span>
+    </div>
+    <div class="p-4 rounded-xl bg-white flex flex-col gap-1" style="outline:1px solid #DDDDDE;outline-offset:-1px">
+      <span class="text-[11px] font-bold uppercase tracking-wider" style="color:#7B7B7B;letter-spacing:0.5px">{{ activeView() === 'Hub Admin' ? 'Active' : 'In Progress' }}</span>
+      <span class="text-2xl font-black" style="color:#276EF1">{{ stats().inProgress }}</span>
+    </div>
+    <div class="p-4 rounded-xl bg-white flex flex-col gap-1" style="outline:1px solid #DDDDDE;outline-offset:-1px">
+      <span class="text-[11px] font-bold uppercase tracking-wider" style="color:#7B7B7B;letter-spacing:0.5px">{{ activeView() === 'Hub Admin' ? 'Archived' : 'Completed' }}</span>
+      <span class="text-2xl font-black" style="color:#22C55E">{{ stats().completed }}</span>
+    </div>
+    <div *ngIf="activeView() === 'Candidate'" class="p-4 rounded-xl bg-white flex flex-col gap-1" style="outline:1px solid #DDDDDE;outline-offset:-1px">
+      <span class="text-[11px] font-bold uppercase tracking-wider" style="color:#7B7B7B;letter-spacing:0.5px">Not Started</span>
+      <span class="text-2xl font-black" style="color:#F59E0B">{{ stats().notStarted }}</span>
+    </div>
+    <div *ngIf="activeView() === 'Hub Admin'" class="p-4 rounded-xl bg-white flex flex-col gap-1" style="outline:1px solid #DDDDDE;outline-offset:-1px">
+      <span class="text-[11px] font-bold uppercase tracking-wider" style="color:#7B7B7B;letter-spacing:0.5px">Total Students</span>
+      <span class="text-2xl font-black" style="color:#F59E0B">{{ hubStats().totalStudents }}</span>
+    </div>
+  </div>
+
+  <!-- Filter chips -->
+  <div class="flex items-center gap-2 sm:gap-3 flex-wrap">
+    <button
+      *ngFor="let f of filters"
+      type="button"
+      (click)="setFilter(f)"
+      class="px-3 py-2.5 rounded-full text-xs leading-3 transition-colors"
+      [style.background]="activeFilter() === f ? '#303345' : '#ECECF1'"
+      [style.color]="activeFilter() === f ? 'white' : '#1A1623'"
+      style="border:none;outline:none;box-shadow:none"
+    >{{ f }}</button>
+  </div>
+
+  <!-- CANDIDATE VIEW: Desktop table -->
+  <div *ngIf="activeView() === 'Candidate'" class="hidden md:block rounded-xl bg-white overflow-hidden" style="outline:1px solid #DDDDDE;outline-offset:-1px">
+    <div class="px-5 py-2.5 grid grid-cols-[1fr_140px_100px_160px_180px] gap-5 text-[11px] font-black uppercase tracking-wider" style="background:rgba(0,0,0,0.04);color:black;letter-spacing:0.5px">
+      <span>Course</span>
+      <span>Due Date</span>
+      <span>Status</span>
+      <span>Progress</span>
+      <span class="text-center">Actions</span>
+    </div>
+    <div>
+      <div
+        *ngFor="let c of filteredCourses(); let i = index"
+        class="px-5 py-4 grid grid-cols-[1fr_140px_100px_160px_180px] items-center gap-5"
+        [style.background]="i % 2 === 1 ? 'rgba(0,0,0,0.04)' : 'white'"
+      >
+        <div class="flex items-center gap-3 min-w-0">
+          <img [src]="c.logo" alt="" class="w-10 h-10 rounded-lg shrink-0" />
+          <div class="flex flex-col min-w-0">
+            <span class="text-sm font-bold truncate" style="color:#1A1623">{{ c.name }}</span>
+            <span *ngIf="c.programme" class="text-[11px] font-medium truncate" style="color:#276EF1">{{ c.programme }}</span>
+            <span class="text-[10px] font-medium" style="color:#B9B9BA">{{ c.hub }}</span>
+          </div>
+        </div>
+        <span class="text-[11px] font-normal" style="color:#B9B9BA;letter-spacing:0.5px">{{ c.dueDate }}</span>
+        <span
+          class="inline-flex self-center px-2 py-0.5 rounded-full text-[10px] font-bold"
+          [style.background]="c.status === 'completed' ? '#DCFCE7' : c.status === 'in_progress' ? '#DBEAFE' : '#FEF3C7'"
+          [style.color]="c.status === 'completed' ? '#16A34A' : c.status === 'in_progress' ? '#2563EB' : '#D97706'"
+        >{{ c.status === 'in_progress' ? 'In Progress' : c.status === 'completed' ? 'Completed' : 'Not Started' }}</span>
+        <div class="flex items-center gap-2">
+          <span class="text-[11px] font-bold text-right w-8" style="color:rgba(27,31,59,0.65);letter-spacing:0.5px">{{ c.progress }}%</span>
+          <div class="flex-1 h-1.5 rounded-full overflow-hidden" style="background:#EDEDED">
+            <div class="h-full rounded-full" [style.background]="c.status === 'completed' ? '#22C55E' : '#303345'" [style.width.%]="c.progress"></div>
+          </div>
+          <span class="text-[10px] font-medium whitespace-nowrap" style="color:#B9B9BA">{{ c.completedModules }}/{{ c.modules }}</span>
+        </div>
+        <div class="flex justify-end">
+          <a
+            [href]="c.ctaUrl"
+            target="_blank"
+            class="inline-flex items-center gap-2 px-5 py-1.5 rounded-full text-[11px] font-medium no-underline"
+            [style.background]="c.status === 'completed' ? 'transparent' : c.status === 'not_started' ? '#276EF1' : '#1A1623'"
+            [style.color]="c.status === 'completed' ? '#1A1623' : 'white'"
+            [style.outline]="c.status === 'completed' ? '1px solid #1A1623' : 'none'"
+            [style.font-weight]="c.status === 'completed' ? '700' : '500'"
+            style="outline-offset:-1px;letter-spacing:0.5px"
+          >
+            {{ c.ctaLabel }}
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M8 3l5 5-5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- HUB ADMIN VIEW: Desktop table -->
+  <div *ngIf="activeView() === 'Hub Admin'" class="hidden md:block rounded-xl bg-white overflow-hidden" style="outline:1px solid #DDDDDE;outline-offset:-1px">
+    <div class="px-5 py-2.5 grid grid-cols-[1fr_140px_100px_100px_140px] gap-5 text-[11px] font-black uppercase tracking-wider" style="background:rgba(0,0,0,0.04);color:black;letter-spacing:0.5px">
+      <span>Course</span>
+      <span>Programme</span>
+      <span>Modules</span>
+      <span>Students</span>
+      <span class="text-center">Actions</span>
+    </div>
+    <div>
+      <div
+        *ngFor="let c of filteredCourses(); let i = index"
+        class="px-5 py-4 grid grid-cols-[1fr_140px_100px_100px_140px] items-center gap-5"
+        [style.background]="i % 2 === 1 ? 'rgba(0,0,0,0.04)' : 'white'"
+      >
+        <div class="flex items-center gap-3 min-w-0">
+          <img [src]="c.logo" alt="" class="w-10 h-10 rounded-lg shrink-0" />
+          <div class="flex flex-col min-w-0">
+            <span class="text-sm font-bold truncate" style="color:#1A1623">{{ c.name }}</span>
+            <span class="text-[10px] font-medium" style="color:#B9B9BA">{{ c.hub }}</span>
+          </div>
+        </div>
+        <span class="text-[11px] font-medium" style="color:#276EF1">{{ c.programme || '—' }}</span>
+        <span class="text-sm font-bold" style="color:#1A1623">{{ c.modules }}</span>
+        <span class="text-sm font-bold" style="color:#1A1623">{{ c.enrolledStudents }}</span>
+        <div class="flex justify-center">
+          <a
+            [href]="c.ctaUrl"
+            target="_blank"
+            class="inline-flex items-center gap-2 px-5 py-1.5 rounded-full text-[11px] font-medium no-underline"
+            style="background:#1A1623;color:white;letter-spacing:0.5px"
+          >
+            Manage
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6M15 3h6v6M10 14L21 3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CANDIDATE VIEW: Mobile card list -->
+  <div *ngIf="activeView() === 'Candidate'" class="md:hidden flex flex-col gap-3">
+    <div
+      *ngFor="let c of filteredCourses()"
+      class="p-4 rounded-xl bg-white flex flex-col gap-3"
+      style="outline:1px solid #DDDDDE;outline-offset:-1px"
+    >
+      <div class="flex items-center gap-3">
+        <img [src]="c.logo" alt="" class="w-10 h-10 rounded-lg shrink-0" />
+        <div class="flex flex-col min-w-0 flex-1">
+          <span class="text-sm font-bold truncate" style="color:#1A1623">{{ c.name }}</span>
+          <span *ngIf="c.programme" class="text-[11px] font-medium truncate" style="color:#276EF1">{{ c.programme }}</span>
+          <span class="text-[10px] font-medium" style="color:#B9B9BA">{{ c.hub }}</span>
+        </div>
+        <span
+          class="inline-flex shrink-0 px-2 py-0.5 rounded-full text-[10px] font-bold"
+          [style.background]="c.status === 'completed' ? '#DCFCE7' : c.status === 'in_progress' ? '#DBEAFE' : '#FEF3C7'"
+          [style.color]="c.status === 'completed' ? '#16A34A' : c.status === 'in_progress' ? '#2563EB' : '#D97706'"
+        >{{ c.status === 'in_progress' ? 'In Progress' : c.status === 'completed' ? 'Completed' : 'Not Started' }}</span>
+      </div>
+      <div class="flex items-center justify-between text-[11px]">
+        <span class="font-normal" style="color:#B9B9BA;letter-spacing:0.5px">Due {{ c.dueDate }}</span>
+        <span class="font-bold" style="color:rgba(27,31,59,0.65);letter-spacing:0.5px">{{ c.completedModules }}/{{ c.modules }} modules</span>
+      </div>
+      <div class="flex items-center gap-2">
+        <div class="flex-1 h-1.5 rounded-full overflow-hidden" style="background:#EDEDED">
+          <div class="h-full rounded-full" [style.background]="c.status === 'completed' ? '#22C55E' : '#303345'" [style.width.%]="c.progress"></div>
+        </div>
+        <span class="text-[11px] font-bold" style="color:rgba(27,31,59,0.65)">{{ c.progress }}%</span>
+      </div>
+      <a
+        [href]="c.ctaUrl"
+        target="_blank"
+        class="inline-flex items-center justify-center gap-2 w-full px-5 py-2 rounded-full text-[12px] font-medium no-underline"
+        [style.background]="c.status === 'completed' ? 'transparent' : c.status === 'not_started' ? '#276EF1' : '#1A1623'"
+        [style.color]="c.status === 'completed' ? '#1A1623' : 'white'"
+        [style.outline]="c.status === 'completed' ? '1px solid #1A1623' : 'none'"
+        style="outline-offset:-1px"
+      >
+        {{ c.ctaLabel }}
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M8 3l5 5-5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </a>
+    </div>
+  </div>
+
+  <!-- HUB ADMIN VIEW: Mobile card list -->
+  <div *ngIf="activeView() === 'Hub Admin'" class="md:hidden flex flex-col gap-3">
+    <div
+      *ngFor="let c of filteredCourses()"
+      class="p-4 rounded-xl bg-white flex flex-col gap-3"
+      style="outline:1px solid #DDDDDE;outline-offset:-1px"
+    >
+      <div class="flex items-center gap-3">
+        <img [src]="c.logo" alt="" class="w-10 h-10 rounded-lg shrink-0" />
+        <div class="flex flex-col min-w-0 flex-1">
+          <span class="text-sm font-bold truncate" style="color:#1A1623">{{ c.name }}</span>
+          <span *ngIf="c.programme" class="text-[11px] font-medium truncate" style="color:#276EF1">{{ c.programme }}</span>
+          <span class="text-[10px] font-medium" style="color:#B9B9BA">{{ c.hub }}</span>
+        </div>
+      </div>
+      <div class="flex items-center justify-between text-[11px]">
+        <span class="font-medium" style="color:#7B7B7B">{{ c.modules }} modules</span>
+        <span class="font-bold" style="color:#1A1623">{{ c.enrolledStudents }} students</span>
+      </div>
+      <a
+        [href]="c.ctaUrl"
+        target="_blank"
+        class="inline-flex items-center justify-center gap-2 w-full px-5 py-2 rounded-full text-[12px] font-medium no-underline"
+        style="background:#1A1623;color:white"
+      >
+        Manage in Studio
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6M15 3h6v6M10 14L21 3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </a>
+    </div>
+  </div>
+
+  <!-- Empty state -->
+  <div *ngIf="filteredCourses().length === 0" class="rounded-xl bg-white p-8 text-center" style="outline:1px solid #DDDDDE;outline-offset:-1px">
+    <p class="text-base font-medium" style="color:#7B7B7B">No courses match this filter.</p>
+  </div>
+</div>

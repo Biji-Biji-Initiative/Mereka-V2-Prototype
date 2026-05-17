@@ -1,0 +1,304 @@
+<div class="bg-neutral-50 min-h-screen">
+  <div class="max-w-[1320px] mx-auto px-6 py-8 grid grid-cols-12 gap-6">
+    <!-- Side stepper -->
+    <aside class="col-span-12 md:col-span-3">
+      <div class="sticky top-20 bg-white rounded-lg border border-neutral-200 p-5">
+        <button type="button" class="text-neutral-400 mb-2" (click)="goBack()">←</button>
+        <h2 class="text-xl font-semibold mb-6">Create Program</h2>
+        <ul class="space-y-1">
+          <li *ngFor="let step of steps">
+            <button
+              type="button"
+              class="w-full text-left px-4 py-2 rounded-full text-sm"
+              [class.bg-neutral-900]="active() === step.key"
+              [class.text-white]="active() === step.key"
+              [class.text-neutral-700]="active() !== step.key"
+              [class.hover:bg-neutral-100]="active() !== step.key"
+              (click)="setActive(step.key)"
+            >
+              {{ step.label }}
+            </button>
+          </li>
+        </ul>
+      </div>
+    </aside>
+
+    <!-- Main panel -->
+    <main class="col-span-12 md:col-span-9">
+      <div class="bg-white rounded-lg border border-neutral-200 p-8 min-h-[460px]">
+        <ng-container [ngSwitch]="active()">
+          <!-- BASIC INFO ------------------------------------------------------ -->
+          <section *ngSwitchCase="'basic'" class="space-y-5 max-w-2xl">
+            <header>
+              <h3 class="text-xl font-semibold">Basic Info</h3>
+              <p class="text-sm text-neutral-500">
+                Make your title descriptive and exciting — it's the first thing learners read.
+              </p>
+            </header>
+            <label class="block">
+              <span class="text-sm font-medium">Title</span>
+              <input
+                class="mt-1 w-full px-3 py-2 rounded border border-neutral-200 focus:outline-none focus:border-neutral-400"
+                [ngModel]="title()"
+                (ngModelChange)="title.set($event)"
+                placeholder="e.g. AI4U — Practical AI for Everyone"
+              />
+            </label>
+            <label class="block">
+              <span class="text-sm font-medium">Tagline</span>
+              <input
+                class="mt-1 w-full px-3 py-2 rounded border border-neutral-200 focus:outline-none focus:border-neutral-400"
+                [ngModel]="tagline()"
+                (ngModelChange)="tagline.set($event)"
+                placeholder="A 12-week guided journey from prompts to product."
+              />
+            </label>
+            <label class="block">
+              <span class="text-sm font-medium">Description</span>
+              <textarea
+                rows="6"
+                class="mt-1 w-full px-3 py-2 rounded border border-neutral-200 focus:outline-none focus:border-neutral-400"
+                [ngModel]="description()"
+                (ngModelChange)="description.set($event)"
+              ></textarea>
+            </label>
+            <div>
+              <span class="text-sm font-medium block mb-2">Pricing</span>
+              <label class="inline-flex items-center gap-2 mr-4 text-sm">
+                <input type="radio" [checked]="!isPaid()" (change)="isPaid.set(false)" /> Free
+                (everything inside is included)
+              </label>
+              <label class="inline-flex items-center gap-2 text-sm">
+                <input type="radio" [checked]="isPaid()" (change)="isPaid.set(true)" /> Paid (single
+                price for the whole journey)
+              </label>
+              <div *ngIf="isPaid()" class="mt-2 max-w-xs">
+                <input
+                  type="number"
+                  min="0"
+                  class="w-full px-3 py-2 rounded border border-neutral-200"
+                  placeholder="MYR"
+                  [ngModel]="price()"
+                  (ngModelChange)="price.set($event)"
+                />
+              </div>
+            </div>
+          </section>
+
+          <!-- TIMELINE ------------------------------------------------------- -->
+          <section *ngSwitchCase="'timeline'" class="space-y-5 max-w-xl">
+            <header>
+              <h3 class="text-xl font-semibold">Timeline</h3>
+              <p class="text-sm text-neutral-500">When does enrolment open and the cohort run?</p>
+            </header>
+            <div class="grid grid-cols-2 gap-4">
+              <label class="block">
+                <span class="text-sm font-medium">Enrolment opens</span>
+                <input
+                  type="date"
+                  class="mt-1 w-full px-3 py-2 rounded border border-neutral-200"
+                  [ngModel]="enrollStart()"
+                  (ngModelChange)="enrollStart.set($event)"
+                />
+              </label>
+              <label class="block">
+                <span class="text-sm font-medium">Enrolment closes</span>
+                <input
+                  type="date"
+                  class="mt-1 w-full px-3 py-2 rounded border border-neutral-200"
+                  [ngModel]="enrollEnd()"
+                  (ngModelChange)="enrollEnd.set($event)"
+                />
+              </label>
+              <label class="block">
+                <span class="text-sm font-medium">Program starts</span>
+                <input
+                  type="date"
+                  class="mt-1 w-full px-3 py-2 rounded border border-neutral-200"
+                  [ngModel]="startsAt()"
+                  (ngModelChange)="startsAt.set($event)"
+                />
+              </label>
+              <label class="block">
+                <span class="text-sm font-medium">Program ends</span>
+                <input
+                  type="date"
+                  class="mt-1 w-full px-3 py-2 rounded border border-neutral-200"
+                  [ngModel]="endsAt()"
+                  (ngModelChange)="endsAt.set($event)"
+                />
+              </label>
+            </div>
+          </section>
+
+          <!-- COLLABORATORS ------------------------------------------------- -->
+          <section *ngSwitchCase="'collaborators'">
+            <header>
+              <h3 class="text-xl font-semibold">Program Partnership</h3>
+              <p class="text-sm text-neutral-500">
+                Invite partner hubs and define how you'll build this program together.
+              </p>
+            </header>
+            <div class="mt-6 space-y-4">
+              <div
+                *ngFor="let row of collaborators(); let i = index"
+                class="grid grid-cols-12 gap-4 items-end"
+              >
+                <label class="col-span-5">
+                  <span class="text-sm font-medium block mb-1">Hub</span>
+                  <select
+                    class="w-full px-3 py-2 rounded border border-neutral-200"
+                    [ngModel]="row.hubId"
+                    (ngModelChange)="updateCollaborator(i, { hubId: $event })"
+                  >
+                    <option [ngValue]="null" disabled selected>Select hub…</option>
+                    <option *ngFor="let h of hubs()" [ngValue]="h.hubId">{{ h.hubName }}</option>
+                  </select>
+                </label>
+                <label class="col-span-5">
+                  <span class="text-sm font-medium block mb-1">Role</span>
+                  <select
+                    class="w-full px-3 py-2 rounded border border-neutral-200"
+                    [ngModel]="row.role"
+                    (ngModelChange)="updateCollaborator(i, { role: $event })"
+                  >
+                    <option *ngFor="let r of roles" [ngValue]="r.value">
+                      {{ r.label }} — {{ r.description }}
+                    </option>
+                  </select>
+                </label>
+                <button
+                  type="button"
+                  (click)="removeCollaborator(i)"
+                  class="col-span-2 text-neutral-400 hover:text-error text-sm py-2"
+                >
+                  Remove
+                </button>
+              </div>
+              <button
+                type="button"
+                (click)="addCollaborator()"
+                class="text-sm text-primary-700 font-medium"
+              >
+                + Add hub
+              </button>
+            </div>
+            <p *ngIf="hubs().length === 0" class="text-xs text-neutral-500 mt-4">
+              You're not a member of any hub yet — you can still invite hubs by ID once the backend
+              endpoint ships.
+            </p>
+          </section>
+
+          <!-- STRUCTURE ----------------------------------------------------- -->
+          <section *ngSwitchCase="'structure'">
+            <header>
+              <h3 class="text-xl font-semibold">Program Structure</h3>
+              <p class="text-sm text-neutral-500">
+                Assemble the courses, experiences, and expertise that bring your program to life.
+              </p>
+            </header>
+            <div class="mt-6 grid grid-cols-2 gap-6">
+              <div>
+                <h4 class="font-semibold mb-3">Inventory</h4>
+                <input
+                  class="w-full px-3 py-2 rounded border border-neutral-200 mb-3 text-sm"
+                  placeholder="Search services…"
+                />
+                <ul class="space-y-2">
+                  <li
+                    *ngFor="let item of inventory"
+                    class="flex items-center justify-between border border-neutral-200 rounded p-3"
+                  >
+                    <div class="flex items-center gap-3">
+                      <span class="text-xl">
+                        {{ item.type === 'course' ? '📘' : item.type === 'experience' ? '🎟️' : '🧑‍🏫' }}
+                      </span>
+                      <div>
+                        <div class="font-medium text-sm">{{ item.title }}</div>
+                        <div class="text-xs text-neutral-500">
+                          {{ item.type | titlecase }} · {{ item.ownerHub.hubName }}
+                        </div>
+                      </div>
+                    </div>
+                    <button
+                      type="button"
+                      (click)="addToCurriculum(item)"
+                      class="text-primary-700 font-bold text-lg"
+                    >
+                      +
+                    </button>
+                  </li>
+                </ul>
+              </div>
+              <div>
+                <h4 class="font-semibold mb-3">Active Curriculum ({{ curriculum().length }})</h4>
+                <div *ngIf="curriculum().length === 0" class="text-sm text-neutral-500">
+                  Nothing here yet — add items from the Inventory.
+                </div>
+                <ul class="space-y-3">
+                  <li
+                    *ngFor="let item of curriculum()"
+                    class="border border-neutral-200 rounded p-3"
+                  >
+                    <div class="flex items-center justify-between">
+                      <div class="font-medium text-sm">{{ item.title }}</div>
+                      <button
+                        type="button"
+                        (click)="removeFromCurriculum(item.id)"
+                        class="text-neutral-400 hover:text-error text-xs"
+                      >
+                        Remove
+                      </button>
+                    </div>
+                    <label class="mt-2 flex items-center gap-2 text-sm">
+                      <input
+                        type="checkbox"
+                        [checked]="item.isMandatory"
+                        (change)="toggleMandatory(item.id)"
+                      />
+                      Mandatory for program completion
+                    </label>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </section>
+
+          <!-- LANDING PAGE -------------------------------------------------- -->
+          <section *ngSwitchCase="'landing'" class="max-w-xl text-sm text-neutral-500">
+            <h3 class="text-xl font-semibold text-neutral-900 mb-2">Landing Page</h3>
+            <p>
+              The auto-generated landing page picks up your title, tagline, hub partners, and
+              cover image. You can override copy and hero imagery once the backend write
+              endpoints land — for now this is read-only.
+            </p>
+          </section>
+
+          <!-- PUBLISH ------------------------------------------------------- -->
+          <section *ngSwitchCase="'publish'" class="max-w-md">
+            <h3 class="text-xl font-semibold mb-3">Ready to publish?</h3>
+            <ul class="text-sm text-neutral-700 space-y-1 mb-5">
+              <li>• Title: {{ title() || '—' }}</li>
+              <li>• Tagline: {{ tagline() || '—' }}</li>
+              <li>• Curriculum items: {{ curriculum().length }}</li>
+              <li>• Collaborators: {{ validCollaboratorCount() }}</li>
+              <li>
+                • Pricing:
+                {{ isPaid() ? 'Paid (MYR ' + (price() ?? 0) + ')' : 'Free' }}
+              </li>
+            </ul>
+            <button
+              type="button"
+              [disabled]="!canPublish()"
+              [class.opacity-40]="!canPublish()"
+              (click)="publish()"
+              class="px-5 py-2.5 rounded-full bg-neutral-900 text-white font-medium"
+            >
+              Publish program
+            </button>
+          </section>
+        </ng-container>
+      </div>
+    </main>
+  </div>
+</div>

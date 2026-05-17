@@ -1,0 +1,53 @@
+<section class="bg-gradient-to-br from-program-hero-start to-program-hero-end">
+  <div class="max-w-[1320px] mx-auto px-6 py-16">
+    <p class="uppercase tracking-widest text-xs font-medium text-primary-700">Programs</p>
+    <h1 class="mt-3 text-4xl md:text-5xl font-semibold text-neutral-900 max-w-2xl leading-tight">
+      Guided learning journeys, made of the best of Mereka.
+    </h1>
+    <p class="mt-4 text-neutral-700 max-w-xl">
+      Programs combine self-paced courses, live experiences, and 1:1 expertise from one or more
+      hubs into a single coherent journey. Pay once — or join free — and everything inside is
+      unlocked.
+    </p>
+
+    <div class="mt-8 flex flex-col sm:flex-row gap-3 max-w-2xl">
+      <input
+        type="search"
+        [ngModel]="search()"
+        (ngModelChange)="search.set($event)"
+        placeholder="Search programs, hubs, or topics…"
+        class="flex-1 px-4 py-3 rounded-lg bg-white border border-neutral-200 focus:outline-none focus:border-neutral-400 text-sm"
+      />
+      <select
+        [ngModel]="pricing()"
+        (ngModelChange)="pricing.set($event)"
+        class="px-4 py-3 rounded-lg bg-white border border-neutral-200 text-sm"
+      >
+        <option value="">All pricing</option>
+        <option value="free">Free</option>
+        <option value="paid">Paid</option>
+      </select>
+    </div>
+  </div>
+</section>
+
+<section class="max-w-[1320px] mx-auto px-6 py-12">
+  <div class="flex items-baseline justify-between mb-6">
+    <h2 class="text-xl font-semibold">For You</h2>
+    <a routerLink="/programs/new" class="text-sm text-primary-700 font-medium">+ Create a program</a>
+  </div>
+
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+    <a
+      *ngFor="let program of filtered(); trackBy: trackById"
+      [routerLink]="['/programs', program.slug]"
+      class="block"
+    >
+      <mereka-program-card [program]="program" />
+    </a>
+  </div>
+
+  <div *ngIf="filtered().length === 0" class="text-center text-neutral-500 py-16">
+    No programs match your filters yet.
+  </div>
+</section>

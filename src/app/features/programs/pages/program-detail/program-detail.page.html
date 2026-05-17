@@ -1,18 +1,122 @@
 <div *ngIf="program() as p; else loading" class="bg-neutral-50 min-h-screen">
-  <div class="max-w-[1440px] mx-auto px-2 lg:px-4 flex">
-    <aside class="shrink-0 border-r border-neutral-200 bg-white">
-      <mereka-program-leftrail [program]="p" [canManage]="true" />
-    </aside>
 
-    <aside class="hidden md:block w-56 shrink-0 px-2 py-3 border-r border-neutral-200 bg-white">
-      <mereka-program-sidebar [program]="p" [showAdmin]="true" />
-    </aside>
+  <!-- Full-width layout for the public landing page -->
+  <ng-container *ngIf="isLanding(); else detailLayout">
+    <router-outlet />
+  </ng-container>
 
-    <section class="flex-1 min-w-0 px-4 lg:px-8 py-6">
-      <router-outlet />
-    </section>
-  </div>
+  <!-- 3-column learner layout with sidebar & roster -->
+  <ng-template #detailLayout>
+    <div class="max-w-[1320px] mx-auto px-4 py-6 grid grid-cols-12 gap-6">
+      <!-- Left: program sidebar with nav -->
+      <aside class="col-span-12 md:col-span-2">
+        <mereka-program-sidebar [program]="p" />
+      </aside>
+
+      <!-- Center: hero + tab content -->
+      <section class="col-span-12 md:col-span-7">
+        <div
+          class="rounded-xl overflow-hidden relative flex flex-col justify-end p-6"
+          [style.background]="p.collaborators.length > 0
+            ? 'linear-gradient(135deg, #1A1623 0%, #303345 40%, #4A3F6B 100%)'
+            : 'linear-gradient(135deg, #E8F0FE 0%, #D4E4FE 100%)'"
+          [style.min-height]="p.collaborators.length > 0 ? '200px' : '160px'"
+        >
+          <!-- Multi-hub label -->
+          <div *ngIf="p.collaborators.length > 0" class="flex items-center gap-2 mb-3">
+            <span class="text-[10px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-full"
+              style="background:rgba(255,255,255,0.12);color:rgba(255,255,255,0.7)">
+              Multi-Hub Program · {{ 1 + p.collaborators.length }} organisations
+            </span>
+          </div>
+          <h1 class="text-2xl md:text-3xl font-black"
+            [style.color]="p.collaborators.length > 0 ? 'white' : '#1A1623'">
+            {{ p.title }}
+          </h1>
+          <p class="mt-1 max-w-lg text-sm"
+            [style.color]="p.collaborators.length > 0 ? 'rgba(255,255,255,0.7)' : '#4B5563'">
+            {{ p.tagline }}
+          </p>
+          <!-- Hub logos row -->
+          <div *ngIf="p.collaborators.length > 0" class="flex items-center gap-2 mt-3">
+            <img [src]="p.ownerHub.hubLogo" [alt]="p.ownerHub.hubName"
+              class="w-7 h-7 rounded-full" style="border:2px solid rgba(255,255,255,0.3)" [title]="p.ownerHub.hubName + ' (Lead)'" />
+            <img *ngFor="let c of p.collaborators" [src]="c.hub.hubLogo" [alt]="c.hub.hubName"
+              class="w-7 h-7 rounded-full -ml-1.5" style="border:2px solid rgba(255,255,255,0.3)" [title]="c.hub.hubName" />
+          </div>
+        </div>
+
+        <!-- Stat chips -->
+        <div class="flex flex-wrap gap-2 mt-4 text-xs">
+          <span class="inline-flex items-center px-3 py-1 rounded-full font-medium"
+            style="background:#ECFDF5;color:#059669">
+            {{ p.stats.memberCount | number }} Members
+          </span>
+          <span class="inline-flex items-center px-3 py-1 rounded-full font-medium"
+            style="background:#FFF7ED;color:#D97706">
+            {{ p.stats.expertCount }} Experts
+          </span>
+          <span class="inline-flex items-center px-3 py-1 rounded-full font-medium"
+            style="background:#EEF2FF;color:#4F46E5">
+            {{ p.stats.mentorCount }} Mentors
+          </span>
+          <span *ngIf="p.collaborators.length > 0"
+            class="inline-flex items-center px-3 py-1 rounded-full font-medium"
+            style="background:#F0F0FF;color:#7C3AED">
+            {{ 1 + p.collaborators.length }} Hubs
+          </span>
+        </div>
+
+        <!-- Tabs -->
+        <nav class="border-b border-neutral-200 mt-6 flex gap-6 text-sm">
+          <a
+            routerLink="feed"
+            routerLinkActive="border-neutral-900 text-neutral-900"
+            [routerLinkActiveOptions]="{ exact: false }"
+            class="py-3 border-b-2 border-transparent text-neutral-500 hover:text-neutral-900"
+            >Feed</a
+          >
+          <a
+            routerLink="discussions"
+            routerLinkActive="border-neutral-900 text-neutral-900"
+            class="py-3 border-b-2 border-transparent text-neutral-500 hover:text-neutral-900"
+            >Discussions</a
+          >
+          <a
+            routerLink="curriculum"
+            routerLinkActive="border-neutral-900 text-neutral-900"
+            class="py-3 border-b-2 border-transparent text-neutral-500 hover:text-neutral-900"
+            >Curriculum</a
+          >
+          <a
+            routerLink="members"
+            routerLinkActive="border-neutral-900 text-neutral-900"
+            class="py-3 border-b-2 border-transparent text-neutral-500 hover:text-neutral-900"
+            >Members</a
+          >
+          <a
+            routerLink="about"
+            routerLinkActive="border-neutral-900 text-neutral-900"
+            class="py-3 border-b-2 border-transparent text-neutral-500 hover:text-neutral-900"
+            >About</a
+          >
+        </nav>
+
+        <div class="py-6">
+          <router-outlet />
+        </div>
+      </section>
+
+      <!-- Right: members roster -->
+      <aside class="col-span-12 md:col-span-3">
+        <mereka-program-roster [slug]="p.slug" />
+      </aside>
+    </div>
+  </ng-template>
 </div>
+
 <ng-template #loading>
-  <div class="max-w-[1320px] mx-auto px-6 py-24 text-center text-neutral-500">Loading program…</div>
+  <div class="max-w-[1320px] mx-auto px-6 py-24 text-center text-neutral-500">
+    Loading program…
+  </div>
 </ng-template>

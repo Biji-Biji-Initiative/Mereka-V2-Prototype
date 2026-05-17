@@ -1,210 +1,129 @@
-<!-- ====================================================================
-     HERO — "Learn Together. Grow Together."  (Figma 8351:3960)
-     ==================================================================== -->
-<section class="bg-white">
-  <div class="max-w-[1320px] mx-auto px-6 pt-16 pb-12 text-center">
-    <h1 class="text-[#1a1623] tracking-[-0.03em]"
-        style="font-family:'Poppins',sans-serif; font-weight:700; font-size:56px; line-height:64px;">
-      Learn Together. <span class="block sm:inline">Grow Together.</span>
+<section class="bg-gradient-to-br from-program-hero-start to-program-hero-end">
+  <div class="max-w-[1320px] mx-auto px-6 py-16">
+    <p class="uppercase tracking-widest text-xs font-medium text-primary-700">Programs</p>
+    <h1 class="mt-3 text-4xl md:text-5xl font-semibold text-neutral-900 max-w-2xl leading-tight">
+      Guided learning journeys, made of the best of Mereka.
     </h1>
-    <p class="mt-4 text-[#1a1623] max-w-2xl mx-auto"
-       style="font-family:'Poppins',sans-serif; font-size:18px; line-height:28px; letter-spacing:-0.01em;">
-      Discover guided programs that combine the best of Mereka — courses, hands-on experiences and 1:1 expertise — into one focused journey.
+    <p class="mt-4 text-neutral-700 max-w-xl">
+      Programs combine self-paced courses, live experiences, and 1:1 expertise from one or more
+      hubs into a single coherent journey. Pay once — or join free — and everything inside is
+      unlocked.
     </p>
 
-    <!-- Category pills -->
-    <div class="mt-8 flex items-center justify-center flex-wrap gap-2">
-      <button *ngFor="let c of categories" type="button"
-              class="rounded-full px-4 h-9 text-sm transition inline-flex items-center"
-              [class.bg-neutral-900]="activeCategory() === c"
-              [class.text-white]="activeCategory() === c"
-              [class.bg-white]="activeCategory() !== c"
-              [class.border]="activeCategory() !== c"
-              [class.border-neutral-200]="activeCategory() !== c"
-              [class.text-neutral-700]="activeCategory() !== c"
-              (click)="activeCategory.set(c)"
-              style="font-family:'Lato',sans-serif;">
-        {{ c }}
-      </button>
+    <div class="mt-8 flex flex-col sm:flex-row gap-3 max-w-2xl">
+      <input
+        type="search"
+        [ngModel]="search()"
+        (ngModelChange)="search.set($event)"
+        placeholder="Search programs, hubs, or topics…"
+        class="flex-1 px-4 py-3 rounded-lg bg-white border border-neutral-200 focus:outline-none focus:border-neutral-400 text-sm"
+      />
+      <select
+        [ngModel]="pricing()"
+        (ngModelChange)="pricing.set($event)"
+        class="px-4 py-3 rounded-lg bg-white border border-neutral-200 text-sm"
+      >
+        <option value="">All pricing</option>
+        <option value="free">Free</option>
+        <option value="paid">Paid</option>
+      </select>
     </div>
   </div>
 </section>
 
-<!-- ====================================================================
-     POPULAR PROGRAMS  (horizontal row of 4 cards)
-     ==================================================================== -->
-<section class="bg-white">
-  <div class="max-w-[1320px] mx-auto px-6 pb-10">
-    <h2 class="text-center mb-6 text-[#1a1623]"
-        style="font-family:'Poppins',sans-serif; font-weight:700; font-size:28px; line-height:38px; letter-spacing:-0.005em;">
-      Popular Programs
-    </h2>
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-      <a *ngFor="let p of popular()"
-         [routerLink]="['/programs', p.slug]"
-         class="block bg-white rounded-2xl overflow-hidden ring-1 ring-neutral-100 hover:ring-neutral-200 hover:shadow-[0_4px_24px_-8px_rgba(0,0,0,0.08)] transition">
-        <div class="aspect-[16/10] bg-neutral-100 overflow-hidden">
-          <img [src]="p.image" [alt]="p.title" class="w-full h-full object-cover" loading="lazy" />
-        </div>
-        <div class="p-4 flex flex-col gap-2">
-          <div class="text-xs text-neutral-500 uppercase tracking-wider"
-               style="font-family:'Poppins',sans-serif; font-weight:600; letter-spacing:0.06em;">
-            {{ p.hub }}
-          </div>
-          <h3 class="text-[#1a1623] line-clamp-2"
-              style="font-family:'Lato',sans-serif; font-weight:700; font-size:17px; line-height:26px; letter-spacing:-0.005em;">
-            {{ p.title }}
-          </h3>
-          <ul class="flex flex-wrap gap-1.5 mt-1">
-            <li *ngFor="let t of p.tags"
-                class="rounded-full px-2.5 py-0.5 text-[12px] text-[#1a1623]"
-                style="font-family:'Lato',sans-serif; line-height:18px; background:linear-gradient(90deg,#ecedf1,#ecedf1),linear-gradient(90deg,#ebd3f6,#ebd3f6);">
-              {{ t }}
-            </li>
-          </ul>
-        </div>
-      </a>
+<section class="max-w-[1320px] mx-auto px-6 py-12">
+  <div class="flex items-baseline justify-between mb-6">
+    <h2 class="text-xl font-semibold">For You</h2>
+    <div class="flex items-center gap-4">
+      <a routerLink="/programs/me" class="text-sm text-neutral-600 font-medium hover:text-neutral-900">My Programs</a>
+      <a routerLink="/programs/new" class="text-sm text-primary-700 font-medium">+ Create a program</a>
     </div>
+  </div>
+
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+    <a
+      *ngFor="let program of filtered(); trackBy: trackById"
+      [routerLink]="['/programs', program.slug]"
+      class="block"
+    >
+      <mereka-program-card [program]="program" />
+    </a>
+  </div>
+
+  <div *ngIf="filtered().length === 0" class="text-center text-neutral-500 py-16">
+    No programs match your filters yet.
   </div>
 </section>
 
-<!-- ====================================================================
-     ALL PROGRAMS — 4-col grid w/ Sort dropdown
-     ==================================================================== -->
-<section class="bg-white">
-  <div class="max-w-[1320px] mx-auto px-6 pb-16">
-    <div class="flex items-center justify-between mb-6">
-      <h2 class="text-[#1a1623]"
-          style="font-family:'Poppins',sans-serif; font-weight:700; font-size:28px; line-height:38px; letter-spacing:-0.005em;">
-        All Programs
-      </h2>
-      <label class="text-sm text-neutral-500 inline-flex items-center gap-2" style="font-family:'Lato',sans-serif;">
-        Sort by
-        <select [ngModel]="sort()" (ngModelChange)="sort.set($event)"
-                class="rounded-full px-4 h-9 text-sm text-[#1a1623] focus:outline-none"
-                style="background:linear-gradient(90deg,#ecedf1,#ecedf1),linear-gradient(90deg,#ebd3f6,#ebd3f6); border:none;">
-          <option *ngFor="let opt of sortOptions" [ngValue]="opt">{{ opt }}</option>
-        </select>
-      </label>
-    </div>
-
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-      <a *ngFor="let p of filtered()"
-         [routerLink]="['/programs', p.slug]"
-         class="block bg-white rounded-2xl overflow-hidden ring-1 ring-neutral-100 hover:ring-neutral-200 hover:shadow-[0_4px_24px_-8px_rgba(0,0,0,0.08)] transition">
-        <div class="aspect-[16/10] bg-neutral-100 overflow-hidden">
-          <img [src]="p.image" [alt]="p.title" class="w-full h-full object-cover" loading="lazy" />
-        </div>
-        <div class="p-4 flex flex-col gap-2">
-          <div class="text-xs text-neutral-500 uppercase tracking-wider"
-               style="font-family:'Poppins',sans-serif; font-weight:600; letter-spacing:0.06em;">
-            {{ p.hub }}
-          </div>
-          <h3 class="text-[#1a1623] line-clamp-2"
-              style="font-family:'Lato',sans-serif; font-weight:700; font-size:17px; line-height:26px; letter-spacing:-0.005em;">
-            {{ p.title }}
-          </h3>
-          <ul class="flex flex-wrap gap-1.5 mt-1">
-            <li *ngFor="let t of p.tags"
-                class="rounded-full px-2.5 py-0.5 text-[12px] text-[#1a1623]"
-                style="font-family:'Lato',sans-serif; line-height:18px; background:linear-gradient(90deg,#ecedf1,#ecedf1),linear-gradient(90deg,#ebd3f6,#ebd3f6);">
-              {{ t }}
-            </li>
-          </ul>
-        </div>
-      </a>
-    </div>
-  </div>
-</section>
-
-<!-- ====================================================================
-     COMMON QUESTIONS — accordion (Figma node 8351-3960, FAQ block)
-     ==================================================================== -->
-<section class="bg-[#eef1f7]">
-  <div class="max-w-[1000px] mx-auto px-6 py-16">
-    <h2 class="text-center text-[#1a1623]"
-        style="font-family:'Poppins',sans-serif; font-weight:700; font-size:36px; line-height:44px; letter-spacing:-0.01em;">
+<!-- ═══════ Common Questions ═══════ -->
+<section class="bg-[#e8ecf1] py-16 md:py-20">
+  <div class="max-w-[900px] mx-auto px-6">
+    <h2 class="text-3xl md:text-4xl font-bold text-center text-neutral-900">
       Common Questions
     </h2>
-    <p class="text-center mt-2 text-[#7b7b7b]" style="font-family:'Lato',sans-serif; font-size:18px; line-height:28px;">
+    <p class="mt-4 text-center text-neutral-600">
       and the answers, of course.
-      <a href="mailto:hello@mereka.io" class="text-[#1e80ff] font-bold ml-1 hover:underline">Still not sure? Email us</a>
+      <a href="mailto:hello@mereka.io" class="text-blue-600 hover:underline font-medium ml-1">Still not sure? Email us</a>
     </p>
 
-    <ul class="mt-10 flex flex-col gap-3">
-      <li *ngFor="let f of faqs; let i = index"
-          class="bg-[#f5f6f7] rounded-2xl overflow-hidden transition">
-        <button type="button" (click)="toggleFaq(i)"
-                class="w-full flex items-center justify-between text-left px-6 py-4 hover:bg-[#eaecef] transition"
-                style="font-family:'Lato',sans-serif;">
-          <span class="text-[17px] text-[#1a1623]" style="font-weight:700; line-height:26px;">{{ f.q }}</span>
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-               class="text-neutral-600 transition-transform shrink-0"
-               [class.rotate-180]="openFaq() === i">
-            <polyline points="6 9 12 15 18 9"/>
+    <div class="mt-10 space-y-3">
+      <details *ngFor="let faq of faqs" class="group bg-white/60 border border-neutral-200 rounded-lg overflow-hidden">
+        <summary
+          class="flex items-center justify-between px-6 py-5 cursor-pointer list-none select-none"
+        >
+          <span class="text-base font-medium text-neutral-900">{{ faq.question }}</span>
+          <svg
+            class="w-5 h-5 text-neutral-500 transition-transform duration-200 group-open:rotate-180"
+            fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"
+          >
+            <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
           </svg>
-        </button>
-        <div *ngIf="openFaq() === i || allOpen()"
-             class="px-6 pb-5 -mt-1 text-[#3b3b3b]"
-             style="font-family:'Lato',sans-serif; font-size:15px; line-height:24px;">
-          {{ f.a }}
+        </summary>
+        <div class="px-6 pb-5 text-sm text-neutral-600 leading-relaxed border-t border-neutral-100 pt-4">
+          {{ faq.answer }}
         </div>
-      </li>
-    </ul>
-
-    <div class="flex justify-center mt-8">
-      <button type="button" (click)="loadAllFaqs()"
-              class="rounded-full px-6 py-2.5 bg-white border border-[#dcdee3] text-[#1a1623] hover:bg-neutral-50 transition text-[15px]"
-              style="font-family:'Lato',sans-serif; font-weight:600;">
-        {{ allOpen() ? 'Collapse All' : 'Load All' }}
-      </button>
+      </details>
     </div>
   </div>
 </section>
 
-<!-- ====================================================================
-     CTA BANNER — "Not sure where to begin?" (Figma — HRD CORP Claimable)
-     ==================================================================== -->
-<section class="bg-[#eef1f7]">
-  <div class="max-w-[1320px] mx-auto px-6 pb-20">
-    <div class="relative rounded-[28px] overflow-hidden text-white"
-         style="background: linear-gradient(115deg, #2c2c40 0%, #2f4f74 50%, #1d5470 100%);">
-      <div class="grid grid-cols-1 lg:grid-cols-[1fr_auto] gap-6 items-center px-10 py-14 lg:px-16 lg:py-16">
-        <div class="text-center lg:text-left">
-          <h3 style="font-family:'Poppins',sans-serif; font-weight:700; font-size:44px; line-height:54px; letter-spacing:-0.01em;">
-            Not sure where to begin?
-          </h3>
-          <p class="mt-3 text-white/90 max-w-md mx-auto lg:mx-0"
-             style="font-family:'Lato',sans-serif; font-size:18px; line-height:28px;">
-            Consult our expert team and we'll help you find the right programme.
-          </p>
-          <button type="button"
-                  class="inline-flex items-center gap-3 mt-8 bg-[#1a1623] text-white rounded-full pl-2 pr-6 py-2 hover:bg-[#2a2436] transition"
-                  style="font-family:'Lato',sans-serif; font-weight:600;">
-            <span class="inline-block w-10 h-10 rounded-full overflow-hidden bg-white/20 ring-2 ring-white/40">
-              <img src="https://api.dicebear.com/9.x/avataaars/svg?seed=MerekaAdvisor"
-                   alt="" class="w-full h-full object-cover" />
-            </span>
-            <span class="text-[15px]">Get in touch with our team</span>
-          </button>
-        </div>
-        <!-- HRD Corp Claimable circular seal -->
-        <div class="flex justify-center lg:justify-end">
-          <div class="relative w-28 h-28 lg:w-32 lg:h-32 rounded-full bg-white shadow-lg flex items-center justify-center">
-            <svg viewBox="0 0 200 200" class="absolute inset-0 w-full h-full">
-              <defs>
-                <path id="hrdCircle" d="M 100, 100 m -78, 0 a 78,78 0 1,1 156,0 a 78,78 0 1,1 -156,0" fill="none" />
-              </defs>
-              <text fill="#1a1623" font-family="Poppins, sans-serif" font-size="14" font-weight="700"
-                    letter-spacing="2">
-                <textPath href="#hrdCircle" startOffset="0">★ HRDCORP CLAIMABLE ★ HRDCORP CLAIMABLE ★ HRDCORP CLAIMABLE</textPath>
-              </text>
-            </svg>
-            <div class="relative text-center leading-tight">
-              <div class="text-[#1e64c8]" style="font-family:'Poppins',sans-serif; font-weight:800; font-size:18px; letter-spacing:-0.02em;">HRD</div>
-              <div class="text-white bg-[#cf2026] rounded-sm px-1.5 mt-0.5 inline-block" style="font-family:'Poppins',sans-serif; font-weight:800; font-size:11px;">CORP</div>
-              <div class="text-[#1e64c8] mt-1" style="font-family:'Poppins',sans-serif; font-weight:800; font-size:14px; letter-spacing:0.1em;">CLAIMABLE</div>
+<!-- ═══════ Not sure where to begin? ═══════ -->
+<section class="max-w-[1320px] mx-auto px-6 py-12">
+  <div class="rounded-2xl overflow-hidden relative"
+       style="background: linear-gradient(135deg, #1a2a3a 0%, #2d4a5e 50%, #3a5f6f 100%);">
+    <div class="px-10 py-14 md:px-16 md:py-16 flex flex-col md:flex-row items-start md:items-center gap-8">
+      <!-- Text + CTA -->
+      <div class="flex-1">
+        <h2 class="text-3xl md:text-4xl font-bold text-white leading-tight">
+          Not sure where to begin?
+        </h2>
+        <p class="mt-4 text-neutral-300 text-base max-w-md">
+          Consult our expert team and we'll help you find the right programme.
+        </p>
+        <button
+          class="mt-8 inline-flex items-center gap-3 bg-neutral-900 hover:bg-neutral-800 text-white rounded-full pl-2 pr-6 py-2 transition-colors"
+        >
+          <span class="w-10 h-10 rounded-full bg-pink-200 flex items-center justify-center overflow-hidden">
+            <img
+              src="https://api.dicebear.com/7.x/avataaars/svg?seed=Mereka&backgroundColor=ffd5dc"
+              alt=""
+              class="w-full h-full"
+            />
+          </span>
+          <span class="text-sm font-medium">Get in touch with our team</span>
+        </button>
+      </div>
+
+      <!-- HRD Corp Badge -->
+      <div class="shrink-0">
+        <div class="w-28 h-28 md:w-32 md:h-32 rounded-full bg-white flex items-center justify-center p-3">
+          <div class="text-center">
+            <div class="text-[10px] font-bold tracking-wide text-neutral-700 leading-tight">HRDCORP CLAIMABLE</div>
+            <div class="mt-1">
+              <span class="text-lg font-black text-blue-800">HRD</span>
+              <span class="inline-block bg-red-600 text-white text-[8px] font-bold px-1.5 py-0.5 rounded-sm ml-0.5">CORP</span>
             </div>
+            <div class="text-[10px] font-bold tracking-wide text-neutral-700 leading-tight mt-1">CLAIMABLE</div>
           </div>
         </div>
       </div>

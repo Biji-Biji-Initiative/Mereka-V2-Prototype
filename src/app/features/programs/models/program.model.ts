@@ -32,6 +32,7 @@ export interface Program {
   timeline: ProgramTimeline; curriculum: CurriculumItem[];
   stats: { memberCount: number; expertCount: number; mentorCount: number };
   recentPosts: ProgramFeedPost[];
+  landing?: ProgramLanding;
 }
 export interface PaginatedResponse<T> { items: T[]; total: number; page: number; pageSize: number; }
 export interface ProgramFilters {
@@ -91,4 +92,22 @@ export interface DashboardSnapshot {
   enrolledPrograms: Program[]; listings: DashboardListings;
   upcomingDeadlines: { programSlug: string; programTitle: string; itemTitle: string; deadline: string }[];
   recentOrders: DashboardOrder[];
+}
+
+/* ─────────────── Landing-page specific types ─────────────── */
+export interface ProgramPartner { name: string; logoUrl: string; }
+export interface ProgramDetails { duration: string; format: string; location: string; targetAudience: string; certificates: string; }
+export interface ProgramFeatureCard { icon: string; title: string; description: string; }
+export interface ProgramExpert { name: string; title: string; avatarUrl: string; bio?: string; }
+export interface ProgramPricingTier { name: string; price: number | 'free'; currency?: string; period?: string; features: string[]; isPopular?: boolean; ctaLabel: string; }
+export interface ProgramFaq { question: string; answer: string; }
+export interface ProgramLanding {
+  partners: ProgramPartner[];
+  details: ProgramDetails;
+  learningOutcomes: string[];
+  features: ProgramFeatureCard[];
+  certificationPartner?: ProgramPartner & { description: string };
+  experts: ProgramExpert[];
+  pricingTiers: ProgramPricingTier[];
+  faqs: ProgramFaq[];
 }
