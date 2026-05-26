@@ -1,20 +1,47 @@
-<div class="flex-1 min-w-0 w-full flex flex-col" style="background:#F6F6F6">
-    <!-- Builder header -->
+<div class="flex w-full min-h-[calc(100vh-64px)] items-start" style="background:#F6F6F6">
+  <mereka-dashboard-sidebar />
+
+  <main class="flex-1 min-w-0 w-full flex flex-col" style="background:#F6F6F6">
+    <!-- Header bar -->
     <header class="px-4 sm:px-6 lg:px-10 py-4 bg-white flex items-center justify-between gap-3 sticky top-16 z-30" style="border-bottom:1px solid #DDDDDE">
       <div class="flex items-center gap-3 min-w-0">
-        <a routerLink="/dashboard/forms" class="text-sm font-medium" style="color:#7B7B7B">← Forms</a>
-        <input [ngModel]="title()" (ngModelChange)="title.set($event)" class="text-base font-bold bg-transparent px-2 py-1 rounded outline-none focus:bg-neutral-100 w-48 sm:w-72" style="color:#1A1623;border:none" placeholder="Untitled Form" />
+        <a routerLink="/dashboard/forms" class="inline-flex items-center justify-center w-9 h-9 rounded-full hover:bg-neutral-100" aria-label="Back to Forms">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+        </a>
+        <input [ngModel]="title()" (ngModelChange)="title.set($event)"
+          class="text-base font-bold bg-transparent px-2 py-1 rounded outline-none focus:bg-neutral-100 w-48 sm:w-72"
+          style="color:#1A1623;border:none" placeholder="Untitled Form" />
       </div>
+
+      <!-- Center tabs -->
+      <nav class="hidden md:flex items-center gap-1 absolute left-1/2 -translate-x-1/2">
+        <button *ngFor="let t of ['content','connect','share','results']" type="button" (click)="setTab($any(t))"
+          class="px-5 py-2 text-sm capitalize rounded-full transition-colors"
+          [style.background]="tab() === t ? '#1A1623' : 'transparent'"
+          [style.color]="tab() === t ? 'white' : '#1A1623'"
+          [style.font-weight]="tab() === t ? '700' : '500'"
+          style="border:none">{{ t }}</button>
+      </nav>
+
       <div class="flex items-center gap-2">
-        <button type="button" class="hidden sm:inline px-4 py-1.5 text-xs font-bold rounded-full" style="outline:1px solid #1A1623;color:#1A1623;outline-offset:-1px;border:none;background:transparent">Preview</button>
-        <button type="button" class="px-4 py-1.5 text-xs font-bold rounded-full text-white" style="background:#1A1623;border:none">Save draft</button>
-        <button type="button" class="px-4 py-1.5 text-xs font-bold rounded-full text-white" style="background:linear-gradient(90deg, #FD87A5 0%, #EE53B1 100%);border:none">Publish</button>
+        <button type="button" class="inline-flex items-center gap-1 px-4 py-1.5 text-xs font-bold rounded-full" style="background:white;border:1px solid #DDDDDE;color:#1A1623">
+          <span style="width:14px;height:14px;border-radius:50%;background:linear-gradient(45deg,#FFB347,#FF6F61,#A569BD)"></span>
+          Design
+        </button>
+        <button type="button" class="inline-flex items-center gap-1 px-4 py-1.5 text-xs font-bold rounded-full" style="background:white;border:1px solid #DDDDDE;color:#1A1623">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+          Preview
+        </button>
+        <button type="button" class="inline-flex items-center gap-1 px-4 py-1.5 text-xs font-bold rounded-full text-white" style="background:#1A1623;border:none">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M2 21l21-9L2 3v7l15 2-15 2v7z"/></svg>
+          Publish
+        </button>
       </div>
     </header>
 
-    <!-- Tabs -->
-    <nav class="px-4 sm:px-6 lg:px-10 bg-white flex gap-1 overflow-x-auto" style="border-bottom:1px solid #DDDDDE">
-      <button *ngFor="let t of ['build','design','settings','share']" type="button" (click)="setTab($any(t))"
+    <!-- Mobile tabs (md and below) -->
+    <nav class="md:hidden px-4 bg-white flex gap-1 overflow-x-auto" style="border-bottom:1px solid #DDDDDE">
+      <button *ngFor="let t of ['content','connect','share','results']" type="button" (click)="setTab($any(t))"
         class="px-4 py-3 text-sm capitalize whitespace-nowrap"
         [style.color]="tab() === t ? '#1A1623' : '#7B7B7B'"
         [style.font-weight]="tab() === t ? '700' : '500'"
@@ -22,90 +49,165 @@
         style="background:transparent;border-top:none;border-left:none;border-right:none;outline:none">{{ t }}</button>
     </nav>
 
-    <!-- Build tab body -->
-    <div *ngIf="tab() === 'build'" class="flex-1 px-4 sm:px-6 lg:px-10 py-6 grid grid-cols-1 lg:grid-cols-[240px_1fr_320px] gap-4">
-      <!-- Field library -->
-      <aside class="lg:order-1 rounded-xl bg-white p-3 flex flex-col gap-1.5" style="outline:1px solid #DDDDDE;outline-offset:-1px">
-        <div class="text-xs font-bold uppercase tracking-wider px-1 pb-2" style="color:#7B7B7B;letter-spacing:0.5px">Add field</div>
-        <button *ngFor="let item of library" type="button" (click)="addField(item.type)" class="flex items-center gap-2 px-2 py-2 rounded-lg text-sm hover:bg-neutral-50 text-left" style="border:none;outline:none;background:transparent;color:#1A1623">
-          <span class="inline-flex items-center justify-center w-6 h-6 rounded text-xs font-bold" style="background:#ECECF1;color:#1A1623">{{ item.icon }}</span>
-          {{ item.label }}
-        </button>
-      </aside>
+    <!-- ===== CONTENT tab ===== -->
+    <div *ngIf="tab() === 'content'" class="flex-1 px-4 sm:px-6 lg:px-10 py-6 grid grid-cols-1 lg:grid-cols-[280px_1fr_300px] gap-4">
 
-      <!-- Canvas -->
-      <section class="lg:order-2 rounded-xl bg-white p-4 sm:p-6 flex flex-col gap-4" style="outline:1px solid #DDDDDE;outline-offset:-1px">
-        <input [ngModel]="title()" (ngModelChange)="title.set($event)" class="text-2xl font-black bg-transparent outline-none w-full" style="color:#1A1623;border:none" placeholder="Form title" />
-        <textarea [ngModel]="description()" (ngModelChange)="description.set($event)" rows="2" class="text-sm bg-transparent outline-none w-full resize-none" style="color:#7B7B7B;border:none" placeholder="Add a description for respondents…"></textarea>
-        <div class="h-px" style="background:#E5E5E7"></div>
-
-        <div *ngFor="let f of fields(); let i=index" (click)="selectField(f.id)" class="rounded-lg p-3 sm:p-4 cursor-pointer transition-colors flex flex-col gap-2"
-          [style.outline]="selectedFieldId() === f.id ? '2px solid #1A1623' : '1px solid transparent'"
-          [style.background]="selectedFieldId() === f.id ? '#FAFAFA' : 'transparent'">
-          <div class="flex items-center justify-between gap-2">
-            <div class="flex items-center gap-2">
-              <span class="inline-flex items-center justify-center w-5 h-5 rounded text-[10px] font-bold" style="background:#ECECF1;color:#1A1623">{{ fieldIcon(f.type) }}</span>
-              <span class="text-sm font-bold" style="color:#1A1623">{{ f.label }}<span *ngIf="f.required" style="color:#EF4444">*</span></span>
-            </div>
-            <div class="flex items-center gap-1 opacity-60">
-              <button type="button" (click)="moveField(f.id, -1); $event.stopPropagation()" class="w-6 h-6 rounded hover:bg-neutral-100" style="border:none;background:transparent">↑</button>
-              <button type="button" (click)="moveField(f.id, 1); $event.stopPropagation()"  class="w-6 h-6 rounded hover:bg-neutral-100" style="border:none;background:transparent">↓</button>
-              <button type="button" (click)="duplicateField(f.id); $event.stopPropagation()" class="w-6 h-6 rounded hover:bg-neutral-100" style="border:none;background:transparent">⎘</button>
-              <button type="button" (click)="deleteField(f.id); $event.stopPropagation()" class="w-6 h-6 rounded hover:bg-red-50" style="border:none;background:transparent;color:#EF4444">×</button>
+      <!-- Left: Pages list -->
+      <aside class="lg:order-1 rounded-xl bg-white p-3 flex flex-col gap-2" style="outline:1px solid #DDDDDE;outline-offset:-1px">
+        <div class="text-base font-bold px-1" style="color:#1A1623">Pages</div>
+        <div class="flex flex-col gap-1 mt-1">
+          <div *ngFor="let p of pages(); let i=index"
+            (click)="selectPage(p.id)"
+            class="flex items-center gap-2 px-3 py-2 rounded-lg cursor-pointer transition-colors group"
+            [style.background]="selectedPageId() === p.id ? '#F4F4F4' : 'transparent'">
+            <span class="inline-flex items-center justify-center w-6 h-6 rounded text-xs font-bold" style="background:#ECECF1;color:#1A1623">{{ pageIcon(p.type) }}</span>
+            <span class="flex-1 text-sm truncate" style="color:#1A1623">{{ p.label }}</span>
+            <div class="flex items-center opacity-0 group-hover:opacity-100">
+              <button type="button" (click)="movePage(p.id, -1); $event.stopPropagation()" class="w-5 h-5 rounded hover:bg-neutral-200 text-xs" style="background:transparent;border:none" aria-label="Move up">↑</button>
+              <button type="button" (click)="duplicatePage(p.id); $event.stopPropagation()" class="w-5 h-5 rounded hover:bg-neutral-200 text-xs" style="background:transparent;border:none" aria-label="Duplicate">⎘</button>
+              <button type="button" (click)="removePage(p.id); $event.stopPropagation()" class="w-5 h-5 rounded hover:bg-red-50 text-xs" style="background:transparent;border:none;color:#EF4444" aria-label="Remove">×</button>
             </div>
           </div>
-
-          <!-- Preview by type -->
-          <input *ngIf="f.type === 'short_text' || f.type === 'email' || f.type === 'phone' || f.type === 'number'" type="text" [placeholder]="f.placeholder || ''" disabled class="w-full px-3 py-2 rounded text-sm" style="background:#F4F4F4;border:1px solid #DDDDDE;color:#7B7B7B;outline:none" />
-          <textarea *ngIf="f.type === 'long_text'" rows="3" [placeholder]="f.placeholder || ''" disabled class="w-full px-3 py-2 rounded text-sm resize-none" style="background:#F4F4F4;border:1px solid #DDDDDE;color:#7B7B7B;outline:none"></textarea>
-          <div *ngIf="f.type === 'single_choice'" class="flex flex-col gap-2">
-            <label *ngFor="let opt of f.options" class="flex items-center gap-2 text-sm" style="color:#1A1623"><input type="radio" disabled /> {{ opt }}</label>
-          </div>
-          <div *ngIf="f.type === 'multi_choice'" class="flex flex-col gap-2">
-            <label *ngFor="let opt of f.options" class="flex items-center gap-2 text-sm" style="color:#1A1623"><input type="checkbox" disabled /> {{ opt }}</label>
-          </div>
-          <select *ngIf="f.type === 'dropdown'" disabled class="w-full px-3 py-2 rounded text-sm" style="background:#F4F4F4;border:1px solid #DDDDDE;color:#7B7B7B"><option *ngFor="let o of f.options">{{o}}</option></select>
-          <input *ngIf="f.type === 'date'" type="date" disabled class="w-full px-3 py-2 rounded text-sm" style="background:#F4F4F4;border:1px solid #DDDDDE;color:#7B7B7B;outline:none" />
-          <div *ngIf="f.type === 'file'" class="px-3 py-6 rounded text-center text-sm" style="background:#F4F4F4;border:1px dashed #DDDDDE;color:#7B7B7B">Drop file here or click to upload</div>
-          <div *ngIf="f.type === 'rating'" class="flex gap-1 text-2xl" style="color:#FBBF24">★ ★ ★ ★ ★</div>
-          <div *ngIf="f.type === 'section_break'" class="h-px" style="background:#E5E5E7"></div>
         </div>
 
-        <button type="button" (click)="addField('short_text')" class="self-start text-sm font-bold inline-flex items-center gap-1 px-4 py-2 rounded-full" style="outline:1px solid #1A1623;outline-offset:-1px;color:#1A1623;border:none;background:transparent">+ Add field</button>
+        <!-- Add page -->
+        <div class="relative">
+          <button type="button" (click)="showAddPagePicker.set(!showAddPagePicker())"
+            class="flex items-center justify-between w-full px-3 py-2 rounded-lg text-sm hover:bg-neutral-50"
+            style="border:1px dashed #DDDDDE;color:#1A1623;background:transparent">
+            Add page
+            <span style="color:#7B7B7B">+</span>
+          </button>
+          <!-- Type picker dropdown -->
+          <div *ngIf="showAddPagePicker()" class="absolute z-20 left-0 right-0 mt-1 max-h-72 overflow-y-auto rounded-lg bg-white p-1.5 flex flex-col gap-0.5" style="outline:1px solid #DDDDDE;box-shadow:0 4px 12px rgba(0,0,0,0.08)">
+            <button *ngFor="let item of library" type="button" (click)="addPage(item.type)"
+              class="flex items-center gap-2 px-2 py-2 rounded-lg text-sm hover:bg-neutral-50 text-left" style="border:none;outline:none;background:transparent;color:#1A1623">
+              <span class="inline-flex items-center justify-center w-6 h-6 rounded text-xs font-bold" style="background:#ECECF1;color:#1A1623">{{ item.icon }}</span>
+              {{ item.label }}
+            </button>
+          </div>
+        </div>
+      </aside>
+
+      <!-- Center: Canvas preview -->
+      <section class="lg:order-2 rounded-xl bg-white p-8 sm:p-12 min-h-[420px] flex flex-col items-center justify-center text-center" style="outline:1px solid #DDDDDE;outline-offset:-1px;position:relative">
+        <!-- Mereka watermark in top-right -->
+        <svg width="40" height="40" viewBox="0 0 40 40" fill="none" style="position:absolute;top:1rem;right:1rem">
+          <circle cx="14" cy="14" r="6" fill="#1A1623"/>
+          <circle cx="26" cy="14" r="4" fill="#1A1623"/>
+          <circle cx="20" cy="26" r="5" fill="#1A1623"/>
+        </svg>
+
+        <ng-container *ngIf="selectedPage() as p; else noPage">
+          <ng-container [ngSwitch]="p.type">
+            <ng-container *ngSwitchCase="'welcome'">
+              <input [ngModel]="p.title" (ngModelChange)="updateSelectedPage({ title: $event })"
+                class="text-3xl sm:text-4xl font-bold bg-transparent text-center outline-none w-full max-w-lg" style="color:#1A1623;border:none" placeholder="Hi! Welcome to..." />
+              <input [ngModel]="p.description" (ngModelChange)="updateSelectedPage({ description: $event })"
+                class="text-base mt-3 bg-transparent text-center outline-none w-full max-w-lg" style="color:#7B7B7B;border:none" placeholder="Description (Optional)" />
+              <button type="button" class="mt-8 px-8 py-3 rounded-full text-white text-base font-medium" style="background:#1A1623;border:none">{{ p.buttonLabel || 'Start' }}</button>
+            </ng-container>
+            <ng-container *ngSwitchCase="'statement'">
+              <input [ngModel]="p.title" (ngModelChange)="updateSelectedPage({ title: $event })"
+                class="text-3xl sm:text-4xl font-bold bg-transparent text-center outline-none w-full max-w-lg" style="color:#1A1623;border:none" />
+              <input [ngModel]="p.description" (ngModelChange)="updateSelectedPage({ description: $event })"
+                class="text-base mt-3 bg-transparent text-center outline-none w-full max-w-lg" style="color:#7B7B7B;border:none" placeholder="Description (Optional)" />
+            </ng-container>
+            <ng-container *ngSwitchCase="'end_screen'">
+              <input [ngModel]="p.title" (ngModelChange)="updateSelectedPage({ title: $event })"
+                class="text-3xl sm:text-4xl font-bold bg-transparent text-center outline-none w-full max-w-lg" style="color:#1A1623;border:none" />
+              <input [ngModel]="p.description" (ngModelChange)="updateSelectedPage({ description: $event })"
+                class="text-base mt-3 bg-transparent text-center outline-none w-full max-w-lg" style="color:#7B7B7B;border:none" placeholder="Thanks for your time!" />
+              <button type="button" class="mt-8 px-8 py-3 rounded-full text-white text-base font-medium" style="background:#1A1623;border:none">{{ p.buttonLabel || 'Done' }}</button>
+            </ng-container>
+            <!-- Input types -->
+            <ng-container *ngSwitchDefault>
+              <div class="w-full max-w-lg text-left">
+                <input [ngModel]="p.title" (ngModelChange)="updateSelectedPage({ title: $event })"
+                  class="text-2xl font-bold bg-transparent outline-none w-full" style="color:#1A1623;border:none" />
+                <input *ngIf="p.description !== undefined" [ngModel]="p.description" (ngModelChange)="updateSelectedPage({ description: $event })"
+                  class="text-sm mt-2 bg-transparent outline-none w-full" style="color:#7B7B7B;border:none" placeholder="Description (Optional)" />
+
+                <div class="mt-6">
+                  <input *ngIf="p.type === 'short_text' || p.type === 'email' || p.type === 'phone' || p.type === 'number'"
+                    type="text" disabled placeholder="Type your answer here…" class="w-full px-3 py-2 rounded text-sm" style="background:#F4F4F4;border:1px solid #DDDDDE;outline:none;color:#7B7B7B" />
+                  <textarea *ngIf="p.type === 'long_text'" disabled rows="3" placeholder="Type your answer here…" class="w-full px-3 py-2 rounded text-sm resize-none" style="background:#F4F4F4;border:1px solid #DDDDDE;outline:none;color:#7B7B7B"></textarea>
+                  <div *ngIf="p.type === 'single_choice'" class="flex flex-col gap-2">
+                    <label *ngFor="let opt of p.options" class="flex items-center gap-2 text-sm" style="color:#1A1623"><input type="radio" disabled /> {{ opt }}</label>
+                  </div>
+                  <div *ngIf="p.type === 'multi_choice'" class="flex flex-col gap-2">
+                    <label *ngFor="let opt of p.options" class="flex items-center gap-2 text-sm" style="color:#1A1623"><input type="checkbox" disabled /> {{ opt }}</label>
+                  </div>
+                  <select *ngIf="p.type === 'dropdown'" disabled class="w-full px-3 py-2 rounded text-sm" style="background:#F4F4F4;border:1px solid #DDDDDE;color:#7B7B7B"><option *ngFor="let o of p.options">{{o}}</option></select>
+                  <input *ngIf="p.type === 'date'" type="date" disabled class="w-full px-3 py-2 rounded text-sm" style="background:#F4F4F4;border:1px solid #DDDDDE;color:#7B7B7B" />
+                  <div *ngIf="p.type === 'file'" class="px-3 py-6 rounded text-center text-sm" style="background:#F4F4F4;border:1px dashed #DDDDDE;color:#7B7B7B">Drop file here or click to upload</div>
+                  <div *ngIf="p.type === 'rating'" class="flex gap-1 text-3xl" style="color:#FBBF24">★ ★ ★ ★ ★</div>
+                </div>
+              </div>
+            </ng-container>
+          </ng-container>
+        </ng-container>
+        <ng-template #noPage>
+          <p class="text-sm" style="color:#7B7B7B">Select a page on the left or click <strong>Add page</strong> to begin.</p>
+        </ng-template>
       </section>
 
-      <!-- Inspector -->
+      <!-- Right: Properties inspector -->
       <aside class="lg:order-3 rounded-xl bg-white p-4 flex flex-col gap-3" style="outline:1px solid #DDDDDE;outline-offset:-1px">
-        <div class="text-xs font-bold uppercase tracking-wider" style="color:#7B7B7B;letter-spacing:0.5px">Field settings</div>
-        <ng-container *ngIf="selectedField() as sf; else noSelection">
-          <label class="flex flex-col gap-1">
-            <span class="text-xs font-bold" style="color:#1A1623">Label</span>
-            <input [ngModel]="sf.label" (ngModelChange)="updateSelectedField({ label: $event })" class="px-3 py-2 rounded text-sm" style="background:white;border:1px solid #DDDDDE;outline:none" />
-          </label>
-          <label class="flex flex-col gap-1" *ngIf="sf.type !== 'section_break'">
-            <span class="text-xs font-bold" style="color:#1A1623">Placeholder / hint</span>
-            <input [ngModel]="sf.placeholder" (ngModelChange)="updateSelectedField({ placeholder: $event })" class="px-3 py-2 rounded text-sm" style="background:white;border:1px solid #DDDDDE;outline:none" />
-          </label>
-          <label class="flex flex-col gap-1">
-            <span class="text-xs font-bold" style="color:#1A1623">Description</span>
-            <textarea [ngModel]="sf.description" (ngModelChange)="updateSelectedField({ description: $event })" rows="2" class="px-3 py-2 rounded text-sm resize-none" style="background:white;border:1px solid #DDDDDE;outline:none"></textarea>
-          </label>
-          <label class="flex items-center gap-2 text-sm" style="color:#1A1623">
-            <input type="checkbox" [ngModel]="sf.required" (ngModelChange)="updateSelectedField({ required: $event })" />
-            Required field
-          </label>
+        <ng-container *ngIf="selectedPage() as sp; else inspectorEmpty">
+          <div class="text-base font-bold" style="color:#1A1623">{{ sp.label }}</div>
+
+          <!-- Button label (welcome/end_screen) -->
+          <div *ngIf="sp.type === 'welcome' || sp.type === 'end_screen'" class="rounded-lg p-3" style="border:1px solid #DDDDDE">
+            <label class="block text-xs font-bold mb-1.5" style="color:#1A1623">Button</label>
+            <div class="flex items-center justify-between gap-2">
+              <input [ngModel]="sp.buttonLabel" (ngModelChange)="updateSelectedPage({ buttonLabel: $event })" maxlength="25"
+                class="flex-1 text-sm py-2 px-2 rounded" style="background:white;border:1px solid #EDEDED;outline:none" />
+              <button type="button" class="text-neutral-400 hover:text-neutral-700" aria-label="Edit"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
+            </div>
+            <div class="text-xs text-right mt-1" style="color:#9CA0A6">{{ (sp.buttonLabel || '').length }}/25 max</div>
+          </div>
+
+          <!-- Image / Video upload (welcome/statement) -->
+          <button *ngIf="sp.type === 'welcome' || sp.type === 'statement' || sp.type === 'end_screen'" type="button" class="inline-flex items-center gap-2 px-3 py-2 rounded-lg text-sm" style="background:#F4F4F4;border:1px solid #DDDDDE;color:#1A1623">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
+            image or video
+          </button>
+
+          <!-- Title / description (input types) -->
+          <ng-container *ngIf="sp.type !== 'welcome' && sp.type !== 'statement' && sp.type !== 'end_screen'">
+            <label class="block">
+              <span class="text-xs font-bold" style="color:#1A1623">Question</span>
+              <input [ngModel]="sp.title" (ngModelChange)="updateSelectedPage({ title: $event })"
+                class="mt-1 w-full px-3 py-2 rounded text-sm" style="background:white;border:1px solid #DDDDDE;outline:none" />
+            </label>
+            <label class="block">
+              <span class="text-xs font-bold" style="color:#1A1623">Description</span>
+              <textarea [ngModel]="sp.description" (ngModelChange)="updateSelectedPage({ description: $event })" rows="2"
+                class="mt-1 w-full px-3 py-2 rounded text-sm resize-none" style="background:white;border:1px solid #DDDDDE;outline:none"></textarea>
+            </label>
+            <label class="flex items-center gap-2 text-sm" style="color:#1A1623">
+              <input type="checkbox" [ngModel]="sp.required" (ngModelChange)="updateSelectedPage({ required: $event })" />
+              Required
+            </label>
+          </ng-container>
         </ng-container>
-        <ng-template #noSelection>
-          <p class="text-xs" style="color:#7B7B7B">Select a field in the canvas to edit its label, placeholder, and behaviour.</p>
+        <ng-template #inspectorEmpty>
+          <p class="text-xs" style="color:#7B7B7B">Select a page in the left rail to edit its properties.</p>
         </ng-template>
       </aside>
     </div>
 
-    <!-- Design/Settings/Share placeholders -->
-    <div *ngIf="tab() !== 'build'" class="flex-1 px-4 sm:px-6 lg:px-10 py-6">
+    <!-- ===== CONNECT / SHARE / RESULTS placeholders ===== -->
+    <div *ngIf="tab() !== 'content'" class="flex-1 px-4 sm:px-6 lg:px-10 py-6">
       <div class="rounded-xl bg-white p-8 text-center" style="outline:1px solid #DDDDDE;outline-offset:-1px">
         <h3 class="text-xl font-bold capitalize" style="color:#1A1623">{{ tab() }}</h3>
-        <p class="text-sm mt-2" style="color:#7B7B7B">This tab will host {{ tab() }} controls — theming, submission limits, notifications, embeds, public form links.</p>
+        <p class="text-sm mt-2" style="color:#7B7B7B">
+          <ng-container *ngIf="tab() === 'connect'">Connect this form to your CRM, webhooks, or email automations.</ng-container>
+          <ng-container *ngIf="tab() === 'share'">Share via public link, embed code, or send to a contact list.</ng-container>
+          <ng-container *ngIf="tab() === 'results'">See submissions, completion rate, and export to CSV.</ng-container>
+        </p>
       </div>
     </div>
+  </main>
 </div>
