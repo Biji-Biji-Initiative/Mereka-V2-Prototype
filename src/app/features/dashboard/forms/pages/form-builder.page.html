@@ -13,8 +13,8 @@
           style="color:#1A1623;border:none" placeholder="Untitled Form" />
       </div>
 
-      <!-- Center tabs -->
-      <nav class="hidden md:flex items-center gap-1 absolute left-1/2 -translate-x-1/2">
+      <!-- Center tabs (in-flow, not absolute) -->
+      <nav class="hidden md:flex items-center gap-1 flex-1 justify-center">
         <button *ngFor="let t of ['content','connect','share','results']" type="button" (click)="setTab($any(t))"
           class="px-5 py-2 text-sm capitalize rounded-full transition-colors"
           [style.background]="tab() === t ? '#1A1623' : 'transparent'"
@@ -23,7 +23,7 @@
           style="border:none">{{ t }}</button>
       </nav>
 
-      <div class="flex items-center gap-2">
+      <div class="flex items-center gap-2 shrink-0">
         <button type="button" class="inline-flex items-center gap-1 px-4 py-1.5 text-xs font-bold rounded-full" style="background:white;border:1px solid #DDDDDE;color:#1A1623">
           <span style="width:14px;height:14px;border-radius:50%;background:linear-gradient(45deg,#FFB347,#FF6F61,#A569BD)"></span>
           Design
