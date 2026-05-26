@@ -1,25 +1,23 @@
-name: Deploy to GitHub Pages
+name: Trigger Coolify deploy
+
 on:
   push:
     branches: [main]
-permissions:
-  contents: read
-  pages: write
-  id-token: write
-concurrency:
-  group: pages
-  cancel-in-progress: false
+    paths-ignore:
+      - 'docs/**'
+      - 'README.md'
+  workflow_dispatch:
+
 jobs:
   deploy:
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
+    timeout-minutes: 5
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/configure-pages@v5
-      - uses: actions/upload-pages-artifact@v3
-        with:
-          path: .
-      - id: deployment
-        uses: actions/deploy-pages@v4
+      - name: Notify Coolify
+        env:
+          COOLIFY_API_TOKEN: ${{ secrets.COOLIFY_API_TOKEN }}
+          APP_UUID: cuw6s017pnt7iuw53wktmwzf
+        run: |
+          curl -fsS -X POST \
+            -H "Authorization: Bearer ${COOLIFY_API_TOKEN}" \
+            "https://app.coolify.io/api/v1/deploy?uuid=${APP_UUID}"
